@@ -12,6 +12,10 @@ public class Player {
 
     private int points;
 
+    private int actualStiches;
+
+    private int calledStiches;
+
     public Player(int id, String name) {
         this.id = id;
         if(name == null) {
@@ -19,6 +23,7 @@ public class Player {
         }
         this.name = name;
         this.points = 0;
+        this.actualStiches =0;
     }
 
     public int getId() {
@@ -41,6 +46,26 @@ public class Player {
         if(points > this.points)
             points = this.points;
         this.points -= points;
+    }
+
+    public void increaseStiches() {
+        this.actualStiches++;
+    }
+
+    public void restStiches() {
+        this.actualStiches = 0;
+    }
+
+    public int getActualStiches() {
+        return this.actualStiches;
+    }
+
+    public void setCalledStiches(int stiches) {
+        this.calledStiches = stiches;
+    }
+
+    public int getCalledStiches() {
+        return this.calledStiches;
     }
 
     @Override

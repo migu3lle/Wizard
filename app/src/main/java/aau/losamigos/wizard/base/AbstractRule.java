@@ -20,8 +20,6 @@ public abstract class AbstractRule {
 
     public abstract int getWeight();
 
-    public abstract int getPoints();
-
     public int compareTo(AbstractRule other) {
         if(this.getWeight() > other.getWeight()) {
             return 1;

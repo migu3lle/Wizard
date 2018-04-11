@@ -50,7 +50,7 @@ public class RuleEngine {
             //if the rule applies the winner is not null
             if(winner != null) {
                 //add the points of the rule to the total points of the winner
-                winner.addPoints(rule.getPoints());
+                winner.increaseStiches();
 
                 //break here because the rules are ordered by weight from top to bottom
                 //if the first rule applies the others do not need to checked anymore

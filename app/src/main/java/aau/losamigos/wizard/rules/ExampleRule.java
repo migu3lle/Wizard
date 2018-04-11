@@ -20,9 +20,4 @@ public class ExampleRule extends AbstractRule {
     public int getWeight() {
         return 0;
     }
-
-    @Override
-    public int getPoints() {
-        return 0;
-    }
 }

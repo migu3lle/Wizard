@@ -37,10 +37,6 @@ public class RuleEngineTest {
             return 10;
         }
 
-        @Override
-        public int getPoints() {
-            return 10;
-        }
     }
 
     private class TheHumanWins extends AbstractRule {
@@ -59,11 +55,6 @@ public class RuleEngineTest {
         @Override
         public int getWeight() {
             return 1;
-        }
-
-        @Override
-        public int getPoints() {
-            return 10;
         }
     }
 
@@ -95,7 +86,7 @@ public class RuleEngineTest {
         }
 
         Assert.assertEquals("the dwarf should have won", t1.getPlayer(), winner);
-        Assert.assertEquals("the winner should have 10 points", 10, winner.getPoints());
+        Assert.assertEquals("the winner should have 10 points", 1, winner.getActualStiches());
     }
 
     @Test
@@ -116,7 +107,7 @@ public class RuleEngineTest {
         }
 
         Assert.assertEquals("the human should have won", t2.getPlayer(), winner);
-        Assert.assertEquals("the winner should have 10 points", 10, winner.getPoints());
+        Assert.assertEquals("the winner should have 10 points", 1, winner.getActualStiches());
     }
 
     @Test(expected = NoWinnerDeterminedException.class)
