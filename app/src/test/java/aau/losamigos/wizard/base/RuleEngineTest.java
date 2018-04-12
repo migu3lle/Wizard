@@ -10,7 +10,13 @@ import java.util.List;
 import aau.losamigos.wizard.elements.cards.FractionCard;
 import aau.losamigos.wizard.elements.MoveTuple;
 import aau.losamigos.wizard.elements.Player;
+import aau.losamigos.wizard.elements.cards.JesterCard;
+import aau.losamigos.wizard.elements.cards.WizardCard;
 import aau.losamigos.wizard.exceptions.NoWinnerDeterminedException;
+import aau.losamigos.wizard.rules.JesterRule;
+import aau.losamigos.wizard.rules.PointsRule;
+import aau.losamigos.wizard.rules.TrumpCardRule;
+import aau.losamigos.wizard.rules.WizardRule;
 import aau.losamigos.wizard.types.Fractions;
 
 /**
@@ -19,108 +25,84 @@ import aau.losamigos.wizard.types.Fractions;
 
 public class RuleEngineTest {
 
-    private class TheDwarfWins extends AbstractRule {
+    private Player p1;
+    private Player p2;
+    private Player p3;
 
-        @Override
-        public Player CheckMove(List<MoveTuple> moves) {
-            Player winner = null;
-            for(MoveTuple move : moves) {
-                FractionCard card = move.getExactCard(FractionCard.class);
-                if(card != null && card.getFraction() == Fractions.Dwarf) {
-                    winner = move.getPlayer();
-                }
-            }
-            return winner;
-        }
-
-        @Override
-        public int getWeight() {
-            return 10;
-        }
-
-    }
-
-    private class TheHumanWins extends AbstractRule {
-
-        @Override
-        public Player CheckMove(List<MoveTuple> moves) {
-            Player winner = null;
-            for(MoveTuple move : moves) {
-                FractionCard card = move.getExactCard(FractionCard.class);
-                if(card != null && card.getFraction() == Fractions.Human) {
-                    winner = move.getPlayer();
-                }
-            }
-            return winner;
-        }
-
-        @Override
-        public int getWeight() {
-            return 1;
-        }
-    }
-
+    private RuleEngine ruleEngine;
     @Before
     public void setUp() {
-        //get ruleEngine and initialize some rule
-        RuleEngine ruleEngine = RuleEngine.getInstance();
+        //get ruleEngine and initialize the rules
+        ruleEngine = RuleEngine.getInstance();
         List<AbstractRule> rules = new ArrayList<>();
-        rules.add(new TheDwarfWins());
-        rules.add(new TheHumanWins());
+        rules.add(new WizardRule());
+        rules.add(new JesterRule());
+        rules.add(new TrumpCardRule());
+        rules.add(new PointsRule());
         ruleEngine.initializeRules(rules);
+
+        p1 =  new Player(1, "luke");
+        p2 =  new Player(2, "lea");
+        p3 =  new Player(3, "han");
     }
 
     @Test
-    public void TestRuleEngine1() {
-        //create a move
-        MoveTuple t1 = new MoveTuple(new Player(1, "hugo"), new FractionCard(1, 1,  Fractions.Dwarf), 1);
-        MoveTuple t2 = new MoveTuple(new Player(2, "bert"), new FractionCard(2, 10,  Fractions.Human), 2);
+    public void TestWizardRule() {
         List<MoveTuple> move = new ArrayList<>();
-        move.add(t1);
-        move.add(t2);
+        move.add(new MoveTuple(p1, new FractionCard(2, 11,  Fractions.Human), 1));
+        move.add(new MoveTuple(p2, new WizardCard(1), 2));
+        move.add(new MoveTuple(p3, new FractionCard(3, 10,  Fractions.Human), 3));
 
-        RuleEngine ruleEngine = RuleEngine.getInstance();
-        Player winner = null;
-        try {
-            winner = ruleEngine.processRound(move);
-        } catch (NoWinnerDeterminedException e) {
-            e.printStackTrace();
-        }
+        Player winner = ruleEngine.processRound(move, null);
 
-        Assert.assertEquals("the dwarf should have won", t1.getPlayer(), winner);
-        Assert.assertEquals("the winner should have 10 points", 1, winner.getActualStiches());
+        Assert.assertEquals("player 2 should have won", p2, winner);
     }
 
     @Test
-    public void TestRuleEngine2() {
-        //create a move
-        MoveTuple t1 = new MoveTuple(new Player(1, "hugo"), new FractionCard(1, 1,  Fractions.Elb), 1);
-        MoveTuple t2 = new MoveTuple(new Player(2, "bert"), new FractionCard(2, 10,  Fractions.Human), 2);
+    public void TestJesterRule() {
         List<MoveTuple> move = new ArrayList<>();
-        move.add(t1);
-        move.add(t2);
+        move.add(new MoveTuple(p1, new JesterCard(2), 1));
+        move.add(new MoveTuple(p2, new FractionCard(1, 2, Fractions.Human), 2));
+        move.add(new MoveTuple(p3, new JesterCard(3), 3));
 
-        RuleEngine ruleEngine = RuleEngine.getInstance();
-        Player winner = null;
-        try {
-            winner = ruleEngine.processRound(move);
-        } catch (NoWinnerDeterminedException e) {
-            e.printStackTrace();
-        }
+        Player winner = ruleEngine.processRound(move, null);
 
-        Assert.assertEquals("the human should have won", t2.getPlayer(), winner);
-        Assert.assertEquals("the winner should have 10 points", 1, winner.getActualStiches());
+        Assert.assertEquals("player 2 should have won", p2, winner);
     }
 
-    @Test(expected = NoWinnerDeterminedException.class)
-    public void TestNoWinner() throws NoWinnerDeterminedException {
-        MoveTuple t1 = new MoveTuple(new Player(1, "hugo"), new FractionCard(1, 1,  Fractions.Elb), 1);
-        MoveTuple t2 = new MoveTuple(new Player(2, "bert"), new FractionCard(2, 10,  Fractions.Giant), 2);
+    @Test
+    public void TestTrumpRule() {
         List<MoveTuple> move = new ArrayList<>();
-        move.add(t1);
-        move.add(t2);
+        move.add(new MoveTuple(p1, new FractionCard(1, 13,  Fractions.Human), 1));
+        move.add(new MoveTuple(p2, new FractionCard(2, 12, Fractions.Human), 2));
+        move.add(new MoveTuple(p3, new FractionCard(3, 1,  Fractions.Dwarf), 3));
 
-        RuleEngine ruleEngine = RuleEngine.getInstance();
-        ruleEngine.processRound(move);
+        Player winner = ruleEngine.processRound(move, Fractions.Dwarf);
+
+        Assert.assertEquals("player 3 should have won", p3, winner);
+    }
+
+    @Test
+    public void TestPointsRule() {
+        List<MoveTuple> move = new ArrayList<>();
+        move.add(new MoveTuple(p1, new FractionCard(1, 5,  Fractions.Human), 1));
+        move.add(new MoveTuple(p2, new FractionCard(2, 12, Fractions.Human), 2));
+        move.add(new MoveTuple(p3, new FractionCard(3, 1,  Fractions.Human), 3));
+
+        Player winner = ruleEngine.processRound(move, Fractions.Dwarf);
+
+        Assert.assertEquals("player 2 should have won", p2, winner);
+    }
+
+    @Test
+    public void TestStichCount() {
+        TestWizardRule(); //p2 wins
+        TestJesterRule(); //p2 wins
+        TestTrumpRule(); //p3 wins
+        TestPointsRule(); //p2 wins
+
+        Assert.assertEquals("player 2 should have 3 stiches", 3, p2.getActualStiches());
+        Assert.assertEquals("player 3 should have 1 stich", 1, p3.getActualStiches());
+        Assert.assertEquals("player 1 should have 0 stiches", 0, p1.getActualStiches());
     }
 }

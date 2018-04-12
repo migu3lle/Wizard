@@ -1,9 +1,7 @@
 package aau.losamigos.wizard.base;
 
-import java.util.List;
-
 import aau.losamigos.wizard.elements.MoveTuple;
-import aau.losamigos.wizard.elements.Player;
+import aau.losamigos.wizard.types.Fractions;
 
 /**
  * Created by flo on 10.04.2018.
@@ -11,15 +9,30 @@ import aau.losamigos.wizard.elements.Player;
 
 public abstract class AbstractRule {
 
-    /*
-    Checks the moves and returns the player that won the move
-    If the rule does not apply (for expamle the rules checks the trump and there was no trump played)
-    the rules returns null
+    /**
+     * a method that checks the current winning card against the next card in the order
+     * and determines which of the card wins according to this particular rule
+     * @param currentWinner the current winning card
+     * @param nextCard the next card in the row
+     * @param trump the trump in this stich round
+     * @return
+     * the winner according to that rule
      */
-    public abstract Player CheckMove(List<MoveTuple> moves);
+    public abstract MoveTuple check(MoveTuple currentWinner, MoveTuple nextCard, Fractions trump);
 
+    /**
+     * a method that determines how important that rule is and when it will be checked
+     * by the rule engine
+     * @return
+     * the weight of the rule
+     */
     public abstract int getWeight();
 
+    /**
+     * compares the weight (importance) of 2 rules asc
+     * @param other the other rule to compare with
+     * @return -1, 0, 1
+     */
     public int compareTo(AbstractRule other) {
         if(this.getWeight() > other.getWeight()) {
             return 1;
@@ -29,6 +42,11 @@ public abstract class AbstractRule {
         return 0;
     }
 
+    /**
+     * compares the weight (importance) of 2 rules desc
+     * @param other the other rule to compare with
+     * @return -1, 0, 1
+     */
     public int compareToReverse(AbstractRule other) {
         if(this.getWeight() < other.getWeight()) {
             return 1;

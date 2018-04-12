@@ -37,4 +37,13 @@ public class MoveTuple {
     public int getOrder() {
         return order;
     }
+
+    public int compareOrder(MoveTuple other) {
+        if(this.getOrder() > other.getOrder()) {
+            return 1;
+        } else if (this.getOrder() < other.getOrder()) {
+            return -1;
+        }
+        return 0;
+    }
 }

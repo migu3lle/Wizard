@@ -20,10 +20,12 @@ public class AbstractCard {
         return id;
     }
 
-
-    /*
-    method to get the exact derivation of AbstractCard
-    returns null if the card is not of the given type
+    /**
+     * method to get the exact derivation of AbstractCard
+     * returns null if the card is not of the given type
+     * @param clazz the class containing the type we want to get
+     * @param <T> the specific type we want to get
+     * @return the specific type if it matches or null if it does not match
      */
     public <T extends AbstractCard> T getExact(Class<T> clazz) {
         T card = null;
