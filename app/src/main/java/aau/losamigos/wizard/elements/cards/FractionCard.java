@@ -1,35 +1,33 @@
-package aau.losamigos.wizard.elements;
+package aau.losamigos.wizard.elements.cards;
 
+import aau.losamigos.wizard.base.AbstractCard;
 import aau.losamigos.wizard.types.Fractions;
 
 /**
  * Created by flo on 10.04.2018.
  */
 
-public class Card {
-
-    //don't really know if an id is needed because the id could as well be value + fraction
-    private int id;
+public class FractionCard extends AbstractCard {
 
     private int value;
 
     private Fractions fraction;
 
-    public Card(int id, int value, Fractions fraction) {
-        this.id = id;
+    public FractionCard(int id, int value, Fractions fraction) {
+        super(id);
         this.value = value;
         this.fraction = fraction;
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public int getValue() {
-        return value;
+        return this.value;
     }
 
     public Fractions getFraction() {
-        return fraction;
+        return this.fraction;
     }
 }

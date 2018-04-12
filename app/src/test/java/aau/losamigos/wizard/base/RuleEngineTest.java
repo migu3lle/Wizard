@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import aau.losamigos.wizard.elements.Card;
+import aau.losamigos.wizard.elements.cards.FractionCard;
 import aau.losamigos.wizard.elements.MoveTuple;
 import aau.losamigos.wizard.elements.Player;
 import aau.losamigos.wizard.exceptions.NoWinnerDeterminedException;
@@ -25,7 +25,8 @@ public class RuleEngineTest {
         public Player CheckMove(List<MoveTuple> moves) {
             Player winner = null;
             for(MoveTuple move : moves) {
-                if(move.getCard().getFraction() == Fractions.Dwarf) {
+                FractionCard card = move.getExactCard(FractionCard.class);
+                if(card != null && card.getFraction() == Fractions.Dwarf) {
                     winner = move.getPlayer();
                 }
             }
@@ -45,7 +46,8 @@ public class RuleEngineTest {
         public Player CheckMove(List<MoveTuple> moves) {
             Player winner = null;
             for(MoveTuple move : moves) {
-                if(move.getCard().getFraction() == Fractions.Human) {
+                FractionCard card = move.getExactCard(FractionCard.class);
+                if(card != null && card.getFraction() == Fractions.Human) {
                     winner = move.getPlayer();
                 }
             }
@@ -71,8 +73,8 @@ public class RuleEngineTest {
     @Test
     public void TestRuleEngine1() {
         //create a move
-        MoveTuple t1 = new MoveTuple(new Player(1, "hugo"), new Card(1, 1,  Fractions.Dwarf), 1);
-        MoveTuple t2 = new MoveTuple(new Player(2, "bert"), new Card(2, 10,  Fractions.Human), 2);
+        MoveTuple t1 = new MoveTuple(new Player(1, "hugo"), new FractionCard(1, 1,  Fractions.Dwarf), 1);
+        MoveTuple t2 = new MoveTuple(new Player(2, "bert"), new FractionCard(2, 10,  Fractions.Human), 2);
         List<MoveTuple> move = new ArrayList<>();
         move.add(t1);
         move.add(t2);
@@ -92,8 +94,8 @@ public class RuleEngineTest {
     @Test
     public void TestRuleEngine2() {
         //create a move
-        MoveTuple t1 = new MoveTuple(new Player(1, "hugo"), new Card(1, 1,  Fractions.Elb), 1);
-        MoveTuple t2 = new MoveTuple(new Player(2, "bert"), new Card(2, 10,  Fractions.Human), 2);
+        MoveTuple t1 = new MoveTuple(new Player(1, "hugo"), new FractionCard(1, 1,  Fractions.Elb), 1);
+        MoveTuple t2 = new MoveTuple(new Player(2, "bert"), new FractionCard(2, 10,  Fractions.Human), 2);
         List<MoveTuple> move = new ArrayList<>();
         move.add(t1);
         move.add(t2);
@@ -112,8 +114,8 @@ public class RuleEngineTest {
 
     @Test(expected = NoWinnerDeterminedException.class)
     public void TestNoWinner() throws NoWinnerDeterminedException {
-        MoveTuple t1 = new MoveTuple(new Player(1, "hugo"), new Card(1, 1,  Fractions.Elb), 1);
-        MoveTuple t2 = new MoveTuple(new Player(2, "bert"), new Card(2, 10,  Fractions.Giant), 2);
+        MoveTuple t1 = new MoveTuple(new Player(1, "hugo"), new FractionCard(1, 1,  Fractions.Elb), 1);
+        MoveTuple t2 = new MoveTuple(new Player(2, "bert"), new FractionCard(2, 10,  Fractions.Giant), 2);
         List<MoveTuple> move = new ArrayList<>();
         move.add(t1);
         move.add(t2);
