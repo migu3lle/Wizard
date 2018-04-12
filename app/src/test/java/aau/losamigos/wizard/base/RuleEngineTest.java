@@ -1,5 +1,6 @@
 package aau.losamigos.wizard.base;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +13,6 @@ import aau.losamigos.wizard.elements.MoveTuple;
 import aau.losamigos.wizard.elements.Player;
 import aau.losamigos.wizard.elements.cards.JesterCard;
 import aau.losamigos.wizard.elements.cards.WizardCard;
-import aau.losamigos.wizard.exceptions.NoWinnerDeterminedException;
 import aau.losamigos.wizard.rules.JesterRule;
 import aau.losamigos.wizard.rules.PointsRule;
 import aau.losamigos.wizard.rules.TrumpCardRule;
@@ -30,6 +30,7 @@ public class RuleEngineTest {
     private Player p3;
 
     private RuleEngine ruleEngine;
+
     @Before
     public void setUp() {
         //get ruleEngine and initialize the rules
@@ -41,9 +42,31 @@ public class RuleEngineTest {
         rules.add(new PointsRule());
         ruleEngine.initializeRules(rules);
 
+        //define some players
         p1 =  new Player(1, "luke");
         p2 =  new Player(2, "lea");
         p3 =  new Player(3, "han");
+    }
+
+    @After
+    public void tearDown() {
+        ruleEngine.resetRules();
+
+        p1 = null;
+        p2 = null;
+        p3 = null;
+    }
+
+    @Test
+    public void TestMoveNull() {
+        Player winner = ruleEngine.processRound(null, null);
+        Assert.assertNull("the object should have been null", winner);
+    }
+
+    @Test
+    public void TestMoveEmpty() {
+        Player winner = ruleEngine.processRound(new ArrayList<MoveTuple>(), null);
+        Assert.assertNull("the object should have been null", winner);
     }
 
     @Test

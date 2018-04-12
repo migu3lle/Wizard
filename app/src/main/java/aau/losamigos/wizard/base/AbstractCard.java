@@ -1,9 +1,5 @@
 package aau.losamigos.wizard.base;
 
-import java.lang.reflect.ParameterizedType;
-
-import aau.losamigos.wizard.types.Fractions;
-
 /**
  * Created by flo on 12.04.2018.
  */

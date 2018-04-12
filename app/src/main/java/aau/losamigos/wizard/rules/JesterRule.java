@@ -2,7 +2,6 @@ package aau.losamigos.wizard.rules;
 
 import aau.losamigos.wizard.base.AbstractRule;
 import aau.losamigos.wizard.elements.MoveTuple;
-import aau.losamigos.wizard.elements.cards.FractionCard;
 import aau.losamigos.wizard.elements.cards.JesterCard;
 import aau.losamigos.wizard.types.Fractions;
 

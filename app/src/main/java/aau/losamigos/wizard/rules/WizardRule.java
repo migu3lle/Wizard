@@ -1,11 +1,7 @@
 package aau.losamigos.wizard.rules;
 
-import java.util.List;
-
 import aau.losamigos.wizard.base.AbstractRule;
 import aau.losamigos.wizard.elements.MoveTuple;
-import aau.losamigos.wizard.elements.Player;
-import aau.losamigos.wizard.elements.cards.FractionCard;
 import aau.losamigos.wizard.elements.cards.WizardCard;
 import aau.losamigos.wizard.types.Fractions;
 

@@ -1,7 +1,6 @@
 package aau.losamigos.wizard.elements;
 
 import aau.losamigos.wizard.base.AbstractCard;
-import aau.losamigos.wizard.elements.cards.FractionCard;
 
 /**
  * Created by flo on 10.04.2018.

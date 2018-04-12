@@ -8,7 +8,6 @@ import java.util.List;
 
 import aau.losamigos.wizard.elements.MoveTuple;
 import aau.losamigos.wizard.elements.Player;
-import aau.losamigos.wizard.exceptions.NoWinnerDeterminedException;
 import aau.losamigos.wizard.types.Fractions;
 
 /**
@@ -42,6 +41,10 @@ public class RuleEngine {
      * @param rules the rules that should be checked during the game
      */
     public void initializeRules(List<AbstractRule> rules) {
+        //we do not want to get a nullreference exception later on
+        if(rules == null) {
+            return;
+        }
         //sort the rules descending by their weight
         Collections.sort(rules, new Comparator<AbstractRule>() {
             @Override
@@ -50,6 +53,13 @@ public class RuleEngine {
             }
         });
         this.rules = rules;
+    }
+
+    /**
+     * method to reset the rule list
+     */
+    public void resetRules() {
+        this.rules = new ArrayList<>();
     }
 
     /**
