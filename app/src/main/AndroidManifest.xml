@@ -16,6 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".CreateGameActivity"
+            android:label="@string/title_activity_create_game"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".WaitForPlayersActivity"></activity>
     </application>
 
 </manifest>

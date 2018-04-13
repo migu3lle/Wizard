@@ -1,3 +1,25 @@
 <resources>
+
+
     <string name="app_name">Wizard</string>
+    <string name="title_activity_create_game">createGame</string>
+
+    <!-- General Strings -->
+    <string name="back_button">Zurück</string>
+
+    <!-- Menu PlainText Strings -->
+    <string name="game_title">Spielname</string>
+
+    <!-- Menu TextView Strings -->
+    <string name="pin_enabled">Passwort benötigt</string>
+    <string name="cheat_enabled">Cheatfunktion</string>
+
+    <!-- Menu Number Strings -->
+    <string name="min_player">min. Spieler</string>
+    <string name="max_player">max. Spieler</string>
+
+
+    <!-- Menu Button Strings -->
+    <string name="create_new_game">Erstellen</string>
+
 </resources>
