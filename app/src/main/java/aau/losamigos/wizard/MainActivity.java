@@ -37,6 +37,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        final Button settings = findViewById(R.id.settings);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                settings(settings);
+            }
+        });
+
     }
     public void createGame(View view){
         Intent intent = new Intent(this, CreateGameActivity.class);
@@ -48,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
     }
     public void showRules(View view){
         Intent intent = new Intent(this, RulesActivity.class);
+        startActivity(intent);
+    }
+    public void settings(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 }
