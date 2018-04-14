@@ -29,6 +29,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        final Button rules = findViewById(R.id.rules);
+        rules.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRules(rules);
+            }
+        });
+
     }
     public void createGame(View view){
         Intent intent = new Intent(this, CreateGameActivity.class);
@@ -36,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
     }
     public void launchGame(View view){
         Intent intent = new Intent(this, LaunchGameActivity.class);
+        startActivity(intent);
+    }
+    public void showRules(View view){
+        Intent intent = new Intent(this, RulesActivity.class);
         startActivity(intent);
     }
 }

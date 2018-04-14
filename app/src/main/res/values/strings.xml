@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Wizard</string>
+    <string name="createGame">Spiel erstellen</string>
+    <string name="launchGame">Spiel beitreten</string>
+    <string name="settings">Optionen</string>
+    <string name="rules">Spielanleitung</string>
+    <string name="title_activity_rules">RulesActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
