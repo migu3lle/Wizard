@@ -31,7 +31,7 @@ public class CreateGameActivity extends AppCompatActivity {
 
         configCreateGameButton();
         configBackButton();
-        };
+    };
 
 
     /**
@@ -53,8 +53,17 @@ public class CreateGameActivity extends AppCompatActivity {
                         Integer.parseInt(textMinPlayer.getText().toString()),
                         Integer.parseInt(textMaxPlayer.getText().toString()), swPw.isChecked(), swCheat.isChecked());
 
+                nextActivity();
             }
         });
+    }
+
+    /*
+    Switches to waitForPlayersActivity
+     */
+    private void nextActivity(){
+        Intent intent = new Intent(this, WaitForPlayersActivity.class);
+        startActivity(intent);
     }
 
     /**
