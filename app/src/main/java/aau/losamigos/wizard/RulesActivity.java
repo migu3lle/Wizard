@@ -76,7 +76,6 @@ public class RulesActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
 
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -110,7 +109,18 @@ public class RulesActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_rules, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            int side = getArguments().getInt(ARG_SECTION_NUMBER);
+            if (side == 1) {
+                textView.setText(getString(R.string.aufgabe));
+            } else if(side == 2){
+                textView.setText(getString(R.string.karten));
+            } else if(side == 3){
+                textView.setText(getString(R.string.spiel));
+            } else if(side == 4){
+                textView.setText(getString(R.string.zusatz));
+            } else {
+                textView.setText(getString(R.string.ende));
+            }
             return rootView;
         }
     }
@@ -135,7 +145,7 @@ public class RulesActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 5;
         }
     }
 }

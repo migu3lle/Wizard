@@ -5,81 +5,29 @@
     <string name="settings">Optionen</string>
     <string name="rules">Spielanleitung</string>
     <string name="title_activity_rules">RulesActivity</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-    <string name="tab_text_3">Tab 3</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="title_activity_settings">Settings</string>
-
-    <!-- Strings related to Settings -->
-
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
-
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
+    <string name="tab_text_1">Aufgabe</string>
+    <string name="tab_text_2">Karten</string>
+    <string name="tab_text_3">Spiel</string>
+    <string name="tab_text_4">Zusatz</string>
+    <string name="tab_text_5">Ende</string>
+    <string name="aufgabe">Aufgabe: \nBei diesem Kartenspiel müssen die Spieler (2 - 6) in jeder Stichrunde die genaue Anzahl seiner gewonnenen Stiche vorhersagen. („Stich“ = Jeder Spieler spielt reihum eine Karte in die Tischmitte aus. Diese Karten sind der „Stich“.) Für die richtige Vorhersage gibt es Erfahrungspunkte. Wer am Ende des Spiels die meisten Punkte gesammelt hat, gewinnt.
     </string>
+    <string name="karten">Karten: \nEs gibt vier verschiedene Kartenfarben: Menschen, Elfen, Zwerge und Riesen.
+        Die jeweils stärkste Karte ist die „13“, die schwächste Karte ist die „1“. Die vier Zaubererkarten sind immer Trumpf. Sie sind höher als jede „13“. Die vier Narrenkarten sind nie Trumpf. Sie sind niedriger als jede „1“.
+    \n\nKartenverteilung: \nDie Spieler erhalten in jeder Stichrunde unterschiedlich viele Karten. In der ersten Runde wird nur eine Karte an jeden Spieler ausgeteilt. Man kann also in dieser Runde nur einen Stich gewinnen. In der zweiten Stichrunde werden an jeden Spieler zwei Karten ausgeteilt. In dieser Runde geht es um zwei Stiche, dann drei Karten usw., bis in der letzten Runde alle Karten im Spiel sind. Karten, die nicht an die Spieler verteilt werden, kommen als verdeckter Stapel in die Tischmitte. Nach jeder Stichrunde wechselt der Geber der Karten im Uhrzeigersinn.
+    \n\nTrumpf:\nNachdem die Charakterkarten ausgeteilt wurden, wird vom Stapel die oberste Karte umgedreht und offen auf den Stapel gelegt. Diese Karte bestimmt für die jeweilige Stichrunde die Trumpffarbe. („Trumpf“ = Ein Trumpf ist eine Karte der Trumpffarbe. Sie gewinnt gegen jede Karte einer anderen Farbe.) Ist die aufgedeckte Karte ein Narr, gibt es in dieser Runde keine Trumpffarbe. Ist die aufgedeckte Karte ein Zauberer, darf der Lehrling, der die Karten ausgeteilt hat, eine Trumpffarbe bestimmen, aber erst, nachdem er sich seine Karten angeschaut hat. In der letzten Stichrunde gibt es keinen Trumpf, weil es keinen Stapel gibt, von dem eine Karte  aufgedeckt werden kann.
+    </string>
+    <string name="spiel">Die Vorhersage:\nNachdem sich jeder Spieler seine Karten angeschaut hat, muss er vorhersagen, wie viele Stiche er in dieser Runde wohl machen wird. Der Reihe nach legen die Spieler ihre Vorhersagen fest. Es beginnt der linke Nachbar des Kartengebers. Es soll während des Spiels erkennbar sein, wer noch wie viele Stiche braucht.
+    \n\nDer Kampf um den Stich:\nDer linke Nachbar des Kartengebers spielt die erste Karte für den ersten Stich aus. Die anderen Lehrlinge folgen im Uhrzeigersinn. Eine angespielte Farbe muss bedient werden. Ist das nicht möglich, kann der Lehrling eine Farbe abwerfen oder Trumpf spielen. („bedienen“ = Der Spieler muss eine Karte ausspielen, die die gleiche Farbe wie die erste Karte des Stiches hat.)
+Achtung: Zauberer- und Narrenkarten dürfen immer gespielt werden, auch wenn man bedienen könnte. Auch muss man mit ihnen eine ausgespielte Farbe nicht bedienen.
+Die höchste Karte gewinnt den Stich. Die Zaubererkarten sind immer höher als alle anderen Karten, sogar höher als die anderen Trumpfkarten. Der Gewinner nimmt den Stich, legt die Karten vor sich ab und eröffnet den neuen Stich, indem er eine Karte ausspielt. Ausnahme:
+In der ersten Stichrunde wird nur um einen Stich gespielt.
+Es gewinnt den Stich:     Die erste Zaubererkarte in einem Stich, oder die höchste Karte in der Trumpffarbe, oder die höchste Karte in der zuerst ausgespielten Farbe, wenn weder Trumpf noch Zauberer im Stich sind.
+    </string>
+    <string name="zusatz">Spezielle Rechte der Zauberer und Narren:\nWird ein Stich mit einer Zaubererkarte eröffnet, dürfen die folgenden Spieler beliebige Karten ablegen, einschließlich weiterer Zauberer- und Narrenkarten. Der Stich geht in jedem Fall an den ersten Zauberer. Zaubererkarten sind zwar Trumpf, müssen aber nicht gespielt werden, um einen Stich in der aktuellen Trumpffarbe zu bedienen. Wird ein Stich mit einer Narrenkarte eröffnet, darf als zweite Karte jede beliebige Karte gespielt werden. Erst die zweite Karte bestimmt die Farbe, die bedient werden muss. Narrenkarten verlieren jeden Stich.Mit einer Ausnahme: Werden in einem Stich nur Narren gespielt, gewinnt die erste Narrenkarte den Stich. Dies ist nur bei drei oder vier Spielern möglich.
+   \n\nDie Vergabe der Erfahrungspunkte:\nDer Spieler, der die Anzahl seiner gewonnenen Stiche genau vorhersagen konnte, erhält 20 Erfahrungspunkte plus 10 Punkte pro gewonnenen Stich. Wer daneben getippt hat, verliert jeweils 10 Erfahrungspunkte für jeden Stich, den er über oder unter seiner Vorhersage liegt.
+    </string>
+    <string name="ende">Das Ende:\nIm Spiel sind 60 Charakterkarten. Die Spieler spielen so lange, bis in der letzten Stichrunde alle Karten ausgeteilt wurden. Bei 6 Teilnehmern ist das die 10. Stichrunde, bei 5 Teilnehmern die 12. Stichrunde, bei 4 Teilnehmern die 15. und bei 3 Teilnehmern die 20. Stichrunde. Die letzte Stichrunde wird noch abgerechnet. Gewonnen hat der Spieler mit der höchsten Erfahrungspunktzahl.
+</string>
 
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
-
-    <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
-
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
-
-    <string-array name="list_preference_entries">
-        <item>Entry 1</item>
-        <item>Entry 2</item>
-        <item>Entry 3</item>
-    </string-array>
-
-    <string-array name="list_preference_entry_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
-    <string-array name="multi_select_list_preference_default_value" />
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
-
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
 </resources>

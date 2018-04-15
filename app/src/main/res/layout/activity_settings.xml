@@ -7,4 +7,5 @@
     android:background="@android:color/holo_green_dark"
     tools:context="aau.losamigos.wizard.SettingsActivity">
 
+
 </android.support.constraint.ConstraintLayout>
