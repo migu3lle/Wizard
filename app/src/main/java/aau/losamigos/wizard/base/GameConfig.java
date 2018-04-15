@@ -1,5 +1,7 @@
 package aau.losamigos.wizard.base;
 
+import aau.losamigos.wizard.elements.Player;
+
 /**
  * Created by gunmic on 13.04.18.
  * Class holds general settings of the game started.
@@ -11,6 +13,13 @@ public class GameConfig {
     private boolean keyEnabled;
     private boolean cheatEnabled;
     private int playerCount;
+
+    /*
+    TODO Class might should store WIFI connections to Peers too...?
+    */
+    /*
+    TODO Class might should store Player information too...?
+    */
 
     public GameConfig(String name, int minPlayer, int maxPlayer, boolean keyEnabled, boolean cheatEnabled){
         this.name = name;

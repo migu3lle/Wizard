@@ -15,7 +15,7 @@ import aau.losamigos.wizard.base.GameConfig;
 
 public class CreateGameActivity extends AppCompatActivity {
 
-    EditText textGameName = findViewById(R.id.gameName);
+    EditText textGameName = findViewById(R.id.editText_gameName);
     EditText textMinPlayer = findViewById(R.id.editText_minPlayer);
     EditText textMaxPlayer = findViewById(R.id.editText_maxPlayer);
     Switch swPw = findViewById(R.id.sw_password);
@@ -34,22 +34,41 @@ public class CreateGameActivity extends AppCompatActivity {
         };
 
 
+    /**
+     * Initializes and configures the Button "Create Game"
+     * This action triggers the P2P connection setup and generates the GameConfig object
+     */
     private void configCreateGameButton(){
         Button btnCreateGame = (Button) findViewById(R.id.btn_create);
         btnCreateGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                createWifiConnection();
+                /*
+                Create new GameConfig object. If GameConfig stores WIFI connections too, handover in Constructor
+                 */
                 GameConfig gameConfig = new GameConfig(
                         textGameName.getText().toString(),
                         Integer.parseInt(textMinPlayer.getText().toString()),
                         Integer.parseInt(textMaxPlayer.getText().toString()), swPw.isChecked(), swCheat.isChecked());
-                /*
-                TODO Generate WIFI connection here
-                 */
+
             }
         });
     }
 
+    /**
+     * Method to trigger P2P connection initialization
+     */
+    private void createWifiConnection(){
+        /*
+        TODO Generate WIFI connection here
+        */
+    }
+
+    /**
+     * Initializes and configures the Button "Back" which switches back to main menu
+     */
     private void configBackButton(){
         Button btnBack = (Button) findViewById(R.id.btn_back);
         btnBack.setOnClickListener(new View.OnClickListener(){
