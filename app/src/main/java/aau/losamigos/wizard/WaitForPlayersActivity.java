@@ -14,26 +14,25 @@ import aau.losamigos.wizard.elements.Player;
 
 public class WaitForPlayersActivity extends AppCompatActivity {
 
-    private ListView listViewPlayers = findViewById(R.id.lv_players);
+    private ListView listViewPlayers;
     private ArrayAdapter<Player> arrayAdapter;
     private Player[] players;
-    private ArrayList<Player> playerList = new ArrayList<Player>();
+    private ArrayList<Player> playerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait_for_players);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        listViewPlayers = findViewById(R.id.lv_players);
 
         configStartGameButton();
         configBackButton();
 
         createWifiConnection();
 
-        addPlayersToList();
-        generateAdapter();
+        //addPlayersToList();
+        //generateAdapter();
 
     }
 
