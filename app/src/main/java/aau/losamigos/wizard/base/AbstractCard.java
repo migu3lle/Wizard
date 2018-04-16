@@ -7,9 +7,19 @@ package aau.losamigos.wizard.base;
 public class AbstractCard {
 
     protected int id;
+    private boolean allowedToPlay;
+
 
     public AbstractCard(int id) {
         this.id = id;
+    }
+
+    public boolean isAllowedToPlay() {
+        return allowedToPlay;
+    }
+
+    public void setAllowedToPlay(boolean allowedToPlay) {
+        this.allowedToPlay = allowedToPlay;
     }
 
     public int getId() {

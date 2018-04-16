@@ -1,5 +1,7 @@
 package aau.losamigos.wizard.elements;
 
+import aau.losamigos.wizard.base.Hand;
+
 /**
  * Created by flo on 10.04.2018.
  */
