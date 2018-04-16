@@ -1,5 +1,6 @@
 package aau.losamigos.wizard;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -21,10 +22,18 @@ public class CreateGameActivity extends AppCompatActivity {
     Switch swPw = findViewById(R.id.sw_password);
     Switch swCheat = findViewById(R.id.sw_cheating);
 
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+public class CreateGameActivity extends AppCompatActivity {
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_game);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -87,6 +96,9 @@ public class CreateGameActivity extends AppCompatActivity {
                 // startActivity(new Intent(CreateGameActivity.this, MainActivity.class));  //This would call the next-level activity
             }
         });
+    }
+
+
     }
 
 }
