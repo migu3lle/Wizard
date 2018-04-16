@@ -1,0 +1,13 @@
+package aau.losamigos.wizard;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+public class LaunchGameActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_launch_game);
+    }
+}

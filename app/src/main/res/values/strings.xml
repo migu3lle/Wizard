@@ -1,3 +1,59 @@
 <resources>
+
+
     <string name="app_name">Wizard</string>
+    <string name="title_activity_create_game">Neues Spiel erstellen</string>
+    <string name="title_activity_wait_for_players">Warte auf Spieler</string>
+
+    <!-- General Strings -->
+    <string name="back_button">Zurück</string>
+
+    <!-- Menu PlainText Strings -->
+    <string name="game_title">Spielname</string>
+    <string name="min_player">min. Spieler</string>
+    <string name="max_player">max. Spieler</string>
+
+    <!-- Menu TextView Strings -->
+    <string name="pin_enabled">Passwort benötigt</string>
+    <string name="cheat_enabled">Cheatfunktion</string>
+
+    <!-- Menu Number Strings -->
+
+
+
+    <!-- Menu Button Strings -->
+    <string name="create_new_game">Erstellen</string>
+    <string name="start_new_game">Spiel starten</string>
+
+    <string name="createGame">Spiel erstellen</string>
+    <string name="launchGame">Spiel beitreten</string>
+    <string name="settings">Optionen</string>
+    <string name="rules">Spielanleitung</string>
+    <string name="title_activity_rules">RulesActivity</string>
+    <string name="tab_text_1">Aufgabe</string>
+    <string name="tab_text_2">Karten</string>
+    <string name="tab_text_3">Spiel</string>
+    <string name="tab_text_4">Zusatz</string>
+    <string name="tab_text_5">Ende</string>
+    <string name="aufgabe">Aufgabe: \nBei diesem Kartenspiel müssen die Spieler (2 - 6) in jeder Stichrunde die genaue Anzahl seiner gewonnenen Stiche vorhersagen. („Stich“ = Jeder Spieler spielt reihum eine Karte in die Tischmitte aus. Diese Karten sind der „Stich“.) Für die richtige Vorhersage gibt es Erfahrungspunkte. Wer am Ende des Spiels die meisten Punkte gesammelt hat, gewinnt.
+    </string>
+    <string name="karten">Karten: \nEs gibt vier verschiedene Kartenfarben: Menschen, Elfen, Zwerge und Riesen.
+        Die jeweils stärkste Karte ist die „13“, die schwächste Karte ist die „1“. Die vier Zaubererkarten sind immer Trumpf. Sie sind höher als jede „13“. Die vier Narrenkarten sind nie Trumpf. Sie sind niedriger als jede „1“.
+    \n\nKartenverteilung: \nDie Spieler erhalten in jeder Stichrunde unterschiedlich viele Karten. In der ersten Runde wird nur eine Karte an jeden Spieler ausgeteilt. Man kann also in dieser Runde nur einen Stich gewinnen. In der zweiten Stichrunde werden an jeden Spieler zwei Karten ausgeteilt. In dieser Runde geht es um zwei Stiche, dann drei Karten usw., bis in der letzten Runde alle Karten im Spiel sind. Karten, die nicht an die Spieler verteilt werden, kommen als verdeckter Stapel in die Tischmitte. Nach jeder Stichrunde wechselt der Geber der Karten im Uhrzeigersinn.
+    \n\nTrumpf:\nNachdem die Charakterkarten ausgeteilt wurden, wird vom Stapel die oberste Karte umgedreht und offen auf den Stapel gelegt. Diese Karte bestimmt für die jeweilige Stichrunde die Trumpffarbe. („Trumpf“ = Ein Trumpf ist eine Karte der Trumpffarbe. Sie gewinnt gegen jede Karte einer anderen Farbe.) Ist die aufgedeckte Karte ein Narr, gibt es in dieser Runde keine Trumpffarbe. Ist die aufgedeckte Karte ein Zauberer, darf der Lehrling, der die Karten ausgeteilt hat, eine Trumpffarbe bestimmen, aber erst, nachdem er sich seine Karten angeschaut hat. In der letzten Stichrunde gibt es keinen Trumpf, weil es keinen Stapel gibt, von dem eine Karte  aufgedeckt werden kann.
+    </string>
+    <string name="spiel">Die Vorhersage:\nNachdem sich jeder Spieler seine Karten angeschaut hat, muss er vorhersagen, wie viele Stiche er in dieser Runde wohl machen wird. Der Reihe nach legen die Spieler ihre Vorhersagen fest. Es beginnt der linke Nachbar des Kartengebers. Es soll während des Spiels erkennbar sein, wer noch wie viele Stiche braucht.
+    \n\nDer Kampf um den Stich:\nDer linke Nachbar des Kartengebers spielt die erste Karte für den ersten Stich aus. Die anderen Lehrlinge folgen im Uhrzeigersinn. Eine angespielte Farbe muss bedient werden. Ist das nicht möglich, kann der Lehrling eine Farbe abwerfen oder Trumpf spielen. („bedienen“ = Der Spieler muss eine Karte ausspielen, die die gleiche Farbe wie die erste Karte des Stiches hat.)
+Achtung: Zauberer- und Narrenkarten dürfen immer gespielt werden, auch wenn man bedienen könnte. Auch muss man mit ihnen eine ausgespielte Farbe nicht bedienen.
+Die höchste Karte gewinnt den Stich. Die Zaubererkarten sind immer höher als alle anderen Karten, sogar höher als die anderen Trumpfkarten. Der Gewinner nimmt den Stich, legt die Karten vor sich ab und eröffnet den neuen Stich, indem er eine Karte ausspielt. Ausnahme:
+In der ersten Stichrunde wird nur um einen Stich gespielt.
+Es gewinnt den Stich:     Die erste Zaubererkarte in einem Stich, oder die höchste Karte in der Trumpffarbe, oder die höchste Karte in der zuerst ausgespielten Farbe, wenn weder Trumpf noch Zauberer im Stich sind.
+    </string>
+    <string name="zusatz">Spezielle Rechte der Zauberer und Narren:\nWird ein Stich mit einer Zaubererkarte eröffnet, dürfen die folgenden Spieler beliebige Karten ablegen, einschließlich weiterer Zauberer- und Narrenkarten. Der Stich geht in jedem Fall an den ersten Zauberer. Zaubererkarten sind zwar Trumpf, müssen aber nicht gespielt werden, um einen Stich in der aktuellen Trumpffarbe zu bedienen. Wird ein Stich mit einer Narrenkarte eröffnet, darf als zweite Karte jede beliebige Karte gespielt werden. Erst die zweite Karte bestimmt die Farbe, die bedient werden muss. Narrenkarten verlieren jeden Stich.Mit einer Ausnahme: Werden in einem Stich nur Narren gespielt, gewinnt die erste Narrenkarte den Stich. Dies ist nur bei drei oder vier Spielern möglich.
+   \n\nDie Vergabe der Erfahrungspunkte:\nDer Spieler, der die Anzahl seiner gewonnenen Stiche genau vorhersagen konnte, erhält 20 Erfahrungspunkte plus 10 Punkte pro gewonnenen Stich. Wer daneben getippt hat, verliert jeweils 10 Erfahrungspunkte für jeden Stich, den er über oder unter seiner Vorhersage liegt.
+    </string>
+    <string name="ende">Das Ende:\nIm Spiel sind 60 Charakterkarten. Die Spieler spielen so lange, bis in der letzten Stichrunde alle Karten ausgeteilt wurden. Bei 6 Teilnehmern ist das die 10. Stichrunde, bei 5 Teilnehmern die 12. Stichrunde, bei 4 Teilnehmern die 15. und bei 3 Teilnehmern die 20. Stichrunde. Die letzte Stichrunde wird noch abgerechnet. Gewonnen hat der Spieler mit der höchsten Erfahrungspunktzahl.
+</string>
+
+
 </resources>
