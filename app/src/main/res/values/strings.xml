@@ -1,5 +1,30 @@
 <resources>
+
+
     <string name="app_name">Wizard</string>
+    <string name="title_activity_create_game">Neues Spiel erstellen</string>
+    <string name="title_activity_wait_for_players">Warte auf Spieler</string>
+
+    <!-- General Strings -->
+    <string name="back_button">Zurück</string>
+
+    <!-- Menu PlainText Strings -->
+    <string name="game_title">Spielname</string>
+    <string name="min_player">min. Spieler</string>
+    <string name="max_player">max. Spieler</string>
+
+    <!-- Menu TextView Strings -->
+    <string name="pin_enabled">Passwort benötigt</string>
+    <string name="cheat_enabled">Cheatfunktion</string>
+
+    <!-- Menu Number Strings -->
+
+
+
+    <!-- Menu Button Strings -->
+    <string name="create_new_game">Erstellen</string>
+    <string name="start_new_game">Spiel starten</string>
+
     <string name="createGame">Spiel erstellen</string>
     <string name="launchGame">Spiel beitreten</string>
     <string name="settings">Optionen</string>
@@ -29,5 +54,6 @@ Es gewinnt den Stich:     Die erste Zaubererkarte in einem Stich, oder die höch
     </string>
     <string name="ende">Das Ende:\nIm Spiel sind 60 Charakterkarten. Die Spieler spielen so lange, bis in der letzten Stichrunde alle Karten ausgeteilt wurden. Bei 6 Teilnehmern ist das die 10. Stichrunde, bei 5 Teilnehmern die 12. Stichrunde, bei 4 Teilnehmern die 15. und bei 3 Teilnehmern die 20. Stichrunde. Die letzte Stichrunde wird noch abgerechnet. Gewonnen hat der Spieler mit der höchsten Erfahrungspunktzahl.
 </string>
+
 
 </resources>
