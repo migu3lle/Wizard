@@ -23,12 +23,6 @@ public class CreateGameActivity extends AppCompatActivity {
     Switch swCheat = findViewById(R.id.sw_cheating);
 
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
-public class CreateGameActivity extends AppCompatActivity {
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +92,5 @@ public class CreateGameActivity extends AppCompatActivity {
         });
     }
 
-
-    }
 
 }
