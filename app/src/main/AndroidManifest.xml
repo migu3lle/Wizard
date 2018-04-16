@@ -18,11 +18,11 @@
         <activity
             android:name=".CreateGameActivity"
             android:label="@string/title_activity_create_game"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.ActionBar"/>
         <activity
             android:name=".WaitForPlayersActivity"
             android:label="@string/title_activity_wait_for_players"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.ActionBar"/>
     </application>
 
 </manifest>

@@ -53,7 +53,7 @@ public class WaitForPlayersActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 /*
-                TODO start new Game, to be clarified with Andreas
+                TODO start new Game, to be clarified with Andi
                  */
             }
         });
