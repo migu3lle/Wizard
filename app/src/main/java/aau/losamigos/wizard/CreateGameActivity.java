@@ -16,21 +16,25 @@ import aau.losamigos.wizard.base.GameConfig;
 
 public class CreateGameActivity extends AppCompatActivity {
 
-    EditText textGameName = findViewById(R.id.editText_gameName);
-    EditText textMinPlayer = findViewById(R.id.editText_minPlayer);
-    EditText textMaxPlayer = findViewById(R.id.editText_maxPlayer);
-    Switch swPw = findViewById(R.id.sw_password);
-    Switch swCheat = findViewById(R.id.sw_cheating);
-
+    EditText textGameName;
+    EditText textMinPlayer;
+    EditText textMaxPlayer;
+    Switch swPw;
+    Switch swCheat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_game);
 
+        textGameName = findViewById(R.id.editText_gameName);
+        textMinPlayer = findViewById(R.id.editText_minPlayer);
+        textMaxPlayer = findViewById(R.id.editText_maxPlayer);
+        swPw = findViewById(R.id.sw_password);
+        swCheat = findViewById(R.id.sw_cheating);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        textMinPlayer.setText("3");
+        textMaxPlayer.setText("6");
 
         configCreateGameButton();
         configBackButton();
@@ -41,7 +45,8 @@ public class CreateGameActivity extends AppCompatActivity {
      * Initializes and configures the Button "Create Game"
      * This action triggers the P2P connection setup and generates the GameConfig object
      */
-    private void configCreateGameButton(){
+
+    private void configCreateGameButton() {
         Button btnCreateGame = (Button) findViewById(R.id.btn_create);
         btnCreateGame.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,6 +56,7 @@ public class CreateGameActivity extends AppCompatActivity {
                 /*
                 Create new GameConfig object. If GameConfig stores WIFI connections too, handover in Constructor
                  */
+
                 GameConfig gameConfig = new GameConfig(
                         textGameName.getText().toString(),
                         Integer.parseInt(textMinPlayer.getText().toString()),
@@ -64,7 +70,7 @@ public class CreateGameActivity extends AppCompatActivity {
     /*
     Switches to waitForPlayersActivity
      */
-    private void nextActivity(){
+    private void nextActivity() {
         Intent intent = new Intent(this, WaitForPlayersActivity.class);
         startActivity(intent);
     }
@@ -72,7 +78,7 @@ public class CreateGameActivity extends AppCompatActivity {
     /**
      * Method to trigger P2P connection initialization
      */
-    private void createWifiConnection(){
+    private void createWifiConnection() {
         /*
         TODO Generate WIFI connection here
         */
@@ -81,16 +87,17 @@ public class CreateGameActivity extends AppCompatActivity {
     /**
      * Initializes and configures the Button "Back" which switches back to main menu
      */
-    private void configBackButton(){
+    private void configBackButton() {
         Button btnBack = (Button) findViewById(R.id.btn_back);
-        btnBack.setOnClickListener(new View.OnClickListener(){
+        btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 finish();
                 // startActivity(new Intent(CreateGameActivity.this, MainActivity.class));  //This would call the next-level activity
             }
         });
     }
-
-
 }
+
+
+
