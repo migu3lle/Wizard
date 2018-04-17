@@ -9,6 +9,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import aau.losamigos.wizard.base.GameConfig;
 import aau.losamigos.wizard.elements.Player;
 
 public class WaitForPlayersActivity extends AppCompatActivity {
@@ -48,6 +49,7 @@ public class WaitForPlayersActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 gameStarted = true;
+                GameConfig.getInstance().setPlayers(playerList);
                 /*
                 TODO start new Game, to be clarified with Andi
                  */
