@@ -2,7 +2,6 @@ package aau.losamigos.wizard;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,8 +15,8 @@ public class WaitForPlayersActivity extends AppCompatActivity {
 
     private ListView listViewPlayers;
     private ArrayAdapter<Player> arrayAdapter;
-    private Player[] players;
     private ArrayList<Player> playerList;
+    private boolean gameStarted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,14 +24,11 @@ public class WaitForPlayersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_wait_for_players);
 
         listViewPlayers = findViewById(R.id.lv_players);
+        playerList = new ArrayList<>();
 
         configStartGameButton();
         configBackButton();
-
-        createWifiConnection();
-
-        //addPlayersToList();
-        //generateAdapter();
+        createAdapter();
 
     }
 
@@ -41,7 +37,7 @@ public class WaitForPlayersActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                finish();   //TODO might be better to use onPause(), needs to be checked;
+                finish();
             }
         });
     }
@@ -51,6 +47,7 @@ public class WaitForPlayersActivity extends AppCompatActivity {
         btnStartGame.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                gameStarted = true;
                 /*
                 TODO start new Game, to be clarified with Andi
                  */
@@ -58,30 +55,37 @@ public class WaitForPlayersActivity extends AppCompatActivity {
         });
     }
 
-
     /**
-     * ....to be clarified with Stefan
+     * Adds new player to ListView e.g. if player joined
+     * Returns true if player was added to Queue; else: false
      */
-    private void createWifiConnection(){
-        /*
-        TODO connect to adapter view in activity_wait_for_players and fill with data from WIFI connection
-         */
+    public boolean addPlayerToQueue(Player newPlayer){
+        if(gameStarted)
+            return false;
+        else{
+            playerList.add(newPlayer);
+            return true;
+        }
     }
 
     /**
-     * Adds new player to local arrayList of Players shown in ListView
+     * Removes player from ListView e.g. if Player disconnected
+     * Returns true if player was removed from Queue; else: false
      */
-    private void addPlayersToList(){
-        for (int i = 0; i < players.length; i++) {
-            playerList.add(players[i]);
+    public boolean removePlayerFromQueue(Player playerToRemove){
+        if(gameStarted)
+            return false;
+        else{
+            playerList.remove(playerToRemove);
+            return true;
         }
     }
 
     /**
      * Adapter manages the data model (Player) and adapts it to the individual entries in ListView
      */
-    private void generateAdapter(){
-        arrayAdapter = new ArrayAdapter<Player>(this, android.R.layout.simple_list_item_1, players);
+    private void createAdapter(){
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, playerList);
         listViewPlayers.setAdapter(arrayAdapter);
     }
 }
