@@ -1,5 +1,9 @@
 package aau.losamigos.wizard.base;
 
+import android.util.Log;
+
+import java.util.ArrayList;
+
 import aau.losamigos.wizard.elements.Player;
 
 /**
@@ -14,14 +18,8 @@ public class GameConfig {
     private int minPlayer, maxPlayer;
     private boolean keyEnabled;
     private boolean cheatEnabled;
-    private int playerCount;
+    private Player[] players;
 
-    /*
-    TODO Class might should store WIFI connections to Peers too...?
-    */
-    /*
-    TODO Class might should store Player information too...?
-    */
 
     private GameConfig(){
         //Singleton pattern, to defeat instantiation
@@ -45,6 +43,29 @@ public class GameConfig {
         this.maxPlayer = maxPlayer;
         this.keyEnabled = keyEnabled;
         this.cheatEnabled = cheatEnabled;
+    }
+
+    /**
+     * @param playerList: Array List of Players from Queue
+     * @return true (if Players were added); false (if Players were not added)
+     */
+    public boolean setPlayers(ArrayList<Player> playerList){
+        if(players != null){
+            throw new IllegalStateException("GameConfig: Players may only be instantiated once.");
+        }
+        else if(playerList.size() < minPlayer || playerList.size() > maxPlayer){
+            Log.d("Players not added","Players not added cause of min/max Players criterion.");
+            return false;
+        }
+        players = new Player[playerList.size()];
+        for (int i = 0; i < playerList.size(); i++) {
+            players[i] = playerList.get(i);
+        }
+        return true;
+    }
+
+    public Player[] getPlayers(){
+        return players;
     }
 
     public boolean isKeyEnabled() {
