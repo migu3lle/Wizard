@@ -4,10 +4,12 @@ import aau.losamigos.wizard.elements.Player;
 
 /**
  * Created by gunmic on 13.04.18.
- * Class holds general settings of the game started.
  */
 
 public class GameConfig {
+
+    private static GameConfig singleton = null;
+
     private String name;
     private int minPlayer, maxPlayer;
     private boolean keyEnabled;
@@ -21,14 +23,29 @@ public class GameConfig {
     TODO Class might should store Player information too...?
     */
 
-    public GameConfig(String name, int minPlayer, int maxPlayer, boolean keyEnabled, boolean cheatEnabled){
+    private GameConfig(){
+        //Singleton pattern, to defeat instantiation
+    }
+    public static GameConfig getInstance(String name, int minPlayer, int maxPlayer, boolean keyEnabled, boolean cheatEnabled){
+        if(singleton == null){
+            singleton = new GameConfig(name, minPlayer, maxPlayer, keyEnabled, cheatEnabled);
+        }
+        return singleton;
+    }
+    public static GameConfig getInstance(){
+        if(singleton == null){
+            throw new IllegalArgumentException("GameConfig: GameConfig not instantiated.");
+        }
+        else
+            return singleton;
+    }
+    private GameConfig(String name, int minPlayer, int maxPlayer, boolean keyEnabled, boolean cheatEnabled){
         this.name = name;
         this.minPlayer = minPlayer;
         this.maxPlayer = maxPlayer;
         this.keyEnabled = keyEnabled;
         this.cheatEnabled = cheatEnabled;
     }
-
 
     public boolean isKeyEnabled() {
         return keyEnabled;
