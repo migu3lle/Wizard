@@ -20,7 +20,7 @@ public class Player {
 
     private int calledStiches;
 
-    public Player(int id, String name) {
+    public Player(String name) {
         this.id = getNextId();
         if(name == null) {
             name = "" + id;
