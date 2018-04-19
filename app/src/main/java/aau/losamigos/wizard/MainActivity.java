@@ -18,11 +18,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     WifiManager wifiManager;
-    WifiP2pManager mManager;
-    WifiP2pManager.Channel mChannel;
+    static WifiP2pManager mManager;
+    static WifiP2pManager.Channel mChannel;
 
     BroadcastReceiver mReceiver;
     IntentFilter mIntentFilter;
+    public WifiP2pManager.PeerListListener peerListListener;
 
 
     @Override
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         initialWork();
         wifiListener();
     }
+
     private void wifiListener() {
 
         if (!wifiManager.isWifiEnabled()) {
@@ -82,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(this, getMainLooper(), null);
 
-        mReceiver = new WiFiDirectBroadcastReceiver(mManager,mChannel,this);
+        mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, this);
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -95,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(mReceiver,mIntentFilter);
+        registerReceiver(mReceiver, mIntentFilter);
 
     }
 
@@ -104,20 +106,24 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         unregisterReceiver(mReceiver);
 
-        
+
     }
-    public void createGame(View view){
+
+    public void createGame(View view) {
         Intent intent = new Intent(this, CreateGameActivity.class);
         startActivity(intent);
     }
-    public void launchGame(View view){
+
+    public void launchGame(View view) {
         Intent intent = new Intent(this, LaunchGameActivity.class);
         startActivity(intent);
     }
-    public void showRules(View view){
+
+    public void showRules(View view) {
         Intent intent = new Intent(this, RulesActivity.class);
         startActivity(intent);
     }
+
     public void settings(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
