@@ -69,7 +69,7 @@ public class CardStack {
     public AbstractCard getTrump() {
         AbstractCard card;
         do {
-            card = this.cards.get(this.rand.nextInt(this.cards.size()));
+            card = this.avaliableCards.get(this.rand.nextInt(this.avaliableCards.size()));
         } while (card instanceof WizardCard);
         return card;
     }
