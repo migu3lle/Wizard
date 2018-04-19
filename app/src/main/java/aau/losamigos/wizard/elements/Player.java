@@ -8,6 +8,8 @@ import aau.losamigos.wizard.base.Hand;
 
 public class Player {
 
+    private static int latestID = 0;
+
     private int id;
 
     private String name;
@@ -18,14 +20,18 @@ public class Player {
 
     private int calledStiches;
 
-    public Player(int id, String name) {
-        this.id = id;
+    public Player(String name) {
+        this.id = getNextId();
         if(name == null) {
             name = "" + id;
         }
         this.name = name;
         this.points = 0;
         this.actualStiches =0;
+    }
+
+    private static int getNextId(){
+        return ++latestID;
     }
 
     public int getId() {

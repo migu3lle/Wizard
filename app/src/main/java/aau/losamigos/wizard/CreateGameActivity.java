@@ -3,10 +3,7 @@ package aau.losamigos.wizard;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,31 +30,24 @@ public class CreateGameActivity extends AppCompatActivity {
         swPw = findViewById(R.id.sw_password);
         swCheat = findViewById(R.id.sw_cheating);
 
-        textMinPlayer.setText("3");
-        textMaxPlayer.setText("6");
+        textMinPlayer.setText("3"); //For Test reasons; TODO: remove
+        textMaxPlayer.setText("6"); //For Test reasons; TODO: remove
 
         configCreateGameButton();
         configBackButton();
-    };
-
+    }
 
     /**
      * Initializes and configures the Button "Create Game"
-     * This action triggers the P2P connection setup and generates the GameConfig object
+     * On first action the GameConfig object is generated
      */
-
     private void configCreateGameButton() {
         Button btnCreateGame = (Button) findViewById(R.id.btn_create);
         btnCreateGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                createWifiConnection();
-                /*
-                Create new GameConfig object. If GameConfig stores WIFI connections too, handover in Constructor
-                 */
-
-                GameConfig gameConfig = new GameConfig(
+                GameConfig gameConfig = GameConfig.getInstance(
                         textGameName.getText().toString(),
                         Integer.parseInt(textMinPlayer.getText().toString()),
                         Integer.parseInt(textMaxPlayer.getText().toString()), swPw.isChecked(), swCheat.isChecked());
@@ -73,15 +63,6 @@ public class CreateGameActivity extends AppCompatActivity {
     private void nextActivity() {
         Intent intent = new Intent(this, WaitForPlayersActivity.class);
         startActivity(intent);
-    }
-
-    /**
-     * Method to trigger P2P connection initialization
-     */
-    private void createWifiConnection() {
-        /*
-        TODO Generate WIFI connection here
-        */
     }
 
     /**
