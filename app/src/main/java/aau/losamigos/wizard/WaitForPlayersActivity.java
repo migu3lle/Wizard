@@ -79,14 +79,14 @@ public class WaitForPlayersActivity extends AppCompatActivity {
      * Returns true if player was added to Queue; else: false
      */
 
-    public boolean addPlayerToQueue(Player newPlayer){
-        if(gameStarted)
+    public boolean addPlayerToQueue(Player newPlayer) {
+        if (gameStarted)
             return false;
-        else{
+        else {
             playerList.add(newPlayer);
             return true;
         }
-
+    }
     /*
      initialize a WiFi Discover to wait for Ready Player One
     */
