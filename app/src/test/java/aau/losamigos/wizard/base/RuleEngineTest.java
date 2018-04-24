@@ -43,9 +43,9 @@ public class RuleEngineTest {
         ruleEngine.initializeRules(rules);
 
         //define some players
-        p1 =  new Player(1, "luke");
-        p2 =  new Player(2, "lea");
-        p3 =  new Player(3, "han");
+        p1 =  new Player("luke");
+        p2 =  new Player("lea");
+        p3 =  new Player("han");
     }
 
     @After

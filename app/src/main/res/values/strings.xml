@@ -2,6 +2,7 @@
 
 
     <string name="app_name">Wizard</string>
+    <string name="title_score_sheet">Block der Wahrheit</string>
     <string name="title_activity_create_game">Neues Spiel erstellen</string>
     <string name="title_activity_wait_for_players">Warte auf Spieler</string>
 
@@ -18,7 +19,6 @@
     <string name="cheat_enabled">Cheatfunktion</string>
 
     <!-- Menu Number Strings -->
-
 
 
     <!-- Menu Button Strings -->

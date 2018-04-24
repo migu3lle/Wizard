@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -126,6 +127,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void settings(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    public void showScoreSheet(View view) {
+        EditText tf = findViewById(R.id.player_count_test);
+        String playerCount = tf.getText().toString();
+        Intent intent = new Intent(this, ScoreTableActivity.class);
+        intent.putExtra("PLAYER_COUNT", playerCount);
         startActivity(intent);
     }
 }
