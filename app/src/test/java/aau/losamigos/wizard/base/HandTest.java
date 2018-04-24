@@ -27,7 +27,7 @@ public class HandTest {
 
     @Before
     public void setUp() {
-        p[0] = new Player(1,"Player1");
+        p[0] = new Player("Player1");
 
 
         handcards.add(new WizardCard(3));

@@ -1,0 +1,196 @@
+package aau.losamigos.wizard;
+
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+
+import java.util.HashMap;
+import java.util.Random;
+
+public class ScoreTableActivity extends AppCompatActivity {
+
+    private int card_cnt = 60;
+
+    private String idPatternActualScore = "actualScoreCell";
+    private String idPatternGuessedCount = "guessedCount";
+
+    private HashMap<String, Integer> mapOfIds;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_score_table);
+        setTitle(R.string.title_score_sheet);
+        mapOfIds = new HashMap<>();
+
+        int playerCount = Integer.parseInt(getIntent().getStringExtra("PLAYER_COUNT"));
+
+        generateNewScoreSheet(playerCount);
+
+        generateFakeData(playerCount);
+    }
+
+    private void generateNewScoreSheet(int numberOfPlayers) {
+        int numberOfRounds = card_cnt / numberOfPlayers;
+
+        TableLayout scoreSheetTable = findViewById(R.id.scoreSheetTable);
+
+        //create the header row; run count + 1 times because we need an empty first cell
+        TableRow headerRow = new TableRow(ScoreTableActivity.this);
+        for(int i = 0; i < numberOfPlayers + 1; i++) {
+            TextView cell = new TextView(ScoreTableActivity.this);
+
+            headerRow.addView(cell);
+            if(i > 0) {
+                cell.setText("Player " + i);
+                cell.setTypeface(null, Typeface.BOLD);
+                cell.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
+                cell.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+            }
+
+        }
+        scoreSheetTable.addView(headerRow);
+        TableLayout.LayoutParams headerParams = (TableLayout.LayoutParams)headerRow.getLayoutParams();
+        headerParams.weight = 1;
+        headerRow.setLayoutParams(headerParams);
+
+
+        //create cells for each round
+        for(int i = 1; i <= numberOfRounds; i++) {
+            //create new row and set styles
+            TableRow row = new TableRow(ScoreTableActivity.this);
+            scoreSheetTable.addView(row);
+            TableLayout.LayoutParams params = (TableLayout.LayoutParams)row.getLayoutParams();
+            params.weight = 1;
+            row.setLayoutParams(params);
+
+            for(int j = 0; j < numberOfPlayers + 1; j++) {
+
+                //add new cell to row and set styles
+                LinearLayout cell = new LinearLayout(ScoreTableActivity.this);
+                row.addView(cell);
+                cell.setOrientation(LinearLayout.HORIZONTAL);
+                cell.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                cell.setGravity(Gravity.CENTER_VERTICAL);
+                TableRow.LayoutParams cellParams = (TableRow.LayoutParams)cell.getLayoutParams();
+                cellParams.leftMargin = 5;
+                cellParams.rightMargin = 5;
+                cell.setLayoutParams(cellParams);
+
+                TextView tf1 = new TextView(ScoreTableActivity.this); //actual score
+                tf1.setPadding(10, 0, 0, 0);
+                tf1.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
+                cell.addView(tf1);
+
+                //first cell that shows the number of the round
+                if(j == 0) {
+                    tf1.setText("" + i);
+                    tf1.setTypeface(null, Typeface.BOLD);
+                    tf1.setGravity(Gravity.CENTER_HORIZONTAL);
+                }
+
+                //we need to add 2 cells
+                //1 for the actual score of the player
+                //and one for the guessed amount of stiches
+                else {
+                    TextView tf2 = new TextView(ScoreTableActivity.this);
+                    cell.addView(tf2);
+                    tf2.setGravity(Gravity.RIGHT);
+                    tf2.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
+                    LinearLayout.LayoutParams tfParams = (LinearLayout.LayoutParams)tf2.getLayoutParams();
+                    tfParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
+                    tf2.setLayoutParams(tfParams);
+                    tf2.setPadding(0,0,10,0);
+
+                    //generate ids
+                    tf1.setId(View.generateViewId());
+                    tf2.setId(View.generateViewId());
+
+                    //we have to remember the ids of the cells in a map in order to be able to find them later
+                    mapOfIds.put(buildIdKey(i, j, idPatternActualScore), tf1.getId());
+                    mapOfIds.put(buildIdKey(i, j, idPatternGuessedCount), tf2.getId());
+                }
+            }
+
+
+        }
+    }
+
+    private String buildIdKey(int roundNumber, int playerNumber, String pattern) {
+        return pattern + "_" + roundNumber + "_" + playerNumber;
+
+    }
+
+    private TextView getSelectedCell(String key) {
+        int viewId = mapOfIds.get(key);
+        return findViewById(viewId);
+    }
+
+    public void setGuessedCount(int roundNumber, int playerNumber, int value) {
+        TextView cell = getSelectedCell(buildIdKey(roundNumber, playerNumber, idPatternGuessedCount));
+        cell.setText("" + value);
+    }
+
+    public int getGuessedCount(int roundNumber, int playerNumber) {
+        TextView cell = getSelectedCell(buildIdKey(roundNumber, playerNumber, idPatternGuessedCount));
+        String value = cell.getText().toString();
+        if(value != null)
+            return Integer.parseInt(value);
+        return 0;
+    }
+
+    public void setActualPoints(int roundNumber, int playerNumber, int value) {
+        TextView cell = getSelectedCell(buildIdKey(roundNumber, playerNumber, idPatternActualScore));
+        cell.setText("" + value);
+        if(value < 0) {
+            cell.setTextColor(getResources().getColor(R.color.colorRed));
+        } else {
+            cell.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
+        }
+    }
+
+    public void addPoints(int roundNumber, int playerNumber, int value) {
+        int points = 0;
+        if(roundNumber > 1) {
+            points += getActualPoints(roundNumber-1, playerNumber);
+        }
+        setActualPoints(roundNumber, playerNumber, points + value);
+    }
+
+    public int getActualPoints(int roundNumber, int playerNumber) {
+        TextView cell = getSelectedCell(buildIdKey(roundNumber, playerNumber, idPatternActualScore));
+        String value = cell.getText().toString();
+        if(value != null && value != "")
+            return Integer.parseInt(value);
+        return 0;
+    }
+
+    private void generateFakeData(int playerCount) {
+        Random rand = new Random();
+        int rounds =card_cnt /playerCount;
+
+        rounds = rounds - 3;
+
+        for(int round = 1; round <= rounds; round++) {
+            for(int player = 1; player <= playerCount; player++) {
+                int actual = rand.nextInt(4);
+                int overUnder = rand.nextInt(3)+1;
+                boolean guessedRight = rand.nextBoolean();
+                int points =0;
+                if(guessedRight) {
+                    points += 20 +(10*actual);
+                } else {
+                    points -= 10*overUnder;
+                }
+                addPoints(round, player, points);
+                setGuessedCount(round, player, actual);
+            }
+        }
+    }
+}
