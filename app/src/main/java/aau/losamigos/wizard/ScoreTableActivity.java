@@ -18,7 +18,8 @@ public class ScoreTableActivity extends AppCompatActivity {
     private int card_cnt = 60;
 
     private String idPatternActualScore = "actualScoreCell";
-    private String idPatternGuessedCount = "guessedCount";
+    private String idPatternEstimatedStich = "estimatedStich";
+    private String idPatternActualStich = "actualStich";
 
     private HashMap<String, Integer> mapOfIds;
 
@@ -99,22 +100,38 @@ public class ScoreTableActivity extends AppCompatActivity {
                 //1 for the actual score of the player
                 //and one for the guessed amount of stiches
                 else {
-                    TextView tf2 = new TextView(ScoreTableActivity.this);
-                    cell.addView(tf2);
-                    tf2.setGravity(Gravity.RIGHT);
-                    tf2.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
-                    LinearLayout.LayoutParams tfParams = (LinearLayout.LayoutParams)tf2.getLayoutParams();
-                    tfParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
-                    tf2.setLayoutParams(tfParams);
-                    tf2.setPadding(0,0,10,0);
+                    TextView textViewEstimatedStich = new TextView(ScoreTableActivity.this);
+                    textViewEstimatedStich.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
+                    TextView textViewActualStich = new TextView(ScoreTableActivity.this);
+                    textViewActualStich.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
+                    TextView placeHolder = new TextView(ScoreTableActivity.this);
+                    placeHolder.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
+                    placeHolder.setText("|");
+
+                    LinearLayout stichContainer = new LinearLayout(ScoreTableActivity.this);
+                    stichContainer.setOrientation(LinearLayout.HORIZONTAL);
+                    cell.addView(stichContainer);
+                    stichContainer.setGravity(Gravity.RIGHT);
+                    LinearLayout.LayoutParams containerParams = (LinearLayout.LayoutParams)stichContainer.getLayoutParams();
+                    containerParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
+                    stichContainer.setLayoutParams(containerParams);
+                    stichContainer.setPadding(0,0,10,0);
+
+
+                    stichContainer.addView(textViewEstimatedStich);
+                    stichContainer.addView(placeHolder);
+                    stichContainer.addView(textViewActualStich);
 
                     //generate ids
                     tf1.setId(View.generateViewId());
-                    tf2.setId(View.generateViewId());
+                    textViewEstimatedStich.setId(View.generateViewId());
+                    textViewActualStich.setId(View.generateViewId());
+
 
                     //we have to remember the ids of the cells in a map in order to be able to find them later
                     mapOfIds.put(buildIdKey(i, j, idPatternActualScore), tf1.getId());
-                    mapOfIds.put(buildIdKey(i, j, idPatternGuessedCount), tf2.getId());
+                    mapOfIds.put(buildIdKey(i, j, idPatternEstimatedStich), textViewEstimatedStich.getId());
+                    mapOfIds.put(buildIdKey(i, j, idPatternActualStich), textViewActualStich.getId());
                 }
             }
 
@@ -132,13 +149,26 @@ public class ScoreTableActivity extends AppCompatActivity {
         return findViewById(viewId);
     }
 
-    public void setGuessedCount(int roundNumber, int playerNumber, int value) {
-        TextView cell = getSelectedCell(buildIdKey(roundNumber, playerNumber, idPatternGuessedCount));
+    public void setEstimatedStich(int roundNumber, int playerNumber, int value) {
+        TextView cell = getSelectedCell(buildIdKey(roundNumber, playerNumber, idPatternEstimatedStich));
         cell.setText("" + value);
     }
 
-    public int getGuessedCount(int roundNumber, int playerNumber) {
-        TextView cell = getSelectedCell(buildIdKey(roundNumber, playerNumber, idPatternGuessedCount));
+    public int getEstimatedStich(int roundNumber, int playerNumber) {
+        TextView cell = getSelectedCell(buildIdKey(roundNumber, playerNumber, idPatternEstimatedStich));
+        String value = cell.getText().toString();
+        if(value != null)
+            return Integer.parseInt(value);
+        return 0;
+    }
+
+    public void setActualStich(int roundNumber, int playerNumber, int value) {
+        TextView cell = getSelectedCell(buildIdKey(roundNumber, playerNumber, idPatternActualStich));
+        cell.setText("" + value);
+    }
+
+    public int getActualStich(int roundNumber, int playerNumber) {
+        TextView cell = getSelectedCell(buildIdKey(roundNumber, playerNumber, idPatternActualStich));
         String value = cell.getText().toString();
         if(value != null)
             return Integer.parseInt(value);
@@ -185,11 +215,18 @@ public class ScoreTableActivity extends AppCompatActivity {
                 int points =0;
                 if(guessedRight) {
                     points += 20 +(10*actual);
+                    setActualStich(round, player, actual);
                 } else {
                     points -= 10*overUnder;
+                    int guessed;
+                    if(overUnder < actual)
+                        guessed = actual - overUnder;
+                    else
+                        guessed = overUnder + actual;
+                    setActualStich(round, player, guessed);
                 }
                 addPoints(round, player, points);
-                setGuessedCount(round, player, actual);
+                setEstimatedStich(round, player, actual);
             }
         }
     }
