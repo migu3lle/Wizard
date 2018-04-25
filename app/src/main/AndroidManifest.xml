@@ -30,7 +30,7 @@
         <activity
             android:name=".CreateGameActivity"
             android:label="@string/title_activity_create_game"
-            android:theme="@style/AppTheme.ActionBar"></activity>
+            android:theme="@style/AppTheme.ActionBar" />
         <activity
             android:name=".WaitForPlayersActivity"
             android:label="@string/title_activity_wait_for_players"
@@ -41,7 +41,8 @@
             android:label="@string/title_activity_rules"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".ScoreTableActivity"></activity>
+        <activity android:name=".ScoreTableActivity" />
+        <activity android:name=".TableActivity"></activity>
     </application>
 
 </manifest>
