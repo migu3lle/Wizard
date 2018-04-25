@@ -1,8 +1,10 @@
 package aau.losamigos.wizard.base;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import aau.losamigos.wizard.elements.CardStack;
 import aau.losamigos.wizard.elements.Player;
 
 /**
@@ -11,21 +13,21 @@ import aau.losamigos.wizard.elements.Player;
 
 public class Round {
 
-    private ArrayList<Player> players; //TODO eventuell in die Gameconfig verschieben
+    private List<Player> players; //TODO eventuell in die Gameconfig verschieben
     private CardStack cardStack;
-    private ArrayList<Hand> hands;
-    private int rounds;
-    private int trump;
+    private List<Hand> hands;
+    private int numberOfCards;
+    private AbstractCard trump;
     private int playerNumber;
 
     private ArrayList<AbstractCard> table;
 
-    public Round(ArrayList<Player> players, int rounds) {
+    public Round(ArrayList<Player> players, int numberOfCards) {
 
         this.players = players;
         this.cardStack = new CardStack();
         this.hands = new ArrayList<Hand>();
-        this.rounds = rounds;
+        this.numberOfCards = numberOfCards;
         this.trump = cardStack.getTrump();
         this.playerNumber = players.size();
 
@@ -34,20 +36,15 @@ public class Round {
 
     private void generateHands(){
 
-        ArrayList<AbstractCard> cards = cardStack.getCards(rounds*playerNumber);
-
-        int index = 0;
         for (Player player:players) {
-            ArrayList<AbstractCard> newHandcards = (ArrayList<AbstractCard>) cards.subList(index,index+rounds);
-            index = index + rounds;
-            hands.add(new Hand(newHandcards));
+            hands.add(new Hand(cardStack.getCards(numberOfCards)));
         }
 
     }
     private void cleanHands(){
         hands.clear();
     }
-    public AbstractList<AbstractCard> getPlayerHand(Player player){
+    public List<AbstractCard> getPlayerHand(Player player){
         for (Hand hand: hands) {
             if(hand.getHandOwner().equals(player))
                 return hand.getAllowedCards(table); //TODO oder nur die IDs geben
