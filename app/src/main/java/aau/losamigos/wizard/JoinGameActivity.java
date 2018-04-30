@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -18,11 +19,11 @@ import com.peak.salut.SalutServiceData;
 
 import java.util.ArrayList;
 
-public class LaunchGameActivity extends AppCompatActivity implements SalutDataCallback, View.OnClickListener{
+public class JoinGameActivity extends AppCompatActivity implements SalutDataCallback, View.OnClickListener, ListView.OnItemClickListener {
 
     ListView lvHosts;
     ArrayAdapter adapter;
-    ArrayList<String> hostList;
+    ArrayList<SalutDevice> hostList;
     Button btnDiscover;
 
     public SalutDataReceiver dataReceiver;
@@ -37,9 +38,10 @@ public class LaunchGameActivity extends AppCompatActivity implements SalutDataCa
         btnDiscover = findViewById(R.id.btn_Discover);
         btnDiscover.setOnClickListener(this);
         lvHosts = findViewById(R.id.lv_Hosts);
+        lvHosts.setOnItemClickListener(this);
 
         hostList = new ArrayList<>();
-        adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1, hostList);
+        adapter = new ArrayAdapter<SalutDevice>(getApplicationContext(), android.R.layout.simple_list_item_1, hostList);
         lvHosts.setAdapter(adapter);
 
         /*Create a data receiver object that will bind the callback
@@ -66,16 +68,14 @@ public class LaunchGameActivity extends AppCompatActivity implements SalutDataCa
     @Override
     public void onClick(View v) {
         Log.d("Tag", "button clicked...");
-        if(v.getId() == R.id.btn_Discover){
+        if (v.getId() == R.id.btn_Discover) {
             discoverServices();
         }
     }
 
-    private void discoverServices()
-    {
+    private void discoverServices() {
         Log.d("Tag", "want start discovering now...");
-        if(!network.isRunningAsHost && !network.isDiscovering)
-        {
+        if (!network.isRunningAsHost && !network.isDiscovering) {
             Log.d("Tag", "start discovering...");
             network.discoverNetworkServices(new SalutCallback() {
                 @Override
@@ -83,19 +83,43 @@ public class LaunchGameActivity extends AppCompatActivity implements SalutDataCa
                     Toast.makeText(getApplicationContext(), "Device: " + network.foundDevices.get(0).instanceName + " found.", Toast.LENGTH_SHORT).show();
 
                     for (SalutDevice device : network.foundDevices) {
-                        hostList.add(device.instanceName);
+                        hostList.add(device);
                     }
                     adapter.notifyDataSetChanged();
                 }
             }, true);
             btnDiscover.setText("Stop Discovery");
-        }
-        else
-        {
+        } else {
             Log.d("Tag", "else...");
             network.stopServiceDiscovery(true);
             btnDiscover.setText("DISCOVER");
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+        final SalutDevice device = (SalutDevice) parent.getItemAtPosition(position);
+        view.animate().setDuration(2000).alpha(100).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        registerWithHost(device);
+                        System.out.println("Now i want to connect to device " + device.toString());
+                    }
+                });
+    }
+
+    public void registerWithHost(SalutDevice host){
+        network.registerWithHost(host, new SalutCallback() {
+            @Override
+            public void call() {
+                System.out.println("We're now registered.");
+            }
+        }, new SalutCallback() {
+            @Override
+            public void call() {
+                System.out.println("We failed to register.");
+            }
+        });
     }
 
     @Override

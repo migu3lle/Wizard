@@ -19,12 +19,14 @@ import com.peak.salut.SalutServiceData;
 
 import java.util.ArrayList;
 
-import aau.losamigos.wizard.elements.Player;
+import aau.losamigos.wizard.base.GameConfig;
 
 public class WaitForPlayersActivity extends AppCompatActivity implements SalutDataCallback, View.OnClickListener{
 
+    ListView lvClients;
+    ArrayAdapter adapter;
+    ArrayList<SalutDevice> clientList;
 
-    ListView listViewPlayers;
     Button btnService;
     Button btnBack;
     Button btnStartGame;
@@ -32,9 +34,6 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
     public SalutDataReceiver dataReceiver;
     public SalutServiceData serviceData;
     Salut network;
-
-    ArrayAdapter<Player> arrayAdapter;
-    ArrayList<Player> playerList;
 
     private boolean gameStarted;
 
@@ -44,8 +43,13 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait_for_players);
 
-        //Initialize buttons
-        listViewPlayers = findViewById(R.id.lv_Players);
+        //For client list view....
+        lvClients = findViewById(R.id.lv_Players);
+        clientList = new ArrayList<>();
+        adapter = new ArrayAdapter<SalutDevice>(getApplicationContext(), android.R.layout.simple_list_item_1, clientList);
+        lvClients.setAdapter(adapter);
+
+        //Some buttons...
         btnService = findViewById(R.id.btn_Service);
         btnService.setOnClickListener(this);
         btnBack = findViewById(R.id.btn_Back);
@@ -53,16 +57,14 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
         btnStartGame = findViewById(R.id.btn_StartGame);
         btnStartGame.setOnClickListener(this);
 
-        //For List view....
-        playerList = new ArrayList<>();
-        createAdapter();
-
         /*Create a data receiver object that will bind the callback
         with some instantiated object from our app. */
         dataReceiver = new SalutDataReceiver(this, this);
 
-        /*Populate the details for our awesome service. */
-        serviceData = new SalutServiceData("testAwesomeService", 60606, "HOST");
+        /*Populate the details for our service. */
+        System.out.println("Hello: " + GameConfig.getInstance().getName());
+        Log.d("WizardApp", "Game Name: " + GameConfig.getInstance().getName());
+        serviceData = new SalutServiceData("testAwesomeService", 60606, GameConfig.getInstance().getName());
 
         /*Create an instance of the Salut class, with all of the necessary data from before.
         * We'll also provide a callback just in case a device doesn't support WiFi Direct, which
@@ -78,7 +80,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
     }
 
     /*
-        Handle Button events on this Activity
+    Handle Button events on this Activity
      */
     @Override
     public void onClick(View v) {
@@ -91,12 +93,11 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
         }
         else if(v.getId() == R.id.btn_StartGame){
             gameStarted = true;
-            //TODO: GameConfig.getInstance().setPlayers(playerList);
+            GameConfig.getInstance().setPlayers(clientList);
                 /*
                 TODO start new Game, to be clarified with Andi
                  */
         }
-
     }
 
     private void setupNetwork()
@@ -104,11 +105,13 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
         Log.d("WizardApp", "Starte Netzwerk Host Service....");
         if(!network.isRunningAsHost)
         {
-            Log.d("WizardApp", "Network services started");
+            System.out.println("Network services started");
             network.startNetworkService(new SalutDeviceCallback() {
                 @Override
                 public void call(SalutDevice salutDevice) {
                     Toast.makeText(getApplicationContext(), "Device: " + salutDevice.instanceName + " connected.", Toast.LENGTH_SHORT).show();
+                    //System.out.println("add device: " + salutDevice.toString());//clientList.add(salutDevice);
+                    //adapter.notifyDataSetChanged();
                 }
             });
             btnService.setText("Stop Service");
@@ -120,44 +123,6 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
             btnService.setText("Start Service");
         }
     }
-
-
-    /**
-     * Adds new player to ListView e.g. if player joined
-     * Returns true if player was added to Queue; else: false
-     */
-
-    public boolean addPlayerToQueue(Player newPlayer) {
-        if (gameStarted)
-            return false;
-        else {
-            playerList.add(newPlayer);
-            return true;
-        }
-    }
-
-
-    /**
-     * Removes player from ListView e.g. if Player disconnected
-     * Returns true if player was removed from Queue; else: false
-     */
-    public boolean removePlayerFromQueue(Player playerToRemove) {
-        if (gameStarted)
-            return false;
-        else {
-            playerList.remove(playerToRemove);
-            return true;
-        }
-    }
-
-    /**
-     * Adapter manages the data model (Player) and adapts it to the individual entries in ListView
-     */
-    private void createAdapter() {
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, playerList);
-        listViewPlayers.setAdapter(arrayAdapter);
-    }
-
 
     @Override
     public void onDataReceived(Object o) {

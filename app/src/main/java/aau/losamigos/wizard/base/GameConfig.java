@@ -2,7 +2,10 @@ package aau.losamigos.wizard.base;
 
 import android.util.Log;
 
+import com.peak.salut.SalutDevice;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import aau.losamigos.wizard.elements.Player;
 
@@ -13,12 +16,13 @@ import aau.losamigos.wizard.elements.Player;
 public class GameConfig {
 
     private static GameConfig singleton = null;
-
+    private boolean isHost;
     private String name;
     private int minPlayer, maxPlayer;
     private boolean keyEnabled;
     private boolean cheatEnabled;
     private Player[] players;
+    HashMap<Player, SalutDevice> playerDeviceMap = new HashMap<>();
 
 
     private GameConfig(){
@@ -49,7 +53,7 @@ public class GameConfig {
      * @param playerList: Array List of Players from Queue
      * @return true (if Players were added); false (if Players were not added)
      */
-    public boolean setPlayers(ArrayList<Player> playerList){
+    public boolean setPlayers(ArrayList<SalutDevice> playerList){
         if(players != null){
             throw new IllegalStateException("GameConfig: Players may only be instantiated once.");
         }
@@ -58,8 +62,10 @@ public class GameConfig {
             return false;
         }
         players = new Player[playerList.size()];
-        for (int i = 0; i < playerList.size(); i++) {
-            players[i] = playerList.get(i);
+        int i = 0;
+        for (SalutDevice device : playerList) {
+            players[i++] = new Player(device.deviceName);
+            playerDeviceMap.put(players[i], device);
         }
         return true;
     }

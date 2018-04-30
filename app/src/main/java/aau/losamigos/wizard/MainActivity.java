@@ -3,17 +3,12 @@ package aau.losamigos.wizard;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.peak.salut.Callbacks.SalutCallback;
-import com.peak.salut.Callbacks.SalutDataCallback;
 import com.peak.salut.Salut;
-import com.peak.salut.SalutDataReceiver;
-import com.peak.salut.SalutServiceData;
 
 import java.io.Serializable;
 
@@ -79,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void launchGame(View view) {
-        Intent intent = new Intent(this, LaunchGameActivity.class);
+        Intent intent = new Intent(this, JoinGameActivity.class);
         //intent.putExtra("SalutServices", salutServices);
         startActivity(intent);
     }
