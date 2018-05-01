@@ -1,5 +1,6 @@
 package aau.losamigos.wizard;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,7 @@ import com.peak.salut.SalutServiceData;
 import java.util.ArrayList;
 
 import aau.losamigos.wizard.base.GameConfig;
+import aau.losamigos.wizard.base.Message;
 
 public class WaitForPlayersActivity extends AppCompatActivity implements SalutDataCallback, View.OnClickListener{
 
@@ -77,6 +79,8 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
                 Log.e("WizardApp", "Sorry, but this device does not support WiFi Direct.");
             }
         });
+        //Add this device (=host) to clientList
+        clientList.add(network.thisDevice);
     }
 
     /*
@@ -94,9 +98,20 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
         else if(v.getId() == R.id.btn_StartGame){
             gameStarted = true;
             GameConfig.getInstance().setPlayers(clientList);
-                /*
-                TODO start new Game, to be clarified with Andi
-                 */
+            GameConfig.getInstance().setIsHost(true);
+
+            GameConfig.getInstance().setSalut(network);
+
+            Message myMessage = new Message();
+            myMessage.description = "Los gehts";
+
+            network.sendToAllDevices(myMessage, new SalutCallback() {
+                @Override
+                public void call() {
+                    Log.e("WizardApp", "Oh no! The data failed to send.");
+                }
+            });
+            nextActivity();
         }
     }
 
@@ -109,9 +124,9 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
             network.startNetworkService(new SalutDeviceCallback() {
                 @Override
                 public void call(SalutDevice salutDevice) {
-                    Toast.makeText(getApplicationContext(), "Device: " + salutDevice.instanceName + " connected.", Toast.LENGTH_SHORT).show();
-                    //System.out.println("add device: " + salutDevice.toString());//clientList.add(salutDevice);
-                    //adapter.notifyDataSetChanged();
+                    Toast.makeText(getApplicationContext(), "Device: " + salutDevice.readableName + " connected.", Toast.LENGTH_SHORT).show();
+                    clientList.add(salutDevice);
+                    adapter.notifyDataSetChanged();
                 }
             });
             btnService.setText("Stop Service");
@@ -122,6 +137,11 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
             network.stopNetworkService(false);
             btnService.setText("Start Service");
         }
+    }
+
+    private void nextActivity() {
+        Intent intent = new Intent(this, TestMessageActivity.class);
+        startActivity(intent);
     }
 
     @Override

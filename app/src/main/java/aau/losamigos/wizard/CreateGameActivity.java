@@ -9,12 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.Toast;
-
-import com.peak.salut.Callbacks.SalutCallback;
-import com.peak.salut.Callbacks.SalutDeviceCallback;
-import com.peak.salut.Salut;
-import com.peak.salut.SalutDevice;
 
 import aau.losamigos.wizard.base.GameConfig;
 

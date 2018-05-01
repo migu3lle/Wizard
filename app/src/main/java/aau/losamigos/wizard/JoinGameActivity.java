@@ -1,5 +1,6 @@
 package aau.losamigos.wizard;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,8 @@ import com.peak.salut.SalutServiceData;
 
 import java.util.ArrayList;
 
+import aau.losamigos.wizard.base.GameConfig;
+
 public class JoinGameActivity extends AppCompatActivity implements SalutDataCallback, View.OnClickListener, ListView.OnItemClickListener {
 
     ListView lvHosts;
@@ -35,6 +38,7 @@ public class JoinGameActivity extends AppCompatActivity implements SalutDataCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch_game);
 
+
         btnDiscover = findViewById(R.id.btn_Discover);
         btnDiscover.setOnClickListener(this);
         lvHosts = findViewById(R.id.lv_Hosts);
@@ -49,7 +53,7 @@ public class JoinGameActivity extends AppCompatActivity implements SalutDataCall
         dataReceiver = new SalutDataReceiver(this, this);
 
         /*Populate the details for our awesome service. */
-        serviceData = new SalutServiceData("testAwesomeService", 60606, "HOST");
+        serviceData = new SalutServiceData("testAwesomeService", 60606, "CLIENT");
 
         network = new Salut(dataReceiver, serviceData, new SalutCallback() {
             @Override
@@ -124,7 +128,13 @@ public class JoinGameActivity extends AppCompatActivity implements SalutDataCall
 
     @Override
     public void onDataReceived(Object o) {
+        Toast.makeText(getApplicationContext(), "Message received", Toast.LENGTH_SHORT).show();
+        GameConfig.getInstance().setSalut(network);
+        nextActivity();
+    }
 
+    private void nextActivity() {
+        Intent intent = new Intent(this, TestMessageActivity.class);
+        startActivity(intent);
     }
 }
-
