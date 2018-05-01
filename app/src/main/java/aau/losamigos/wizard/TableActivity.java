@@ -41,4 +41,7 @@ public class TableActivity extends AppCompatActivity {
         card.setX(1100);
         card.setY(350);
     }
+    public void resetGame(View view) {
+        setContentView(R.layout.activity_table);
+    }
 }
