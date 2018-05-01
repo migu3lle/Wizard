@@ -19,6 +19,15 @@
     <string name="cheat_enabled">Cheatfunktion</string>
 
     <!-- Menu Number Strings -->
+    <!-- Table Strings-->
+    <string name="Player1">Ich</string>
+    <string name="Player2">Spieler 2</string>
+    <string name="Player3">Spieler 3</string>
+    <string name="Player4">Spieler 4</string>
+    <string name="Player5">Spieler 5</string>
+    <string name="Player6">Spieler 6</string>
+    <string name="Trumpf">Trumpf</string>
+
 
 
     <!-- Menu Button Strings -->
