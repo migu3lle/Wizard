@@ -40,13 +40,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //temporärer Änderung um Spielfeld zu testen
-        //danach wieder in Launchgame Funktion ändern
         final Button launchGame = findViewById(R.id.launchGame);
         launchGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showBrett(launchGame);
+                launchGame(launchGame);
             }
         });
 
@@ -110,11 +108,6 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(mReceiver);
 
 
-    }
-    //temporärer Testbutton um Spielfeld zu testen
-    public void showBrett(View view) {
-        Intent intent = new Intent(this, TableActivity.class);
-        startActivity(intent);
     }
 
     public void createGame(View view) {
