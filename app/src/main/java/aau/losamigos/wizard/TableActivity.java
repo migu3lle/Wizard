@@ -6,8 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-public class TableActivity extends AppCompatActivity {
+import java.util.ArrayList;
 
+public class TableActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,10 @@ public class TableActivity extends AppCompatActivity {
    public void playCard1(View card){
         card.setX(850);
         card.setY(500);
+        ImageView Card = findViewById(R.id.PCard1);
+        if(card!=Card){
+            Card.setVisibility(View.INVISIBLE);
+        }
    }
    public void playCard2(View card){
        card.setX(700);

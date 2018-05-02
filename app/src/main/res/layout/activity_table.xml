@@ -20,13 +20,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/wizard_spiel1" />
-
+<!--Temporäre OnClickFunktion für neue Karten-->
     <ImageView
         android:id="@+id/Trump"
         android:layout_width="59dp"
         android:layout_height="100dp"
         android:layout_marginEnd="36dp"
         android:layout_marginTop="16dp"
+        android:onClick="resetGame"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -220,21 +221,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/PCard3"
         app:srcCompat="@drawable/wizard_spiel1" />
-
-    <Button
-        android:id="@+id/newRdn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="248dp"
-        android:text="Neue Runde"
-        android:onClick="resetGame"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.085" />
 
 </android.support.constraint.ConstraintLayout>
