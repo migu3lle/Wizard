@@ -3,8 +3,13 @@ package aau.losamigos.wizard.base;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import aau.losamigos.wizard.elements.Player;
+import aau.losamigos.wizard.rules.JesterRule;
+import aau.losamigos.wizard.rules.PointsRule;
+import aau.losamigos.wizard.rules.TrumpCardRule;
+import aau.losamigos.wizard.rules.WizardRule;
 
 /**
  * Created by gunmic on 13.04.18.
@@ -19,6 +24,7 @@ public class GameConfig {
     private boolean keyEnabled;
     private boolean cheatEnabled;
     private Player[] players;
+
 
 
     private GameConfig(){
@@ -43,6 +49,13 @@ public class GameConfig {
         this.maxPlayer = maxPlayer;
         this.keyEnabled = keyEnabled;
         this.cheatEnabled = cheatEnabled;
+
+        List<AbstractRule> rules = new ArrayList<AbstractRule>();
+        rules.add(new JesterRule());
+        rules.add(new PointsRule());
+        rules.add(new TrumpCardRule());
+        rules.add(new WizardRule());
+        RuleEngine.getInstance().initializeRules(rules);
     }
 
     /**

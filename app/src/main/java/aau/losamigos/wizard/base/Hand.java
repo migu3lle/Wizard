@@ -1,5 +1,6 @@
 package aau.losamigos.wizard.base;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import aau.losamigos.wizard.elements.Player;
@@ -37,6 +38,10 @@ public class Hand {
     public List<AbstractCard> getHandCards() {
 
         return handCards;
+    }
+    public void removeCard(AbstractCard card) {
+
+        handCards.remove(card);
     }
 
     public List<AbstractCard> getAllowedCards(List<AbstractCard> table) {
@@ -108,4 +113,5 @@ ception arts            */
         }
         return handCards;
     }
+
 }
