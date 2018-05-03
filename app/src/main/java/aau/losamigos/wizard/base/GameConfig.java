@@ -1,6 +1,8 @@
 package aau.losamigos.wizard.base;
 
+import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.Gravity;
 
 import com.peak.salut.Salut;
 import com.peak.salut.SalutDevice;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import aau.losamigos.wizard.elements.Player;
+import aau.losamigos.wizard.network.DataCallback;
 
 /**
  * Created by gunmic on 13.04.18.
@@ -26,6 +29,7 @@ public class GameConfig {
     private Player[] players;
     HashMap<Player, SalutDevice> playerDeviceMap = new HashMap<>();
     private static Salut salut;
+    private static DataCallback callback;
 
     private GameConfig(){
         //Singleton pattern, to defeat instantiation
@@ -114,15 +118,22 @@ public class GameConfig {
     public boolean isHost() {
         return host;
     }
+
+
     public void setIsHost(boolean host) {
         this.host = host;
     }
 
-    public static Salut getSalut() {
+    public Salut getSalut() {
         return salut;
     }
 
-    public static void setSalut(Salut salut) {
+    public DataCallback getCallBack() {
+        return callback;
+    }
+
+    public void setSalut(Salut salut, DataCallback callback) {
+        GameConfig.callback = callback;
         GameConfig.salut = salut;
     }
 }

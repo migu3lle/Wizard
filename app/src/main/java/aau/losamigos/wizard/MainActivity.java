@@ -11,6 +11,9 @@ import android.widget.Toast;
 import com.peak.salut.Salut;
 
 import java.io.Serializable;
+import java.security.spec.ECField;
+
+import aau.losamigos.wizard.base.GameConfig;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, Serializable {
 
@@ -95,5 +98,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(this, ScoreTableActivity.class);
         intent.putExtra("PLAYER_COUNT", playerCount);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Salut network = GameConfig.getInstance().getSalut();
+        if(network != null) {
+            try {
+                network.stopNetworkService(true);
+            } catch (Exception e) {
+
+            }
+
+            try {
+                network.unregisterClient(false);
+            } catch (Exception e) {
+
+            }
+        }
     }
 }

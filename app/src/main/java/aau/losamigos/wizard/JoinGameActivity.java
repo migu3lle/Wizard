@@ -20,10 +20,13 @@ import com.peak.salut.SalutServiceData;
 
 import java.util.ArrayList;
 
-import aau.losamigos.wizard.base.DataCallback;
+import aau.losamigos.wizard.base.Message;
+import aau.losamigos.wizard.network.DataCallback;
 import aau.losamigos.wizard.base.GameConfig;
+import aau.losamigos.wizard.network.ICallbackAction;
+import aau.losamigos.wizard.network.NetworkHelper;
 
-public class JoinGameActivity extends AppCompatActivity implements SalutDataCallback, View.OnClickListener, ListView.OnItemClickListener {
+public class JoinGameActivity extends AppCompatActivity implements View.OnClickListener, ListView.OnItemClickListener {
 
     ListView lvHosts;
     ArrayAdapter adapter;
@@ -52,12 +55,21 @@ public class JoinGameActivity extends AppCompatActivity implements SalutDataCall
         //Handles received messages from host device
         DataCallback dataCallback = new DataCallback();
 
+        dataCallback.addFireOnceCallBackAction(new ICallbackAction() {
+            @Override
+            public void execute(Message message) {
+                Toast.makeText(getApplicationContext(), "Message received", Toast.LENGTH_SHORT).show();
+
+                nextActivity();
+            }
+        });
+
         /*Create a data receiver object that will bind the callback
         with some instantiated object from our app. */
         dataReceiver = new SalutDataReceiver(this, dataCallback);
 
         /*Populate the details for our awesome service. */
-        serviceData = new SalutServiceData("testAwesomeService", 60606, "CLIENT");
+        serviceData = new SalutServiceData("testAwesomeService", NetworkHelper.findFreePort(), "CLIENT");
 
         network = new Salut(dataReceiver, serviceData, new SalutCallback() {
             @Override
@@ -68,6 +80,7 @@ public class JoinGameActivity extends AppCompatActivity implements SalutDataCall
             }
         });
 
+        GameConfig.getInstance().setSalut(network, dataCallback);
     }
 
     /*
@@ -128,13 +141,6 @@ public class JoinGameActivity extends AppCompatActivity implements SalutDataCall
                 System.out.println("We failed to register.");
             }
         });
-    }
-
-    @Override
-    public void onDataReceived(Object o) {
-        Toast.makeText(getApplicationContext(), "Message received", Toast.LENGTH_SHORT).show();
-        GameConfig.getInstance().setSalut(network);
-        nextActivity();
     }
 
     private void nextActivity() {

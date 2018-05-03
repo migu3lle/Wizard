@@ -11,7 +11,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.peak.salut.Callbacks.SalutCallback;
-import com.peak.salut.Callbacks.SalutDataCallback;
 import com.peak.salut.Callbacks.SalutDeviceCallback;
 import com.peak.salut.Salut;
 import com.peak.salut.SalutDataReceiver;
@@ -20,11 +19,12 @@ import com.peak.salut.SalutServiceData;
 
 import java.util.ArrayList;
 
-import aau.losamigos.wizard.base.DataCallback;
+import aau.losamigos.wizard.network.DataCallback;
 import aau.losamigos.wizard.base.GameConfig;
 import aau.losamigos.wizard.base.Message;
+import aau.losamigos.wizard.network.NetworkHelper;
 
-public class WaitForPlayersActivity extends AppCompatActivity implements SalutDataCallback, View.OnClickListener{
+public class WaitForPlayersActivity extends AppCompatActivity implements View.OnClickListener{
 
     ListView lvClients;
     ArrayAdapter adapter;
@@ -70,7 +70,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
         /*Populate the details for our service. */
         System.out.println("Hello: " + GameConfig.getInstance().getName());
         Log.d("WizardApp", "Game Name: " + GameConfig.getInstance().getName());
-        serviceData = new SalutServiceData("testAwesomeService", 60606, GameConfig.getInstance().getName());
+        serviceData = new SalutServiceData("testAwesomeService", NetworkHelper.findFreePort(), GameConfig.getInstance().getName());
 
         /*Create an instance of the Salut class, with all of the necessary data from before.
         * We'll also provide a callback just in case a device doesn't support WiFi Direct, which
@@ -83,6 +83,8 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
                 Log.e("WizardApp", "Sorry, but this device does not support WiFi Direct.");
             }
         });
+
+        GameConfig.getInstance().setSalut(network, dataCallback);
         //Add this device (=host) to clientList
         clientList.add(network.thisDevice);
     }
@@ -104,7 +106,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
             GameConfig.getInstance().setPlayers(clientList);
             GameConfig.getInstance().setIsHost(true);
 
-            GameConfig.getInstance().setSalut(network);
+
 
             Message myMessage = new Message();
             myMessage.description = "Los gehts";
@@ -146,10 +148,5 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
     private void nextActivity() {
         Intent intent = new Intent(this, TestMessageActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    public void onDataReceived(Object o) {
-
     }
 }
