@@ -20,6 +20,7 @@ import com.peak.salut.SalutServiceData;
 
 import java.util.ArrayList;
 
+import aau.losamigos.wizard.base.DataCallback;
 import aau.losamigos.wizard.base.GameConfig;
 import aau.losamigos.wizard.base.Message;
 
@@ -59,9 +60,12 @@ public class WaitForPlayersActivity extends AppCompatActivity implements SalutDa
         btnStartGame = findViewById(R.id.btn_StartGame);
         btnStartGame.setOnClickListener(this);
 
+        //Handles received messages from other devices
+        DataCallback dataCallback = new DataCallback();
+
         /*Create a data receiver object that will bind the callback
         with some instantiated object from our app. */
-        dataReceiver = new SalutDataReceiver(this, this);
+        dataReceiver = new SalutDataReceiver(this, dataCallback);
 
         /*Populate the details for our service. */
         System.out.println("Hello: " + GameConfig.getInstance().getName());
