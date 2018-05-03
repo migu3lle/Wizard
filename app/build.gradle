@@ -31,5 +31,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile 'com.bluelinelabs:logansquare-compiler:1.3.6'
     annotationProcessor 'com.bluelinelabs:logansquare-compiler:1.3.6'
-    compile 'com.github.markrjr:Salut:v0.4.9'
+    implementation 'com.github.markrjr:Salut:v0.4.9'
 }
