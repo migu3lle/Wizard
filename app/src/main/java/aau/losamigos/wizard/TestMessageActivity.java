@@ -8,9 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.peak.salut.Callbacks.SalutCallback;
 import com.peak.salut.Callbacks.SalutDataCallback;
 import com.peak.salut.Salut;
+
+import java.io.IOException;
 
 import aau.losamigos.wizard.base.GameConfig;
 import aau.losamigos.wizard.base.Message;
@@ -58,6 +61,6 @@ public class TestMessageActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onDataReceived(Object o) {
-        Toast.makeText(getApplicationContext(), "New Message received", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "TestMessageActivity: New Message received.", Toast.LENGTH_SHORT).show();
     }
 }

@@ -20,6 +20,7 @@ import com.peak.salut.SalutServiceData;
 
 import java.util.ArrayList;
 
+import aau.losamigos.wizard.base.DataCallback;
 import aau.losamigos.wizard.base.GameConfig;
 
 public class JoinGameActivity extends AppCompatActivity implements SalutDataCallback, View.OnClickListener, ListView.OnItemClickListener {
@@ -48,9 +49,12 @@ public class JoinGameActivity extends AppCompatActivity implements SalutDataCall
         adapter = new ArrayAdapter<SalutDevice>(getApplicationContext(), android.R.layout.simple_list_item_1, hostList);
         lvHosts.setAdapter(adapter);
 
+        //Handles received messages from host device
+        DataCallback dataCallback = new DataCallback();
+
         /*Create a data receiver object that will bind the callback
         with some instantiated object from our app. */
-        dataReceiver = new SalutDataReceiver(this, this);
+        dataReceiver = new SalutDataReceiver(this, dataCallback);
 
         /*Populate the details for our awesome service. */
         serviceData = new SalutServiceData("testAwesomeService", 60606, "CLIENT");
