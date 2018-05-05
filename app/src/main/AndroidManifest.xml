@@ -35,13 +35,14 @@
             android:name=".WaitForPlayersActivity"
             android:label="@string/title_activity_wait_for_players"
             android:theme="@style/AppTheme.ActionBar" />
-        <activity android:name=".LaunchGameActivity" />
+        <activity android:name=".JoinGameActivity" />
         <activity
             android:name=".RulesActivity"
             android:label="@string/title_activity_rules"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".ScoreTableActivity" />
+        <activity android:name=".TestMessageActivity"></activity>
         <activity android:name=".TableActivity" android:screenOrientation="landscape"></activity>
     </application>
 
