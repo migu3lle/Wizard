@@ -15,7 +15,7 @@ import java.security.spec.ECField;
 
 import aau.losamigos.wizard.base.GameConfig;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, Serializable {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button btnCreateGame;
     Button btnLaunchGame;
@@ -46,9 +46,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_CreateGame) {
-            createGame(btnCreateGame);
+            if(wifiEnabled())
+                createGame(btnCreateGame);
+            return;
         } else if (v.getId() == R.id.btn_LaunchGame) {
-            launchGame(btnLaunchGame);
+            if(wifiEnabled())
+                launchGame(btnLaunchGame);
+            return;
         } else if (v.getId() == R.id.btn_Rules) {
             showRules(btnRules);
         } else if (v.getId() == R.id.btn_Settings) {
@@ -98,25 +102,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(this, ScoreTableActivity.class);
         intent.putExtra("PLAYER_COUNT", playerCount);
         startActivity(intent);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        Salut network = GameConfig.getInstance().getSalut();
-        if(network != null) {
-            try {
-                network.stopNetworkService(true);
-            } catch (Exception e) {
-
-            }
-
-            try {
-                network.unregisterClient(false);
-            } catch (Exception e) {
-
-            }
-        }
     }
 }

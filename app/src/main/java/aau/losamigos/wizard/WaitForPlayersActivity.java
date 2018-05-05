@@ -84,6 +84,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
             }
         });
 
+        //Store Salut object in GameConfig
         GameConfig.getInstance().setSalut(network, dataCallback);
         //Add this device (=host) to clientList
         clientList.add(network.thisDevice);
