@@ -43,6 +43,7 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".ScoreTableActivity" />
         <activity android:name=".TestMessageActivity"></activity>
+        <activity android:name=".TableActivity" android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>
