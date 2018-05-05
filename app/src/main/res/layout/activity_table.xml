@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:background="@color/colorGreen"
+    tools:context="aau.losamigos.wizard.TableActivity">
+
+    <ImageView
+        android:id="@+id/PCard1"
+        android:layout_width="69dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="28dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:onClick="playCard1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/wizard_spiel1" />
+<!--Temporäre OnClickFunktion für neue Karten-->
+    <ImageView
+        android:id="@+id/Trump"
+        android:layout_width="59dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginTop="16dp"
+        android:onClick="resetGame"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/wizard_spiel2" />
+
+    <ImageView
+        android:id="@+id/Card2"
+        android:layout_width="40dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="100dp"
+        android:onClick="playCard2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/wizard_spiel1" />
+
+    <ImageView
+        android:id="@+id/Card6"
+        android:layout_width="40dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="150dp"
+        android:onClick="playCard6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/wizard_spiel1" />
+
+    <ImageView
+        android:id="@+id/Card5"
+        android:layout_width="40dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="playCard5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintStart_toEndOf="@+id/Card4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/wizard_spiel1" />
+
+    <ImageView
+        android:id="@+id/Card3"
+        android:layout_width="40dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="playCard3"
+        app:layout_constraintEnd_toStartOf="@+id/Card4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/wizard_spiel1" />
+
+    <ImageView
+        android:id="@+id/Card4"
+        android:layout_width="40dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        android:onClick="playCard4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/wizard_spiel1" />
+
+    <TextView
+        android:id="@+id/Player1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/Player1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/PCard1" />
+
+    <TextView
+        android:id="@+id/Player2"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/Player2"
+        android:textSize="8sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Card2" />
+
+    <TextView
+        android:id="@+id/Player3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/Player3"
+        android:textSize="8sp"
+        app:layout_constraintEnd_toStartOf="@+id/Player4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Card3" />
+
+    <TextView
+        android:id="@+id/Player4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="@string/Player4"
+        android:textSize="8sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Card4" />
+
+    <TextView
+        android:id="@+id/Player5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/Player5"
+        android:textSize="8sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.405"
+        app:layout_constraintStart_toEndOf="@+id/Player4"
+        app:layout_constraintTop_toBottomOf="@+id/Card5" />
+
+    <TextView
+        android:id="@+id/Player6"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/Player6"
+        android:textSize="8sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Card6" />
+
+    <TextView
+        android:id="@+id/trump"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="50dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/Trumpf"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Trump" />
+
+    <ImageView
+        android:id="@+id/PCard2"
+        android:layout_width="69dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="28dp"
+        android:layout_marginEnd="8dp"
+        android:onClick="playCard1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/PCard1"
+        app:srcCompat="@drawable/wizard_spiel1" />
+
+    <ImageView
+        android:id="@+id/PCard3"
+        android:layout_width="69dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="28dp"
+        android:layout_marginStart="8dp"
+        android:onClick="playCard1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/PCard1"
+        app:srcCompat="@drawable/wizard_spiel1" />
+
+    <ImageView
+        android:id="@+id/PCard4"
+        android:layout_width="69dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="28dp"
+        android:layout_marginEnd="8dp"
+        android:onClick="playCard1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/PCard2"
+        app:srcCompat="@drawable/wizard_spiel1" />
+
+    <ImageView
+        android:id="@+id/PCard5"
+        android:layout_width="69dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="28dp"
+        android:layout_marginStart="8dp"
+        android:onClick="playCard1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/PCard3"
+        app:srcCompat="@drawable/wizard_spiel1" />
+
+</android.support.constraint.ConstraintLayout>
