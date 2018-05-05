@@ -5,33 +5,39 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.peak.salut.Callbacks.SalutCallback;
-import com.peak.salut.Callbacks.SalutDataCallback;
 import com.peak.salut.Salut;
 import com.peak.salut.SalutDataReceiver;
 import com.peak.salut.SalutDevice;
 import com.peak.salut.SalutServiceData;
 
+import org.apache.commons.lang3.math.Fraction;
+
 import java.util.ArrayList;
+import java.util.Random;
 
 import aau.losamigos.wizard.base.Message;
 import aau.losamigos.wizard.network.DataCallback;
 import aau.losamigos.wizard.base.GameConfig;
 import aau.losamigos.wizard.network.ICallbackAction;
 import aau.losamigos.wizard.network.NetworkHelper;
+import aau.losamigos.wizard.types.Fractions;
 
 public class JoinGameActivity extends AppCompatActivity implements View.OnClickListener, ListView.OnItemClickListener {
 
     ListView lvHosts;
-    ArrayAdapter adapter;
+    SalutListViewAdapter adapter;
     ArrayList<SalutDevice> hostList;
     Button btnDiscover;
+    EditText etClientName;
 
     public SalutDataReceiver dataReceiver;
     public SalutServiceData serviceData;
@@ -40,16 +46,19 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launch_game);
-
+        setContentView(R.layout.activity_join_game);
 
         btnDiscover = findViewById(R.id.btn_Discover);
         btnDiscover.setOnClickListener(this);
         lvHosts = findViewById(R.id.lv_Hosts);
         lvHosts.setOnItemClickListener(this);
+        etClientName = findViewById(R.id.et_ClientName);
+        etClientName.setText(randomFraction());
+        //Remove focus from EditText
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         hostList = new ArrayList<>();
-        adapter = new ArrayAdapter<SalutDevice>(getApplicationContext(), android.R.layout.simple_list_item_1, hostList);
+        adapter = new SalutListViewAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, hostList);
         lvHosts.setAdapter(adapter);
 
         //Handles received messages from host device
@@ -69,7 +78,7 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
         dataReceiver = new SalutDataReceiver(this, dataCallback);
 
         /*Populate the details for our awesome service. */
-        serviceData = new SalutServiceData("testAwesomeService", NetworkHelper.findFreePort(), "CLIENT");
+        serviceData = new SalutServiceData("testAwesomeService", NetworkHelper.findFreePort(), etClientName.getText().toString());
 
         network = new Salut(dataReceiver, serviceData, new SalutCallback() {
             @Override
@@ -79,6 +88,7 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
                 Log.e("WizardApp", "Sorry, but this device does not support WiFi Direct.");
             }
         });
+
 
         GameConfig.getInstance().setSalut(network, dataCallback);
     }
@@ -146,5 +156,33 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
     private void nextActivity() {
         Intent intent = new Intent(this, TestMessageActivity.class);
         startActivity(intent);
+    }
+
+    private String randomFraction() {
+        int pickFraction = new Random().nextInt(Fractions.values().length);
+        Random randNumber = new Random();
+        return Fractions.values()[pickFraction].toString()+String.valueOf(randNumber.nextInt(99-10)+10);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(network != null) {
+            if( network.isRunningAsHost) {
+                try {
+                    network.stopNetworkService(true);
+
+                } catch (Exception e) {
+
+                }
+            } else {
+                try {
+                    network.unregisterClient(true);
+                } catch (Exception e) {
+
+                }
+            }
+        }
     }
 }

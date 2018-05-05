@@ -57,10 +57,12 @@
 
     <Button
         android:id="@+id/btn_Service"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="136dp"
+        android:layout_height="59dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="4dp"
+        android:background="@android:drawable/alert_light_frame"
+        android:backgroundTint="@color/colorPrimaryLight"
         android:text="Start Service"
         app:layout_constraintEnd_toEndOf="@+id/toolbar"
         app:layout_constraintTop_toTopOf="@+id/toolbar" />

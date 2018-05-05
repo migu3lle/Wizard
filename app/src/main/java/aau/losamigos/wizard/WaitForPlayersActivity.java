@@ -27,7 +27,7 @@ import aau.losamigos.wizard.network.NetworkHelper;
 public class WaitForPlayersActivity extends AppCompatActivity implements View.OnClickListener{
 
     ListView lvClients;
-    ArrayAdapter adapter;
+    SalutListViewAdapter adapter;
     ArrayList<SalutDevice> clientList;
 
     Button btnService;
@@ -49,7 +49,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
         //For client list view....
         lvClients = findViewById(R.id.lv_Players);
         clientList = new ArrayList<>();
-        adapter = new ArrayAdapter<SalutDevice>(getApplicationContext(), android.R.layout.simple_list_item_1, clientList);
+        adapter = new SalutListViewAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, clientList);
         lvClients.setAdapter(adapter);
 
         //Some buttons...
@@ -148,5 +148,27 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
     private void nextActivity() {
         Intent intent = new Intent(this, TestMessageActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(network != null) {
+            if( network.isRunningAsHost) {
+                try {
+                    network.stopNetworkService(true);
+
+                } catch (Exception e) {
+
+                }
+            } else {
+                try {
+                    network.unregisterClient(true);
+                } catch (Exception e) {
+
+                }
+            }
+        }
     }
 }
