@@ -3,12 +3,9 @@ package aau.losamigos.wizard.base;
 
 import android.util.Log;
 
-<<<<<<< HEAD
 import com.peak.salut.Callbacks.SalutCallback;
 import com.peak.salut.Salut;
 
-=======
->>>>>>> 97e36fa161cbb20cf80b54e5a82f91ca9f04fe3e
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -98,10 +95,10 @@ public class Round{
         for (int i = 0; i < numberOfCards; i++) {
 
             for (Player player:order) {
-                AbstractCard card = askForCard(player);
+                //AbstractCard card = askForCard(player);
 
-                showCardonTable(tuple);
-                lookingForHand(player).removeCard(card);
+               // showCardonTable(tuple);
+               // lookingForHand(player).removeCard(card);
             }
             //Gewinner des Spielzuges ermitteln und an alle Senden
             Player winner = getWinner();
@@ -184,8 +181,8 @@ public class Round{
                     Log.e("CLIENT", "No Message received");
                 }
                 else if(message.action == Actions.CARD_IS_PICKED) {
-                    if(message.cards.size()==1){
-                        AbstractCard card = message.cards.get(0);
+                    if(message.cards.length ==1){
+                        AbstractCard card =  cardStack.getCardById(message.cards[0]);
                         Player player = null;
                         MoveTuple tuple = new MoveTuple(player,card,0);
                         table.add(new MoveTuple(player,card,table.size()+1));

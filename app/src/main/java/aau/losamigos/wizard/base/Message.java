@@ -23,14 +23,11 @@ public class Message{
     @JsonField
     public String description;
 
-    @JsonField
-<<<<<<< HEAD
-    public List<AbstractCard> cards;
-    
-=======
     public int[] cards;
 
->>>>>>> 97e36fa161cbb20cf80b54e5a82f91ca9f04fe3e
+    @JsonField
+    public String[] players;
+
     @JsonField
     public int action;
 
