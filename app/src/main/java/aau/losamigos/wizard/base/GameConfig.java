@@ -89,8 +89,9 @@ public class GameConfig {
         for (SalutDevice device : playerList) {
             Player player =new Player(device.deviceName);
             player.setSalutDevice(device);
-            players[i++] = player;
+            players[i] = player;
             playerDeviceMap.put(players[i], device);
+            i++;
         }
         return true;
     }

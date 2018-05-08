@@ -161,4 +161,11 @@ public class CardStack {
         return avaliableCards.size();
     }
 
+    public AbstractCard getCardById(int id) {
+        for(AbstractCard card: cards) {
+            if(card.getId() == id)
+                return card;
+        }
+        return null;
+    }
 }

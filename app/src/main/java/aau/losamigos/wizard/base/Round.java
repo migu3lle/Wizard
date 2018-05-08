@@ -1,6 +1,8 @@
 package aau.losamigos.wizard.base;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -120,7 +122,6 @@ public class Round{
         for (Player player:players) {
             hands.add(new Hand(cardStack.getCards(numberOfCards),player));
         }
-
     }
     private void cleanHands(){
         hands.clear();
@@ -140,6 +141,19 @@ public class Round{
 
         }
         return null;
+    }
+
+    public Player getPlayerByName(String playerName) {
+        Player foundPlayer = null;
+        for(Player player: players) {
+            if(player.getName().equals(playerName)) {
+                foundPlayer = player;
+                break;
+            } else {
+                Log.d("PLAYER SEARCH", "no match: " + playerName + ", " + player.getName());
+            }
+        }
+        return foundPlayer;
     }
 
     public void playCard(Player player, int cardID) throws Exception{

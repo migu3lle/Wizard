@@ -53,7 +53,7 @@ public class DataCallback implements SalutDataCallback {
         {
             //Message test = (Message)message;
             Message newMessage = LoganSquare.parse((String) message, Message.class);
-            Log.d("WizardApp - Message:", newMessage.description);  //See you on the other side!
+            //Log.d("WizardApp - Message:", newMessage.description);  //See you on the other side!
 
 
             for (ICallbackAction callback: callBacks) {
