@@ -144,7 +144,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
                 else if(message.client2HostAction == Client2HostAction.CARD_PLAYED) {
                     int playedCard = message.playedCard;
-                    Log.e("CARD RECEIVED", "Card of Client received: " + playedCard);
+                    String sender = message.sender;
+                    Log.e("CARD RECEIVED", "Card of Client received: " +sender + ", " + playedCard);
                     //TODO: DO SOMETHING WITH THE CARD
                 }
             }
@@ -163,6 +164,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         Message message = new Message();
         message.client2HostAction = Client2HostAction.CARD_PLAYED;
         message.playedCard = clickedCard.getId();
+        message.sender = network.thisDevice.deviceName;
         if(!network.isRunningAsHost) {
             network.sendToHost(message, new SalutCallback() {
                 @Override
