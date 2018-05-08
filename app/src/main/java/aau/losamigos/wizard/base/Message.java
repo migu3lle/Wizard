@@ -1,5 +1,7 @@
 package aau.losamigos.wizard.base;
 
+import android.webkit.JavascriptInterface;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.peak.salut.SalutDevice;
@@ -28,6 +30,9 @@ public class Message{
 
     @JsonField
     public int trumpCard;
+
+    @JsonField
+    public int playedCard;
 
     public String[] players;
 

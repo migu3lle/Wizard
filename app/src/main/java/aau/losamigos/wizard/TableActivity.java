@@ -11,6 +11,7 @@ import com.peak.salut.Salut;
 import com.peak.salut.SalutDevice;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import aau.losamigos.wizard.base.AbstractCard;
@@ -32,6 +33,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     GamePlay game;
     CardStack clientCardStack;
 
+    HashMap<Integer, AbstractCard> view2CardMap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -40,6 +42,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_table);
         getSupportActionBar().hide();
 
+        view2CardMap = new HashMap<>();
         cardViews = new ArrayList<>();
         final ImageView playCard1 = findViewById(R.id.PCard1);
         playCard1.setOnClickListener(this);
@@ -118,12 +121,10 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                        }
                    }
             }
-
         });
     }
 
     private void defineHostCallBack() {
-
         DataCallback callback = GameConfig.getInstance().getCallBack();
         callback.addCallBackAction(new ICallbackAction() {
             @Override
@@ -133,11 +134,18 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 if(message == null && message.client2HostAction == 0) {
                     Log.e("CLIENT", "No Message received");
                 }
+
                 else if(message.client2HostAction == Client2HostAction.TABLE_ACTIVITY_STARTED) {
                     Player p = round.getPlayerByName(message.sender);
                     if(p != null) {
                         sendCardsToDevice(p);
                     }
+                }
+
+                else if(message.client2HostAction == Client2HostAction.CARD_PLAYED) {
+                    int playedCard = message.playedCard;
+                    Log.e("CARD RECEIVED", "Card of Client received: " + playedCard);
+                    //TODO: DO SOMETHING WITH THE CARD
                 }
             }
 
@@ -151,13 +159,23 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        String message = String.valueOf(view.getId());
-        System.out.println("Want to send: " + message);
-        //TODO: Tell host wich card was played
+        AbstractCard clickedCard = view2CardMap.get(view.getId());
+        Message message = new Message();
+        message.client2HostAction = Client2HostAction.CARD_PLAYED;
+        message.playedCard = clickedCard.getId();
+        if(!network.isRunningAsHost) {
+            network.sendToHost(message, new SalutCallback() {
+                @Override
+                public void call() {
+                    Log.e("CARD PLAY", "Client failed to play card");
+                }
+            });
+        } else {
+            Log.e("CARD PLAYED", "Host played card: " + clickedCard.getId());
+            //TODO: do something if the host played the card as well
+        }
+
     }
-
-
-
 
     private void sendCardsToDevice(Player player) {
         Round round = game.getRecentRound();
@@ -208,6 +226,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         for(int i = 0; i < maxIteration; i++) {
             ImageView img =  cardViews.get(i);
             AbstractCard card = cards.get(i);
+            view2CardMap.put(img.getId(), card);
             img.setImageResource(card.getResourceId());
         }
     }
