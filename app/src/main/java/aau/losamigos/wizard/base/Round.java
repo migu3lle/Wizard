@@ -139,7 +139,7 @@ public class Round{
         Message mTableCards = new Message();
         mTableCards.action = Actions.TABLECARDS_ARE_COMING;
 
-        
+
         network.sendToAllDevices(mTableCards,new SalutCallback() {
             @Override
             public void call() {

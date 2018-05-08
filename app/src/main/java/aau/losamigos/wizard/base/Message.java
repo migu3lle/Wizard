@@ -23,7 +23,7 @@ public class Message{
 
     @JsonField
     public List<AbstractCard> cards;
-
+    
     @JsonField
     public Actions action;
 
