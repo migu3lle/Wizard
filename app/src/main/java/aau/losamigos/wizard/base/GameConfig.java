@@ -1,6 +1,12 @@
 package aau.losamigos.wizard.base;
 
+import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.Gravity;
+
+import com.peak.salut.Salut;
+import com.peak.salut.SalutDevice;
+import com.peak.salut.SalutServiceData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +16,9 @@ import aau.losamigos.wizard.rules.JesterRule;
 import aau.losamigos.wizard.rules.PointsRule;
 import aau.losamigos.wizard.rules.TrumpCardRule;
 import aau.losamigos.wizard.rules.WizardRule;
+import java.util.HashMap;
+import aau.losamigos.wizard.network.DataCallback;
+
 
 /**
  * Created by gunmic on 13.04.18.
@@ -18,27 +27,32 @@ import aau.losamigos.wizard.rules.WizardRule;
 public class GameConfig {
 
     private static GameConfig singleton = null;
-
+    private boolean host = false;
     private String name;
     private int minPlayer, maxPlayer;
     private boolean keyEnabled;
     private boolean cheatEnabled;
     private Player[] players;
-
+    HashMap<Player, SalutDevice> playerDeviceMap = new HashMap<>();
+    private static Salut salut;
+    private static DataCallback callback;
 
 
     private GameConfig(){
         //Singleton pattern, to defeat instantiation
     }
+    //Usage for Host
     public static GameConfig getInstance(String name, int minPlayer, int maxPlayer, boolean keyEnabled, boolean cheatEnabled){
         if(singleton == null){
             singleton = new GameConfig(name, minPlayer, maxPlayer, keyEnabled, cheatEnabled);
         }
         return singleton;
     }
+    //Usage for Client
     public static GameConfig getInstance(){
         if(singleton == null){
-            throw new IllegalArgumentException("GameConfig: GameConfig not instantiated.");
+            singleton = new GameConfig();
+            return singleton;
         }
         else
             return singleton;
@@ -62,7 +76,7 @@ public class GameConfig {
      * @param playerList: Array List of Players from Queue
      * @return true (if Players were added); false (if Players were not added)
      */
-    public boolean setPlayers(ArrayList<Player> playerList){
+    public boolean setPlayers(ArrayList<SalutDevice> playerList){
         if(players != null){
             throw new IllegalStateException("GameConfig: Players may only be instantiated once.");
         }
@@ -71,8 +85,10 @@ public class GameConfig {
             return false;
         }
         players = new Player[playerList.size()];
-        for (int i = 0; i < playerList.size(); i++) {
-            players[i] = playerList.get(i);
+        int i = 0;
+        for (SalutDevice device : playerList) {
+            players[i++] = new Player(device.deviceName);
+            playerDeviceMap.put(players[i], device);
         }
         return true;
     }
@@ -111,5 +127,27 @@ public class GameConfig {
 
     public void setMaxPlayer(int maxPlayer) {
         this.maxPlayer = maxPlayer;
+    }
+
+    public boolean isHost() {
+        return host;
+    }
+
+
+    public void setIsHost(boolean host) {
+        this.host = host;
+    }
+
+    public Salut getSalut() {
+        return salut;
+    }
+
+    public DataCallback getCallBack() {
+        return callback;
+    }
+
+    public void setSalut(Salut salut, DataCallback callback) {
+        GameConfig.callback = callback;
+        GameConfig.salut = salut;
     }
 }
