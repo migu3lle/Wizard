@@ -1,6 +1,8 @@
 package aau.losamigos.wizard.base;
 
 
+import com.peak.salut.Salut;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -112,7 +114,13 @@ public class Round{
         //TODO Sendet den Gewinner an alle Clients
     }
     private AbstractCard askForCard(Player player){
-        //TODO Wenn ein Client dran ist frage client nach Karte, sonst soll der Host seine Karte setzen
+        Salut network = GameConfig.getInstance().getSalut();
+
+        AbstractCard card = network.sendToDevice();
+
+        player.
+
+        network.
         return null;
     }
 

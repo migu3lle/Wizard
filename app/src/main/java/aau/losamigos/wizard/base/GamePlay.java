@@ -13,6 +13,7 @@ public class GamePlay {
     private List<Player> players;
     private int playerNumber;
     private int maxRounds;
+    private Round actRound;
 
     public GamePlay(Player[] players) {
         this.players = new ArrayList<Player>();
@@ -26,6 +27,12 @@ public class GamePlay {
     public void startGame(){
         for (int i = 0; i < maxRounds; i++) {
             Round round = new Round(players,i+1);
+            actRound = round;
+            actRound.startRound();
         }
+    }
+
+    public Round getActRound() {
+        return actRound;
     }
 }
