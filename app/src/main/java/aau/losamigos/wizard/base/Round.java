@@ -3,9 +3,12 @@ package aau.losamigos.wizard.base;
 
 import android.util.Log;
 
+<<<<<<< HEAD
 import com.peak.salut.Callbacks.SalutCallback;
 import com.peak.salut.Salut;
 
+=======
+>>>>>>> 97e36fa161cbb20cf80b54e5a82f91ca9f04fe3e
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -203,7 +206,6 @@ public class Round{
         for (Player player:players) {
             hands.add(new Hand(cardStack.getCards(numberOfCards),player));
         }
-
     }
     private void cleanHands(){
         hands.clear();
@@ -223,6 +225,19 @@ public class Round{
 
         }
         return null;
+    }
+
+    public Player getPlayerByName(String playerName) {
+        Player foundPlayer = null;
+        for(Player player: players) {
+            if(player.getName().equals(playerName)) {
+                foundPlayer = player;
+                break;
+            } else {
+                Log.d("PLAYER SEARCH", "no match: " + playerName + ", " + player.getName());
+            }
+        }
+        return foundPlayer;
     }
 
     public void playCard(Player player, int cardID) throws Exception{

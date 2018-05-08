@@ -41,7 +41,7 @@ public class CreateGameActivity extends AppCompatActivity implements View.OnClic
         btnBack.setOnClickListener(this);
 
 
-        textMinPlayer.setText("3"); //For Test reasons; TODO: remove
+        textMinPlayer.setText("2"); //For Test reasons; TODO: remove
         textMaxPlayer.setText("6"); //For Test reasons; TODO: remove
 
     }

@@ -18,10 +18,12 @@ import aau.losamigos.wizard.base.GameConfig;
 import aau.losamigos.wizard.base.GamePlay;
 import aau.losamigos.wizard.base.Message;
 import aau.losamigos.wizard.base.Round;
+import aau.losamigos.wizard.elements.CardStack;
 import aau.losamigos.wizard.elements.Player;
 import aau.losamigos.wizard.network.DataCallback;
 import aau.losamigos.wizard.network.ICallbackAction;
 import aau.losamigos.wizard.rules.Actions;
+import aau.losamigos.wizard.rules.Client2HostAction;
 
 public class TableActivity extends AppCompatActivity implements View.OnClickListener{
     Salut network;
@@ -29,6 +31,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     List<ImageView> cardViews;
 
     GamePlay game;
+
+    CardStack clientCardStack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,33 +68,50 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
         if(network.isRunningAsHost) {
             defineHostCallBack();
+            startGame();
+            setCardsForHost();
         } else {
+            clientCardStack = new CardStack();
             definceClientCallBack();
+            notifyHost();
         }
-
-        startGame();
-        
-        sendCardsToDevices();
     }
     private void startGame(){
         GameConfig gcfg = GameConfig.getInstance();
         game = new GamePlay(gcfg.getPlayers());
-        game.startGame();
+        game.startGame(5);
+    }
+
+    private void notifyHost() {
+        Message message = new Message();
+        message.client2HostAction = Client2HostAction.TABLE_ACTIVITY_STARTED;
+        message.sender = network.thisDevice.deviceName;
+        network.sendToHost(message, new SalutCallback() {
+            @Override
+            public void call() {
+                Log.e("CLIENT", "Notification of Host failed");
+            }
+        });
     }
 
     private void definceClientCallBack() {
-        DataCallback callback = GameConfig.getInstance().getCallBack();
+        final DataCallback callback = GameConfig.getInstance().getCallBack();
         callback.addCallBackAction(new ICallbackAction() {
             @Override
             public void execute(Message message) {
+                Log.d("CLIENT CALLBACK", "Received: " + message);
                    if(message == null) {
                         Log.e("CLIENT", "No Message received");
-                   } else if(message.action == null) {
+                   } else if(message.action == 0) {
                        Log.e("CLIENT", "No Action defined; Client is blind");
                    }
                    else if(message.action == Actions.INITIAL_CARD_GIVING) {
-                       if(message.cards != null && message.cards.size() > 0) {
-                           setCardsToImages(message.cards);
+                       if(message.cards != null && message.cards.length > 0) {
+                           List<AbstractCard> cards = new ArrayList<>();
+                           for(int i = 0; i < message.cards.length; i++) {
+                               cards.add(clientCardStack.getCardById(message.cards[i]));
+                           }
+                           setCardsToImages(cards);
                        }
                    }
             }
@@ -99,14 +120,22 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void defineHostCallBack() {
+
         DataCallback callback = GameConfig.getInstance().getCallBack();
         callback.addCallBackAction(new ICallbackAction() {
             @Override
             public void execute(Message message) {
-                if(message == null) {
+                Log.d("HOST CALLBACK", "Received: " + message);
+                Round round = game.getRecentRound();
+                if(message == null && message.client2HostAction == 0) {
                     Log.e("CLIENT", "No Message received");
                 }
-                //TODO: do some host stuff
+                else if(message.client2HostAction == Client2HostAction.TABLE_ACTIVITY_STARTED) {
+                    Player p = round.getPlayerByName(message.sender);
+                    if(p != null) {
+                        sendCardsToDevice(p);
+                    }
+                }
             }
 
         });
@@ -148,27 +177,38 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void sendCardsToDevices() {
+    private void sendCardsToDevice(Player player) {
+        Round round = game.getRecentRound();
+        List<AbstractCard> cards = round.getPlayerHand(player);
+        SalutDevice playerDevice = player.getSalutDevice();
+        //then we are host because only host calls this method
+        Message message = new Message();
+        message.action = Actions.INITIAL_CARD_GIVING;
+        message.cards = new int[cards.size()];
+        for(int i = 0; i < cards.size(); i++) {
+            message.cards[i] = cards.get(i).getId();
+        }
+        network.sendToDevice(playerDevice, message, new SalutCallback() {
+            @Override
+            public void call() {
+                Log.e("HOST GIVE CARD", "card giving failed for device: ");
+            }
+        });
+    }
+
+    private void setCardsForHost() {
         Round round = game.getRecentRound();
         Player[] players = GameConfig.getInstance().getPlayers();
         for(int i = 0; i < players.length; i++) {
             final Player player = players[i];
-            List<AbstractCard> cards = round.getPlayerHand(player);
             SalutDevice playerDevice = player.getSalutDevice();
             //then we are host because only host calls this method
             if(playerDevice == network.thisDevice) {
+                List<AbstractCard> cards = round.getPlayerHand(player);
                 setCardsToImages(cards);
-            } else {
-                Message message = new Message();
-                message.action = Actions.INITIAL_CARD_GIVING;
-                message.cards = cards;
-                network.sendToDevice(playerDevice, message, new SalutCallback() {
-                    @Override
-                    public void call() {
-                        Log.e("HOST GIVE CARD","card giving failed for device: " + player.getName());
-                    }
-                });
+                break;
             }
+
         }
     }
 
