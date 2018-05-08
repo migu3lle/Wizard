@@ -14,6 +14,8 @@ public class GamePlay {
     private int playerNumber;
     private int maxRounds;
 
+    private Round recentRound;
+
     public GamePlay(Player[] players) {
         this.players = new ArrayList<Player>();
 
@@ -27,5 +29,13 @@ public class GamePlay {
         for (int i = 0; i < maxRounds; i++) {
             Round round = new Round(players,i+1);
         }
+    }
+
+    public void startGame(int cardCount) {
+        recentRound = new Round(players, cardCount);
+    }
+
+    public Round getRecentRound() {
+        return this.recentRound;
     }
 }

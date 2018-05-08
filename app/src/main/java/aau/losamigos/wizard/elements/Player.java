@@ -1,5 +1,7 @@
 package aau.losamigos.wizard.elements;
 
+import com.peak.salut.SalutDevice;
+
 import aau.losamigos.wizard.base.Hand;
 
 /**
@@ -13,6 +15,8 @@ public class Player {
     private int id;
 
     private String name;
+
+    private SalutDevice salutDevice;
 
     private int points;
 
@@ -74,6 +78,15 @@ public class Player {
 
     public int getCalledStiches() {
         return this.calledStiches;
+    }
+
+
+    public SalutDevice getSalutDevice() {
+        return salutDevice;
+    }
+
+    public void setSalutDevice(SalutDevice salutDevice) {
+        this.salutDevice = salutDevice;
     }
 
     @Override
