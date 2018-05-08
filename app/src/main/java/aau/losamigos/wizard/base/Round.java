@@ -293,6 +293,10 @@ public class Round{
         return ruleEngine.processRound(table, trumpFraction);
     }
 
+    public AbstractCard getTrump() {
+        return trump;
+    }
+
     private void calcPlayerPoints(){
         for (Player player: players ) {
             int actualStiches = player.getActualStiches();

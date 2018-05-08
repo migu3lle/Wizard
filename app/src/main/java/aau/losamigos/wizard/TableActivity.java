@@ -27,11 +27,9 @@ import aau.losamigos.wizard.rules.Client2HostAction;
 
 public class TableActivity extends AppCompatActivity implements View.OnClickListener{
     Salut network;
-
     List<ImageView> cardViews;
-
+    ImageView trump;
     GamePlay game;
-
     CardStack clientCardStack;
 
     @Override
@@ -57,6 +55,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
         final ImageView playCard5 = findViewById(R.id.PCard5);
         playCard5.setOnClickListener(this);
+
+        trump = findViewById(R.id.Trump);
 
         cardViews.add(playCard1);
         cardViews.add(playCard2);
@@ -113,6 +113,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                            }
                            setCardsToImages(cards);
                        }
+                       if(message.trumpCard != 0) {
+                           setTrump(clientCardStack.getCardById(message.trumpCard));
+                       }
                    }
             }
 
@@ -150,32 +153,11 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         String message = String.valueOf(view.getId());
         System.out.println("Want to send: " + message);
-        sendMessage(message);
+        //TODO: Tell host wich card was played
     }
 
 
-    private void sendMessage(String message) {
 
-        Message myMessage = new Message();
-        myMessage.description = message;
-
-
-        if(network.isRunningAsHost) {
-            network.sendToAllDevices(myMessage, new SalutCallback() {
-                @Override
-                public void call() {
-                    Log.e("WizardApp", "Oh no! The data failed to send.");
-                }
-            });
-        } else {
-            network.sendToHost(myMessage,  new SalutCallback() {
-                @Override
-                public void call() {
-                    Log.e("WizardApp", "Oh no! The data failed to send.");
-                }
-            });
-        }
-    }
 
     private void sendCardsToDevice(Player player) {
         Round round = game.getRecentRound();
@@ -185,9 +167,11 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         Message message = new Message();
         message.action = Actions.INITIAL_CARD_GIVING;
         message.cards = new int[cards.size()];
+        message.trumpCard = round.getTrump().getId();
         for(int i = 0; i < cards.size(); i++) {
             message.cards[i] = cards.get(i).getId();
         }
+        Log.d("SEND CARDS", message.toString());
         network.sendToDevice(playerDevice, message, new SalutCallback() {
             @Override
             public void call() {
@@ -198,6 +182,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
     private void setCardsForHost() {
         Round round = game.getRecentRound();
+        setTrump(round.getTrump());
         Player[] players = GameConfig.getInstance().getPlayers();
         for(int i = 0; i < players.length; i++) {
             final Player player = players[i];
@@ -225,6 +210,10 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             AbstractCard card = cards.get(i);
             img.setImageResource(card.getResourceId());
         }
+    }
+
+    private void setTrump(AbstractCard card) {
+        trump.setImageResource(card.getResourceId());
     }
 
     @Override

@@ -23,10 +23,14 @@ public class Message{
     @JsonField
     public String description;
 
+    @JsonField
     public int[] cards;
 
     @JsonField
+    public int trumpCard;
+
     public String[] players;
+
 
     @JsonField
     public int action;
@@ -50,6 +54,7 @@ public class Message{
         return "Message{" +
                 "description='" + description + '\'' +
                 ", cards=" + cards +
+                ", trump=" + trumpCard +
                 ", action=" + action +
                 ", client2HostAction=" + client2HostAction +
                 ", sender='" + sender + '\'' +
