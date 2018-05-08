@@ -154,7 +154,7 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void nextActivity() {
-        Intent intent = new Intent(this, TestMessageActivity.class);
+        Intent intent = new Intent(this, TableActivity.class);
         startActivity(intent);
     }
 

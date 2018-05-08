@@ -147,7 +147,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
     }
 
     private void nextActivity() {
-        Intent intent = new Intent(this, TestMessageActivity.class);
+        Intent intent = new Intent(this, TableActivity.class);
         startActivity(intent);
     }
 

@@ -5,8 +5,8 @@ package aau.losamigos.wizard.types;
  */
 
 public enum Fractions {
-    Human,
-    Dwarf,
-    Elb,
-    Giant
+    green,
+    blue,
+    yellow,
+    red
 }
