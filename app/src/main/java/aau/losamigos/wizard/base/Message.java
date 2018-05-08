@@ -27,6 +27,9 @@ public class Message{
     public int[] cards;
 
     @JsonField
+    public int trumpCard;
+
+    @JsonField
     public int action;
 
     @JsonField
@@ -48,6 +51,7 @@ public class Message{
         return "Message{" +
                 "description='" + description + '\'' +
                 ", cards=" + cards +
+                ", trump=" + trumpCard +
                 ", action=" + action +
                 ", client2HostAction=" + client2HostAction +
                 ", sender='" + sender + '\'' +
