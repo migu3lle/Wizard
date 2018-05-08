@@ -15,7 +15,6 @@
         android:layout_marginBottom="28dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:onClick="playCard1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,21 +38,21 @@
         android:layout_height="55dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="100dp"
-        android:onClick="playCard2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/green3" />
+        app:srcCompat="@drawable/backside" />
 
     <ImageView
         android:id="@+id/Card6"
         android:layout_width="40dp"
         android:layout_height="55dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="150dp"
-        android:onClick="playCard6"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="152dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/green3" />
+        app:srcCompat="@drawable/backside" />
 
     <ImageView
         android:id="@+id/Card5"
@@ -62,12 +61,11 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:onClick="playCard5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toEndOf="@+id/Card4"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/green4" />
+        app:srcCompat="@drawable/backside"/>
 
     <ImageView
         android:id="@+id/Card3"
@@ -76,22 +74,20 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:onClick="playCard3"
         app:layout_constraintEnd_toStartOf="@+id/Card4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/green5" />
+        app:srcCompat="@drawable/backside" />
 
     <ImageView
         android:id="@+id/Card4"
         android:layout_width="40dp"
         android:layout_height="55dp"
         android:layout_marginTop="8dp"
-        android:onClick="playCard4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/green6" />
+        app:srcCompat="@drawable/backside" />
 
     <TextView
         android:id="@+id/Player1"
@@ -184,7 +180,6 @@
         android:layout_height="100dp"
         android:layout_marginBottom="28dp"
         android:layout_marginEnd="8dp"
-        android:onClick="playCard1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/PCard1"
         app:srcCompat="@drawable/green6" />
@@ -195,7 +190,6 @@
         android:layout_height="100dp"
         android:layout_marginBottom="28dp"
         android:layout_marginStart="8dp"
-        android:onClick="playCard1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/PCard1"
         app:srcCompat="@drawable/green7" />
@@ -206,10 +200,9 @@
         android:layout_height="100dp"
         android:layout_marginBottom="28dp"
         android:layout_marginEnd="8dp"
-        android:onClick="playCard1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/PCard2"
-        app:srcCompat="@drawable/green7" />
+        app:srcCompat="@drawable/green10" />
 
     <ImageView
         android:id="@+id/PCard5"
@@ -217,9 +210,96 @@
         android:layout_height="100dp"
         android:layout_marginBottom="28dp"
         android:layout_marginStart="8dp"
-        android:onClick="playCard1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/PCard3"
         app:srcCompat="@drawable/green8" />
+
+    <ImageView
+        android:id="@+id/playedCard1"
+        android:layout_width="50dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="132dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.499"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/green7" />
+
+    <ImageView
+        android:id="@+id/playedCard2"
+        android:layout_width="40dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/playedCard1"
+        app:layout_constraintHorizontal_bias="0.983"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498"
+        app:srcCompat="@drawable/backside" />
+
+    <ImageView
+        android:id="@+id/playedCard6"
+        android:layout_width="40dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/playedCard1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498"
+        app:srcCompat="@drawable/backside" />
+
+    <ImageView
+        android:id="@+id/playedCard3"
+        android:layout_width="40dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="228dp"
+        android:layout_marginTop="56dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/playedCard4"
+        app:layout_constraintHorizontal_bias="0.917"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.095"
+        app:srcCompat="@drawable/backside" />
+
+    <ImageView
+        android:id="@+id/playedCard4"
+        android:layout_width="40dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="60dp"
+        app:layout_constraintBottom_toTopOf="@+id/playedCard1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/backside" />
+
+    <ImageView
+        android:id="@+id/playedCard5"
+        android:layout_width="40dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="260dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/playedCard4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.264"
+        app:srcCompat="@drawable/backside" />
 
 </android.support.constraint.ConstraintLayout>
