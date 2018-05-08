@@ -29,6 +29,9 @@ public class Message{
     @JsonField
     public int trumpCard;
 
+    public String[] players;
+
+
     @JsonField
     public int action;
 

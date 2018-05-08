@@ -3,6 +3,9 @@ package aau.losamigos.wizard.base;
 
 import android.util.Log;
 
+import com.peak.salut.Callbacks.SalutCallback;
+import com.peak.salut.Salut;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,8 +15,12 @@ import aau.losamigos.wizard.elements.CardStack;
 import aau.losamigos.wizard.elements.MoveTuple;
 import aau.losamigos.wizard.elements.Player;
 import aau.losamigos.wizard.elements.cards.FractionCard;
+import aau.losamigos.wizard.network.DataCallback;
+import aau.losamigos.wizard.network.ICallbackAction;
+import aau.losamigos.wizard.rules.Actions;
 import aau.losamigos.wizard.rules.JesterRule;
 import aau.losamigos.wizard.types.Fractions;
+import aau.losamigos.wizard.types.RoundStatus;
 
 /**
  * Created by Andreas.Mairitsch on 18.04.2018.
@@ -28,7 +35,8 @@ public class Round{
     private List<Hand> hands;
     private int numberOfCards;
     private AbstractCard trump;
-
+    private RoundStatus status;
+    private Salut network;
     private int startNumber;
     private RuleEngine ruleEngine;
 
@@ -45,11 +53,44 @@ public class Round{
         this.trump = cardStack.getTrump();
         this.startNumber = 0;
         this.ruleEngine = RuleEngine.getInstance();
+        this.status = RoundStatus.start;
+        this.network = GameConfig.getInstance().getSalut();
 
         generateHands();
     }
-
     public void startRound(){
+
+        List<Player> order = new ArrayList<Player>();
+        for (Player player:players) {
+            order.add(player);
+        }
+        status = RoundStatus.waitingForCard;
+        askForCard(order.get(0));
+
+    }
+    private void checkNextStep(){
+        switch(status){
+            case waitingForCard:
+                break;
+            case cardIsPicked:
+
+                sendTableOnAll();
+                if(table.size()<=playerNumber){
+                    askForCard(players.get(table.size()));
+                }
+                else {
+                    status = RoundStatus.tableFull;
+                    checkNextStep();
+                }
+                break;
+            case tableFull:
+
+                break;
+
+        }
+    }
+
+    public void startRound2(){
 
         List<Player> order = new ArrayList<Player>();
         for (Player player:players) {
@@ -58,11 +99,10 @@ public class Round{
         for (int i = 0; i < numberOfCards; i++) {
 
             for (Player player:order) {
-                AbstractCard card = askForCard(player);
-                MoveTuple tuple = new MoveTuple(player,card,0);
-                table.add(new MoveTuple(player,card,table.size()+1));
-                showCardonTable(tuple);
-                lookingForHand(player).removeCard(card);
+                //AbstractCard card = askForCard(player);
+
+               // showCardonTable(tuple);
+               //
             }
             //Gewinner des Spielzuges ermitteln und an alle Senden
             Player winner = getWinner();
@@ -97,8 +137,19 @@ public class Round{
     }
 
 
-    private void showCardonTable(MoveTuple tuple){
-        //TODO senden Karte an alle Clients um diese auf den Tisch anzuzeigen
+    private void sendTableOnAll(){
+        Salut network = GameConfig.getInstance().getSalut();
+
+        Message mTableCards = new Message();
+        mTableCards.action = Actions.TABLECARDS_ARE_COMING;
+
+
+        network.sendToAllDevices(mTableCards,new SalutCallback() {
+            @Override
+            public void call() {
+                Log.e("WizardApp", "Oh no! The data failed to send.");
+            }
+        });
 
     }
     private Hand lookingForHand(Player player){
@@ -113,9 +164,44 @@ public class Round{
     private void sendWinnerOnAll(Player player){
         //TODO Sendet den Gewinner an alle Clients
     }
-    private AbstractCard askForCard(Player player){
-        //TODO Wenn ein Client dran ist frage client nach Karte, sonst soll der Host seine Karte setzen
-        return null;
+    private void askForCard(Player player){
+
+        Message mPickCard = new Message();
+        mPickCard.action = Actions.PICK_CARD;
+
+        network.sendToDevice(player.getSalutDevice(),mPickCard,new SalutCallback() {
+            @Override
+            public void call() {
+                Log.e("WizardApp", "Oh no! The data failed to send.");
+            }
+        });
+    }
+    private void RoundCallBack() {
+        DataCallback callback = GameConfig.getInstance().getCallBack();
+        callback.addCallBackAction(new ICallbackAction() {
+            @Override
+            public void execute(Message message) {
+                if(message == null) {
+                    Log.e("CLIENT", "No Message received");
+                }
+                else if(message.action == Actions.CARD_IS_PICKED) {
+                    if(message.cards.length ==1){
+                        AbstractCard card =  cardStack.getCardById(message.cards[0]);
+                        Player player = getPlayerByName(message.sender);
+                        MoveTuple tuple = new MoveTuple(player,card,0);
+                        table.add(new MoveTuple(player,card,table.size()+1));
+                        lookingForHand(player).removeCard(card);
+                        status = RoundStatus.cardIsPicked;
+                        checkNextStep();
+                    }
+                    else{
+                        Log.e("CLIENT", "No cards or more than one");
+                    }
+
+                }
+            }
+
+        });
     }
 
     private void generateHands(){
