@@ -1,6 +1,7 @@
 package aau.losamigos.wizard.base;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import aau.losamigos.wizard.elements.Player;
 import aau.losamigos.wizard.elements.cards.FractionCard;
@@ -14,13 +15,13 @@ import aau.losamigos.wizard.types.Fractions;
 
 public class Hand {
 
-    private ArrayList<AbstractCard> handCards;
+    private List<AbstractCard> handCards;
     private Player handOwner;
 
-    public Hand(ArrayList<AbstractCard> handCards) {
+    public Hand(List<AbstractCard> handCards) {
         this.handCards = handCards;
     }
-    public Hand(ArrayList<AbstractCard> handCards, Player handOwner) {
+    public Hand(List<AbstractCard> handCards, Player handOwner) {
         this.handCards = handCards;
         this.handOwner = handOwner;
     }
@@ -34,12 +35,16 @@ public class Hand {
     }
 
 
-    public ArrayList<AbstractCard> getHandCards() {
+    public List<AbstractCard> getHandCards() {
 
         return handCards;
     }
+    public void removeCard(AbstractCard card) {
 
-    public ArrayList<AbstractCard> getAllowedCards(ArrayList<AbstractCard> table) {
+        handCards.remove(card);
+    }
+
+    public List<AbstractCard> getAllowedCards(List<AbstractCard> table) {
 
         AbstractCard cardTyp = null; //gespielter Kartentyp
         Fractions fraction = null; //gespielte Fraktion
@@ -108,4 +113,5 @@ ception arts            */
         }
         return handCards;
     }
+
 }
