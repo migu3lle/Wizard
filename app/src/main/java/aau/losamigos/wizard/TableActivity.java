@@ -22,9 +22,6 @@ import aau.losamigos.wizard.network.DataCallback;
 import aau.losamigos.wizard.network.ICallbackAction;
 
 public class TableActivity extends AppCompatActivity implements View.OnClickListener{
-
-
-
     Salut network;
 
     @Override
@@ -61,8 +58,6 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             }
 
         });
-
-
     }
     private void startGame(){
         GameConfig gcfg = GameConfig.getInstance();
@@ -73,21 +68,14 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
 
     public void resetGame(View view) {
-
         setContentView(R.layout.activity_table);
     }
 
     @Override
     public void onClick(View view) {
-
-        
-
-
         String message = String.valueOf(view.getId());
         System.out.println("Want to send: " + message);
         sendMessage(message);
-
-
     }
 
 

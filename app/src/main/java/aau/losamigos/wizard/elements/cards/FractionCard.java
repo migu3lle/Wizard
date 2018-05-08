@@ -13,8 +13,8 @@ public class FractionCard extends AbstractCard {
 
     private Fractions fraction;
 
-    public FractionCard(int id, int value, Fractions fraction) {
-        super(id);
+    public FractionCard(int id, int value, Fractions fraction, int resourceId) {
+        super(id, resourceId);
         this.value = value;
         this.fraction = fraction;
     }
