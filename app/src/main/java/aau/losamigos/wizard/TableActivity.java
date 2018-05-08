@@ -15,6 +15,7 @@ import com.peak.salut.Salut;
 import java.util.ArrayList;
 
 import aau.losamigos.wizard.base.GameConfig;
+import aau.losamigos.wizard.base.GamePlay;
 import aau.losamigos.wizard.base.Message;
 import aau.losamigos.wizard.elements.CardStack;
 import aau.losamigos.wizard.network.DataCallback;
@@ -62,6 +63,11 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         });
 
 
+    }
+    private void startGame(){
+        GameConfig gcfg = GameConfig.getInstance();
+        GamePlay  game = new GamePlay(gcfg.getPlayers());
+        game.startGame();
     }
 
 

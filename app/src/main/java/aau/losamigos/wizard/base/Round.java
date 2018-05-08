@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import aau.losamigos.wizard.TableActivity;
 import aau.losamigos.wizard.elements.CardStack;
 import aau.losamigos.wizard.elements.MoveTuple;
 import aau.losamigos.wizard.elements.Player;
@@ -16,29 +17,30 @@ import aau.losamigos.wizard.types.Fractions;
  * Created by Andreas.Mairitsch on 18.04.2018.
  */
 
-public class Round {
+public class Round{
 
-    private List<Player> players; //TODO eventuell in die Gameconfig verschieben
+    private List<Player> players;
+    private int playerNumber;
+    private GamePlay game;
     private CardStack cardStack;
     private List<Hand> hands;
     private int numberOfCards;
     private AbstractCard trump;
-    private int playerNumber;
+
     private int startNumber;
     private RuleEngine ruleEngine;
 
 
     private List<MoveTuple> table;
 
-    public Round(ArrayList<Player> players, int numberOfCards) {
-
+    public Round(List<Player> players, int numberOfCards) {
         this.players = players;
+        this.playerNumber = players.size();
         this.cardStack = new CardStack();
         this.hands = new ArrayList<Hand>();
         this.table = new ArrayList<MoveTuple>();
         this.numberOfCards = numberOfCards;
         this.trump = cardStack.getTrump();
-        this.playerNumber = players.size();
         this.startNumber = 0;
         this.ruleEngine = RuleEngine.getInstance();
 
@@ -95,6 +97,7 @@ public class Round {
 
     private void showCardonTable(MoveTuple tuple){
         //TODO senden Karte an alle Clients um diese auf den Tisch anzuzeigen
+
     }
     private Hand lookingForHand(Player player){
         for (Hand hand:hands) {
