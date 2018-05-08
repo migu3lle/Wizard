@@ -5,5 +5,8 @@ package aau.losamigos.wizard.rules;
  */
 
 public enum Actions {
-    INITIAL_CARD_GIVING
+    INITIAL_CARD_GIVING,
+    PICK_CARD,
+    CARD_IS_PICKED,
+    TABLECARDS_ARE_COMING
 }

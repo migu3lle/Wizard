@@ -1,6 +1,9 @@
 package aau.losamigos.wizard.base;
 
 
+import android.util.Log;
+
+import com.peak.salut.Callbacks.SalutCallback;
 import com.peak.salut.Salut;
 
 import java.util.ArrayList;
@@ -12,8 +15,12 @@ import aau.losamigos.wizard.elements.CardStack;
 import aau.losamigos.wizard.elements.MoveTuple;
 import aau.losamigos.wizard.elements.Player;
 import aau.losamigos.wizard.elements.cards.FractionCard;
+import aau.losamigos.wizard.network.DataCallback;
+import aau.losamigos.wizard.network.ICallbackAction;
+import aau.losamigos.wizard.rules.Actions;
 import aau.losamigos.wizard.rules.JesterRule;
 import aau.losamigos.wizard.types.Fractions;
+import aau.losamigos.wizard.types.RoundStatus;
 
 /**
  * Created by Andreas.Mairitsch on 18.04.2018.
@@ -28,7 +35,8 @@ public class Round{
     private List<Hand> hands;
     private int numberOfCards;
     private AbstractCard trump;
-
+    private RoundStatus status;
+    private Salut network;
     private int startNumber;
     private RuleEngine ruleEngine;
 
@@ -45,11 +53,40 @@ public class Round{
         this.trump = cardStack.getTrump();
         this.startNumber = 0;
         this.ruleEngine = RuleEngine.getInstance();
+        this.status = RoundStatus.start;
+        this.network = GameConfig.getInstance().getSalut();
 
         generateHands();
     }
-
     public void startRound(){
+
+        List<Player> order = new ArrayList<Player>();
+        for (Player player:players) {
+            order.add(player);
+        }
+        status = RoundStatus.waitingForCard;
+        askForCard(order.get(0));
+
+    }
+    private void checkNextStep(){
+        switch(status){
+            case waitingForCard:
+                break;
+            case cardIsPicked:
+
+                sendTableOnAll();
+                if(table.size()<=playerNumber){
+                    askForCard(players.get(table.size()));
+                }
+                else {
+
+                }
+
+                break;
+        }
+    }
+
+    public void startRound2(){
 
         List<Player> order = new ArrayList<Player>();
         for (Player player:players) {
@@ -59,8 +96,7 @@ public class Round{
 
             for (Player player:order) {
                 AbstractCard card = askForCard(player);
-                MoveTuple tuple = new MoveTuple(player,card,0);
-                table.add(new MoveTuple(player,card,table.size()+1));
+
                 showCardonTable(tuple);
                 lookingForHand(player).removeCard(card);
             }
@@ -97,8 +133,19 @@ public class Round{
     }
 
 
-    private void showCardonTable(MoveTuple tuple){
-        //TODO senden Karte an alle Clients um diese auf den Tisch anzuzeigen
+    private void sendTableOnAll(){
+        Salut network = GameConfig.getInstance().getSalut();
+
+        Message mTableCards = new Message();
+        mTableCards.action = Actions.TABLECARDS_ARE_COMING;
+
+        
+        network.sendToAllDevices(mTableCards,new SalutCallback() {
+            @Override
+            public void call() {
+                Log.e("WizardApp", "Oh no! The data failed to send.");
+            }
+        });
 
     }
     private Hand lookingForHand(Player player){
@@ -113,15 +160,43 @@ public class Round{
     private void sendWinnerOnAll(Player player){
         //TODO Sendet den Gewinner an alle Clients
     }
-    private AbstractCard askForCard(Player player){
-        Salut network = GameConfig.getInstance().getSalut();
+    private void askForCard(Player player){
 
-        AbstractCard card = network.sendToDevice();
+        Message mPickCard = new Message();
+        mPickCard.action = Actions.PICK_CARD;
 
-        player.
+        network.sendToDevice(player.getSalutDevice(),mPickCard,new SalutCallback() {
+            @Override
+            public void call() {
+                Log.e("WizardApp", "Oh no! The data failed to send.");
+            }
+        });
+    }
+    private void RoundCallBack() {
+        DataCallback callback = GameConfig.getInstance().getCallBack();
+        callback.addCallBackAction(new ICallbackAction() {
+            @Override
+            public void execute(Message message) {
+                if(message == null) {
+                    Log.e("CLIENT", "No Message received");
+                }
+                else if(message.action == Actions.CARD_IS_PICKED) {
+                    if(message.cards.size()==1){
+                        AbstractCard card = message.cards.get(0);
+                        Player player = null;
+                        MoveTuple tuple = new MoveTuple(player,card,0);
+                        table.add(new MoveTuple(player,card,table.size()+1));
+                        status = RoundStatus.cardIsPicked;
+                        checkNextStep();
+                    }
+                    else{
+                        Log.e("CLIENT", "No cards or more than one");
+                    }
 
-        network.
-        return null;
+                }
+            }
+
+        });
     }
 
     private void generateHands(){
