@@ -10,7 +10,7 @@ import aau.losamigos.wizard.base.AbstractCard;
  * a jester never wins
  */
 public class JesterCard extends AbstractCard {
-    public JesterCard(int id) {
-        super(id);
+    public JesterCard(int id, int resourceId) {
+        super(id, resourceId);
     }
 }
