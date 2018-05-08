@@ -39,6 +39,9 @@ public class Round{
     private Salut network;
     private int startNumber;
     private RuleEngine ruleEngine;
+    private List<Player> order;
+    private int currentPlayer;
+    private int currentHandCards;
 
 
     private List<MoveTuple> table;
@@ -55,17 +58,19 @@ public class Round{
         this.ruleEngine = RuleEngine.getInstance();
         this.status = RoundStatus.start;
         this.network = GameConfig.getInstance().getSalut();
-
-        generateHands();
-    }
-    public void startRound(){
+        this.currentPlayer = 0;
+        this.currentHandCards = numberOfCards;
 
         List<Player> order = new ArrayList<Player>();
         for (Player player:players) {
             order.add(player);
         }
+
+        generateHands();
+    }
+    public void startRound(){
         status = RoundStatus.waitingForCard;
-        askForCard(order.get(0));
+        askForCard(order.get(currentPlayer));
 
     }
     private void checkNextStep(){
@@ -75,8 +80,9 @@ public class Round{
             case cardIsPicked:
 
                 sendTableOnAll();
-                if(table.size()<=playerNumber){
-                    askForCard(players.get(table.size()));
+                if(currentPlayer+1<=playerNumber){
+                    currentPlayer++;
+                    askForCard(players.get(currentPlayer));
                 }
                 else {
                     status = RoundStatus.tableFull;
@@ -84,18 +90,29 @@ public class Round{
                 }
                 break;
             case tableFull:
-
+                Player winner = getWinner();
+                sendWinnerOnAll(winner);
+                order = newOrder(winner);
+                table.clear();
+                currentHandCards--;
+                if(currentHandCards>=0)
+                    askForCard(order.get(currentPlayer));
+                else
+                    status = RoundStatus.roundEnded;
+                    checkNextStep();
                 break;
+            case roundEnded:
+                calcPlayerPoints();
+                sendPointsOnAll();
+                break;
+
 
         }
     }
 
     public void startRound2(){
 
-        List<Player> order = new ArrayList<Player>();
-        for (Player player:players) {
-            order.add(player);
-        }
+
         for (int i = 0; i < numberOfCards; i++) {
 
             for (Player player:order) {
@@ -105,14 +122,12 @@ public class Round{
                //
             }
             //Gewinner des Spielzuges ermitteln und an alle Senden
-            Player winner = getWinner();
-            sendWinnerOnAll(winner);
+
 
             //neue Reihenfolge ermitteln und Tisch leeren
-            order = newOrder(winner);
-            table.clear();
+
         }
-        calcPlayerPoints();
+
     }
 
     private List<Player> newOrder(Player firstPlayer){
@@ -133,6 +148,7 @@ public class Round{
             }
 
         }
+        currentPlayer=0;
         return newOrder;
     }
 
@@ -162,6 +178,9 @@ public class Round{
     }
 
     private void sendWinnerOnAll(Player player){
+        //TODO Sendet den Gewinner an alle Clients
+    }
+    private void sendPointsOnAll(){
         //TODO Sendet den Gewinner an alle Clients
     }
     private void askForCard(Player player){
