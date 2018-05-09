@@ -20,7 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/backside" />
-<!--Temporäre OnClickFunktion für neue Karten-->
+    <!--Temporäre OnClickFunktion für neue Karten-->
     <ImageView
         android:id="@+id/Trump"
         android:layout_width="59dp"
@@ -226,58 +226,69 @@
         android:id="@+id/Middle1"
         android:layout_width="45dp"
         android:layout_height="70dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginTop="100dp"
         android:onClick="playCard1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
+        app:layout_constraintEnd_toStartOf="@+id/Trump"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/Middle2"
-        tools:layout_editor_absoluteY="85dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/Middle2"
         android:layout_width="45dp"
         android:layout_height="70dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginTop="100dp"
         android:onClick="playCard1"
+        app:layout_constraintEnd_toStartOf="@+id/Middle1"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/Middle3"
-        tools:layout_editor_absoluteY="85dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/Middle3"
         android:layout_width="45dp"
         android:layout_height="70dp"
-        android:layout_marginStart="28dp"
+        android:layout_marginTop="100dp"
         android:onClick="playCard1"
+        app:layout_constraintEnd_toStartOf="@+id/Middle2"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/Middle4"
-        tools:layout_editor_absoluteY="85dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/Middle4"
         android:layout_width="45dp"
         android:layout_height="70dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginTop="100dp"
         android:onClick="playCard1"
+        app:layout_constraintEnd_toStartOf="@+id/Middle3"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/Middle5"
-        tools:layout_editor_absoluteY="85dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/Middle5"
         android:layout_width="45dp"
         android:layout_height="70dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginTop="100dp"
         android:onClick="playCard1"
+        app:layout_constraintEnd_toStartOf="@+id/Middle4"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/Middle6"
-        tools:layout_editor_absoluteY="85dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/Middle6"
         android:layout_width="45dp"
         android:layout_height="70dp"
 
-        android:layout_marginStart="88dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
         android:onClick="playCard1"
+        app:layout_constraintEnd_toStartOf="@+id/Middle5"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/Card2"
-        tools:layout_editor_absoluteY="85dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

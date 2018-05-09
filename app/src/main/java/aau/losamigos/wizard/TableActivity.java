@@ -62,6 +62,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     private void initGui() {
         view2CardMap = new HashMap<>();
         cardViews = new ArrayList<>();
+        middleCards = new ArrayList<>();
         final ImageView playCard1 = findViewById(R.id.PCard1);
         playCard1.setOnClickListener(this);
 
@@ -170,8 +171,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     String sender = message.sender;
                     Log.e("CARD RECEIVED", "Card of Client received: " +sender + ", " + playedCard);
                     //TODO: DO SOMETHING WITH THE CARD
-                    game.getRecentRound().playCard(sender,playedCard);
-
+                    Round round1 = game.getRecentRound();
+                    round1.playCard(sender,playedCard);
+                    setMiddleCards(round1.getPlayedCards());
                 }
             }
 

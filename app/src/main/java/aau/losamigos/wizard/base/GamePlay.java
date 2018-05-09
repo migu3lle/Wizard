@@ -44,11 +44,7 @@ public class GamePlay {
         this.maxRounds = 60 / this.playerNumber;
         this.cardStack = new CardStack();
     }
-    public void startGame(){
-        countRound++;
-        recentRound = new Round(this);
-        recentRound.startRound();
-    }
+
     /*
     Erhöht die Rundenanzahl um 1 und startet eine neue Runde wenn maximale Rundenanzahl noch nicht erreicht,
     sonst wird gameFinished Methode aufgerufen
@@ -57,7 +53,7 @@ public class GamePlay {
         if(countRound<=maxRounds){
             countRound++;
             cardStack.reset(); //Kartenstapel wird neu gemischt
-            recentRound = new Round(this);
+            recentRound = new Round(this, 5);
             recentRound.startRound();
         }
         else{
@@ -73,7 +69,7 @@ public class GamePlay {
     }
 
     public void startGame(int cardCount) {
-        recentRound = new Round(this);
+        recentRound = new Round(this, cardCount);
     }
 
     public Round getRecentRound() {

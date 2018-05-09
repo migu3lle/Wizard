@@ -44,11 +44,16 @@ public class Round{
     private List<MoveTuple> table;
 
 
-    public Round(GamePlay game) {
+    public Round(GamePlay game, int numberOfCards) {
         this.game = game;
         this.players = game.getPlayers();
         this.playerNumber = game.getPlayerNumber();
-        this.numberOfCards = game.getCountRound();
+        if(numberOfCards != 0) {
+            this.numberOfCards = numberOfCards;
+        } else {
+            this.numberOfCards = game.getCountRound();
+        }
+
         this.cardStack = game.getCardStack();
 
         this.hands = new ArrayList<Hand>();
@@ -59,7 +64,7 @@ public class Round{
         this.status = RoundStatus.start;
         this.network = GameConfig.getInstance().getSalut();
         this.currentPlayer = 0;
-        this.currentHandCards = numberOfCards;
+        this.currentHandCards = this.numberOfCards;
 
         List<Player> order = new ArrayList<Player>();
         for (Player player:players) {
@@ -80,7 +85,7 @@ public class Round{
             case cardIsPicked:
 
                 sendTableOnAll();
-                if(currentPlayer+1<=playerNumber){
+                if(currentPlayer < (players.size()-1)){
                     currentPlayer++;
                     askForCard(players.get(currentPlayer));
                 }
@@ -90,7 +95,7 @@ public class Round{
                 }
                 break;
             case tableFull:
-                Player winner = getWinner();
+                /*Player winner = getWinner();
                 sendWinnerOnAll(winner);
                 order = newOrder(winner);
                 table.clear();
@@ -99,7 +104,7 @@ public class Round{
                     askForCard(order.get(currentPlayer));
                 else
                     status = RoundStatus.roundEnded;
-                    checkNextStep();
+                    checkNextStep();*/
                 break;
             case roundEnded:
                 calcPlayerPoints();
