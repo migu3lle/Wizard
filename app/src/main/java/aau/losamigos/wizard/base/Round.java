@@ -140,6 +140,12 @@ public class Round{
         Message mTableCards = new Message();
         mTableCards.action = Actions.TABLECARDS_ARE_COMING;
 
+        int[] cardIds = new int[table.size()];
+        for(int i = 0; i < table.size(); i++) {
+            cardIds[i] = table.get(i).getCard().getId();
+        }
+
+        mTableCards.cards = cardIds;
 
         network.sendToAllDevices(mTableCards,new SalutCallback() {
             @Override
@@ -298,8 +304,14 @@ public class Round{
             else
                 player.addPoints((actualStiches-calledStiches)*(-10));
         }
-
     }
 
+    public List<AbstractCard> getPlayedCards() {
+        List<AbstractCard> playedCards = new ArrayList<>();
+        for(MoveTuple tuple:table) {
+            playedCards.add(tuple.getCard());
+        }
+        return playedCards;
+    }
 
 }

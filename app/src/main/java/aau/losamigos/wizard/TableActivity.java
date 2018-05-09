@@ -1,5 +1,6 @@
 package aau.losamigos.wizard;
 
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +30,7 @@ import aau.losamigos.wizard.rules.Client2HostAction;
 public class TableActivity extends AppCompatActivity implements View.OnClickListener{
     Salut network;
     List<ImageView> cardViews;
+    List<ImageView> middleCards;
     ImageView trump;
     GamePlay game;
     CardStack clientCardStack;
@@ -42,6 +44,22 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_table);
         getSupportActionBar().hide();
 
+        initGui();
+
+        network = GameConfig.getInstance().getSalut();
+
+        if(network.isRunningAsHost) {
+            defineHostCallBack();
+            startGame();
+            setCardsForHost();
+        } else {
+            clientCardStack = new CardStack();
+            definceClientCallBack();
+            notifyHost();
+        }
+    }
+
+    private void initGui() {
         view2CardMap = new HashMap<>();
         cardViews = new ArrayList<>();
         final ImageView playCard1 = findViewById(R.id.PCard1);
@@ -67,18 +85,22 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         cardViews.add(playCard4);
         cardViews.add(playCard5);
 
-        network = GameConfig.getInstance().getSalut();
+        final ImageView middleCard1 = findViewById(R.id.Middle1);
+        final ImageView middleCard2 = findViewById(R.id.Middle2);
+        final ImageView middleCard3 = findViewById(R.id.Middle3);
+        final ImageView middleCard4 = findViewById(R.id.Middle4);
+        final ImageView middleCard5 = findViewById(R.id.Middle5);
+        final ImageView middleCard6 = findViewById(R.id.Middle6);
 
-        if(network.isRunningAsHost) {
-            defineHostCallBack();
-            startGame();
-            setCardsForHost();
-        } else {
-            clientCardStack = new CardStack();
-            definceClientCallBack();
-            notifyHost();
-        }
+        middleCards.add(middleCard1);
+        middleCards.add(middleCard2);
+        middleCards.add(middleCard3);
+        middleCards.add(middleCard4);
+        middleCards.add(middleCard5);
+        middleCards.add(middleCard6);
+
     }
+
     private void startGame(){
         GameConfig gcfg = GameConfig.getInstance();
         game = new GamePlay(gcfg.getPlayers());
@@ -110,15 +132,16 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                    }
                    else if(message.action == Actions.INITIAL_CARD_GIVING) {
                        if(message.cards != null && message.cards.length > 0) {
-                           List<AbstractCard> cards = new ArrayList<>();
-                           for(int i = 0; i < message.cards.length; i++) {
-                               cards.add(clientCardStack.getCardById(message.cards[i]));
-                           }
+                           List<AbstractCard> cards =getCardsById(message.cards);
                            setCardsToImages(cards);
                        }
                        if(message.trumpCard != 0) {
                            setTrump(clientCardStack.getCardById(message.trumpCard));
                        }
+                   }
+                   else if(message.action == Actions.TABLECARDS_ARE_COMING && message.cards != null) {
+                       List<AbstractCard> cards =getCardsById(message.cards);
+                       setMiddleCards(cards);
                    }
             }
         });
@@ -155,6 +178,13 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
+    private List<AbstractCard> getCardsById(int[] cardIds) {
+        List<AbstractCard> cards = new ArrayList<>();
+        for(int i = 0; i < cardIds.length; i++) {
+            cards.add(clientCardStack.getCardById(cardIds[i]));
+        }
+        return cards;
+    }
 
     public void resetGame(View view) {
         setContentView(R.layout.activity_table);
@@ -177,7 +207,10 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         } else {
             Log.e("CARD PLAYED", "Host played card: " + clickedCard.getId());
             //TODO: do something if the host played the card as well
-            game.getRecentRound().playCard(network.thisDevice.deviceName,clickedCard.getId());
+            Round round = game.getRecentRound();
+            round.playCard(network.thisDevice.deviceName,clickedCard.getId());
+            List<AbstractCard> playedCards = round.getPlayedCards();
+            setMiddleCards(playedCards);
         }
 
     }
@@ -238,6 +271,26 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
     private void setTrump(AbstractCard card) {
         trump.setImageResource(card.getResourceId());
+    }
+
+    private void setMiddleCards(List<AbstractCard> cards) {
+        resetMiddleCards();
+
+        int maxIterations = middleCards.size();
+        if(cards.size() < maxIterations)
+            maxIterations = cards.size();
+
+        for(int i =0; i < maxIterations; i++) {
+            ImageView img = middleCards.get(i);
+            AbstractCard card = cards.get(i);
+            img.setImageResource(card.getResourceId());
+        }
+    }
+
+    private void resetMiddleCards() {
+        for(ImageView img: middleCards) {
+            img.setImageDrawable(null);
+        }
     }
 
     @Override
