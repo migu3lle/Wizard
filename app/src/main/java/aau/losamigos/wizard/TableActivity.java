@@ -117,6 +117,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                            setTrump(clientCardStack.getCardById(message.trumpCard));
                        }
                    }
+                   else if(message.action == Actions.PICK_CARD){
+                       
+                   }
             }
 
         });

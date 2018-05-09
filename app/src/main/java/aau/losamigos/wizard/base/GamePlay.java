@@ -3,6 +3,7 @@ package aau.losamigos.wizard.base;
 import java.util.ArrayList;
 import java.util.List;
 
+import aau.losamigos.wizard.elements.CardStack;
 import aau.losamigos.wizard.elements.Player;
 
 /**
@@ -10,12 +11,28 @@ import aau.losamigos.wizard.elements.Player;
  */
 
 public class GamePlay {
-    private List<Player> players;
-    private int playerNumber;
-    private int maxRounds;
-    private Round actRound;
+    private List<Player> players; //Instanzen der einzelnen Spieler
+    private int playerNumber; //Anzahl Spieler
+    private int maxRounds; //letzte Runde
+    private int countRound; //Enspricht auch der aktuellen Anzahl von Handkarten pro Runde
+    private Round recentRound; //Instanz der aktuellen Runde
+    private CardStack cardStack; //Verwendeter Kartenstapel
 
-    private Round recentRound;
+    public int getCountRound() {
+        return countRound;
+    }
+
+    public CardStack getCardStack() {
+        return cardStack;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public int getPlayerNumber() {
+        return playerNumber;
+    }
 
     public GamePlay(Player[] players) {
         this.players = new ArrayList<Player>();
@@ -25,21 +42,38 @@ public class GamePlay {
         }
         this.playerNumber = this.players.size();
         this.maxRounds = 60 / this.playerNumber;
+        this.cardStack = new CardStack();
     }
     public void startGame(){
-        for (int i = 0; i < maxRounds; i++) {
-            Round round = new Round(players,i+1);
-            actRound = round;
-            actRound.startRound();
-        }
+        countRound++;
+        recentRound = new Round(this);
+        recentRound.startRound();
     }
+    /*
+    Erhöht die Rundenanzahl um 1 und startet eine neue Runde wenn maximale Rundenanzahl noch nicht erreicht,
+    sonst wird gameFinished Methode aufgerufen
+     */
+    public void nextRound(){
+        if(countRound<=maxRounds){
+            countRound++;
+            cardStack.reset(); //Kartenstapel wird neu gemischt
+            recentRound = new Round(this);
+            recentRound.startRound();
+        }
+        else{
+            gameFinished();
+        }
 
-    public Round getActRound() {
-        return actRound;
+    }
+    /*
+    erledigt alle abschlussarbeiten wenn das Spiel vorbei ist
+     */
+    public void gameFinished(){
+            //TODO Dinge welche nach der letzten Runde erledigt werden müssen
     }
 
     public void startGame(int cardCount) {
-        recentRound = new Round(players, cardCount);
+        recentRound = new Round(this);
     }
 
     public Round getRecentRound() {

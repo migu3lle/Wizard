@@ -37,24 +37,24 @@ public class Round{
     private AbstractCard trump;
     private RoundStatus status;
     private Salut network;
-    private int startNumber;
     private RuleEngine ruleEngine;
     private List<Player> order;
     private int currentPlayer;
     private int currentHandCards;
-
-
     private List<MoveTuple> table;
 
-    public Round(List<Player> players, int numberOfCards) {
-        this.players = players;
-        this.playerNumber = players.size();
-        this.cardStack = new CardStack();
+
+    public Round(GamePlay game) {
+        this.game = game;
+        this.players = game.getPlayers();
+        this.playerNumber = game.getPlayerNumber();
+        this.numberOfCards = game.getCountRound();
+        this.cardStack = game.getCardStack();
+
         this.hands = new ArrayList<Hand>();
         this.table = new ArrayList<MoveTuple>();
-        this.numberOfCards = numberOfCards;
+
         this.trump = cardStack.getTrump();
-        this.startNumber = 0;
         this.ruleEngine = RuleEngine.getInstance();
         this.status = RoundStatus.start;
         this.network = GameConfig.getInstance().getSalut();
@@ -104,30 +104,11 @@ public class Round{
             case roundEnded:
                 calcPlayerPoints();
                 sendPointsOnAll();
+                game.nextRound();
                 break;
 
 
         }
-    }
-
-    public void startRound2(){
-
-
-        for (int i = 0; i < numberOfCards; i++) {
-
-            for (Player player:order) {
-                //AbstractCard card = askForCard(player);
-
-               // showCardonTable(tuple);
-               //
-            }
-            //Gewinner des Spielzuges ermitteln und an alle Senden
-
-
-            //neue Reihenfolge ermitteln und Tisch leeren
-
-        }
-
     }
 
     private List<Player> newOrder(Player firstPlayer){
