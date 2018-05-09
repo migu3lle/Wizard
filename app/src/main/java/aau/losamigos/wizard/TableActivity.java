@@ -54,7 +54,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             setCardsForHost();
         } else {
             clientCardStack = new CardStack();
-            definceClientCallBack();
+            defineClientCallBack();
             notifyHost();
         }
     }
@@ -120,7 +120,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    private void definceClientCallBack() {
+    private void defineClientCallBack() {
         final DataCallback callback = GameConfig.getInstance().getCallBack();
         callback.addCallBackAction(new ICallbackAction() {
             @Override
@@ -194,27 +194,39 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        AbstractCard clickedCard = view2CardMap.get(view.getId());
-        Message message = new Message();
-        message.client2HostAction = Client2HostAction.CARD_PLAYED;
-        message.playedCard = clickedCard.getId();
-        message.sender = network.thisDevice.deviceName;
-        if(!network.isRunningAsHost) {
-            network.sendToHost(message, new SalutCallback() {
-                @Override
-                public void call() {
-                    Log.e("CARD PLAY", "Client failed to play card");
-                }
-            });
-        } else {
-            Log.e("CARD PLAYED", "Host played card: " + clickedCard.getId());
-            //TODO: do something if the host played the card as well
-            Round round = game.getRecentRound();
-            round.playCard(network.thisDevice.deviceName,clickedCard.getId());
-            List<AbstractCard> playedCards = round.getPlayedCards();
-            setMiddleCards(playedCards);
-        }
 
+        if(view instanceof ImageView) {
+            ImageView imgView = (ImageView) view;
+
+            //card is not visible so do nothing
+            if(imgView.getDrawable() == null) {
+                return;
+            }
+
+            imgView.setImageDrawable(null);
+
+            AbstractCard clickedCard = view2CardMap.get(view.getId());
+            Message message = new Message();
+            message.client2HostAction = Client2HostAction.CARD_PLAYED;
+            message.playedCard = clickedCard.getId();
+            message.sender = network.thisDevice.deviceName;
+
+            if(!network.isRunningAsHost) {
+                network.sendToHost(message, new SalutCallback() {
+                    @Override
+                    public void call() {
+                        Log.e("CARD PLAY", "Client failed to play card");
+                    }
+                });
+            } else {
+                Log.e("CARD PLAYED", "Host played card: " + clickedCard.getId());
+                //TODO: do something if the host played the card as well
+                Round round = game.getRecentRound();
+                round.playCard(network.thisDevice.deviceName,clickedCard.getId());
+                List<AbstractCard> playedCards = round.getPlayedCards();
+                setMiddleCards(playedCards);
+            }
+        }
     }
 
     private void sendCardsToDevice(Player player) {
