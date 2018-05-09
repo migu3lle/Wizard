@@ -28,7 +28,7 @@ import aau.losamigos.wizard.types.RoundStatus;
  * Created by Andreas.Mairitsch on 18.04.2018.
  */
 
-public class Round{
+public class Round {
 
     private List<Player> players;
     private int playerNumber;
@@ -54,7 +54,7 @@ public class Round{
         this.game = game;
         this.players = game.getPlayers();
         this.playerNumber = game.getPlayerNumber();
-        if(numberOfCards != 0) {
+        if (numberOfCards != 0) {
             this.numberOfCards = numberOfCards;
         } else {
             this.numberOfCards = game.getCountRound();
@@ -73,30 +73,30 @@ public class Round{
         this.currentHandCards = this.numberOfCards;
 
         List<Player> order = new ArrayList<Player>();
-        for (Player player:players) {
+        for (Player player : players) {
             order.add(player);
         }
 
         generateHands();
     }
-    public void startRound(){
-        roundCallBack();
+
+    public void startRound() {
         status = RoundStatus.waitingForCard;
         askForCard(order.get(currentPlayer));
 
     }
-    private void checkNextStep(){
-        switch(status){
+
+    private void checkNextStep() {
+        switch (status) {
             case waitingForCard:
                 break;
             case cardIsPicked:
 
                 sendTableOnAll();
-                if(currentPlayer < (players.size()-1)){
+                if (currentPlayer < (players.size() - 1)) {
                     currentPlayer++;
                     askForCard(players.get(currentPlayer));
-                }
-                else {
+                } else {
                     status = RoundStatus.tableFull;
                     checkNextStep();
                 }
@@ -104,14 +104,16 @@ public class Round{
             case tableFull:
                 Player winner = getWinner();
                 sendWinnerOnAll(winner);
-                /*order = newOrder(winner);
                 table.clear();
+                sendTableOnAll();
+
+                //order = newOrder(winner);
                 currentHandCards--;
                 if(currentHandCards>=0)
                     askForCard(order.get(currentPlayer));
                 else
                     status = RoundStatus.roundEnded;
-                    checkNextStep();*/
+                    checkNextStep();
                 break;
             case roundEnded:
                 calcPlayerPoints();
@@ -123,43 +125,42 @@ public class Round{
         }
     }
 
-    private List<Player> newOrder(Player firstPlayer){
+    private List<Player> newOrder(Player firstPlayer) {
         List<Player> newOrder = new ArrayList<Player>();
 
         newOrder.add(firstPlayer);
         int indexFP = players.indexOf(firstPlayer);
-        int afterFP = indexFP+1;
+        int afterFP = indexFP + 1;
         int beforeFP = 0;
         for (int i = 1; i < playerNumber; i++) {
-            if(afterFP<=playerNumber) {
+            if (afterFP <= playerNumber) {
                 newOrder.add(players.get(afterFP));
                 afterFP++;
-            }
-            else{
+            } else {
                 newOrder.add(players.get(beforeFP));
                 beforeFP++;
             }
 
         }
-        currentPlayer=0;
+        currentPlayer = 0;
         return newOrder;
     }
 
 
-    private void sendTableOnAll(){
+    private void sendTableOnAll() {
         Salut network = GameConfig.getInstance().getSalut();
 
         Message mTableCards = new Message();
         mTableCards.action = Actions.TABLECARDS_ARE_COMING;
 
         int[] cardIds = new int[table.size()];
-        for(int i = 0; i < table.size(); i++) {
+        for (int i = 0; i < table.size(); i++) {
             cardIds[i] = table.get(i).getCard().getId();
         }
 
         mTableCards.cards = cardIds;
 
-        network.sendToAllDevices(mTableCards,new SalutCallback() {
+        network.sendToAllDevices(mTableCards, new SalutCallback() {
             @Override
             public void call() {
                 Log.e("WizardApp", "Oh no! The data failed to send.");
@@ -167,8 +168,9 @@ public class Round{
         });
 
     }
-    private Hand lookingForHand(Player player){
-        for (Hand hand:hands) {
+
+    private Hand lookingForHand(Player player) {
+        for (Hand hand : hands) {
             if (player.equals(hand.getHandOwner())) {
                 return hand;
             }
@@ -176,77 +178,53 @@ public class Round{
         return null;
     }
 
-    private void sendWinnerOnAll(Player player){
+    private void sendWinnerOnAll(Player player) {
         Message message = new Message();
         message.action = Actions.PICK_CARD;
         message.sender = player.getName();
-        network.sendToAllDevices(message,new SalutCallback() {
+        network.sendToAllDevices(message, new SalutCallback() {
             @Override
             public void call() {
                 Log.e("WizardApp", "Oh no! The data failed to send.");
             }
         });
-        Toast.makeText(context,"Gewonnen hat: " + player.getName(),Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Gewonnen hat: " + player.getName(), Toast.LENGTH_LONG).show();
     }
-    private void sendPointsOnAll(){
+
+    private void sendPointsOnAll() {
         //TODO Sendet den Gewinner an alle Clients
     }
-    private void askForCard(Player player){
+
+    private void askForCard(Player player) {
 
         Message mPickCard = new Message();
         mPickCard.action = Actions.PICK_CARD;
 
-        network.sendToDevice(player.getSalutDevice(),mPickCard,new SalutCallback() {
+        network.sendToDevice(player.getSalutDevice(), mPickCard, new SalutCallback() {
             @Override
             public void call() {
                 Log.e("WizardApp", "Oh no! The data failed to send.");
             }
         });
     }
-    private void roundCallBack() {
-        DataCallback callback = GameConfig.getInstance().getCallBack();
-        callback.addCallBackAction(new ICallbackAction() {
-            @Override
-            public void execute(Message message) {
-                if(message == null) {
-                    Log.e("CLIENT", "No Message received");
-                }
-                else if(message.action == Actions.CARD_IS_PICKED) {
-                    if(message.cards.length ==1){
-                        AbstractCard card =  cardStack.getCardById(message.cards[0]);
-                        Player player = getPlayerByName(message.sender);
-                        MoveTuple tuple = new MoveTuple(player,card,0);
-                        table.add(new MoveTuple(player,card,table.size()+1));
-                        lookingForHand(player).removeCard(card);
-                        status = RoundStatus.cardIsPicked;
-                        checkNextStep();
-                    }
-                    else{
-                        Log.e("CLIENT", "No cards or more than one");
-                    }
 
-                }
-            }
-
-        });
-    }
-
-    private void generateHands(){
-        for (Player player:players) {
-            hands.add(new Hand(cardStack.getCards(numberOfCards),player));
+    private void generateHands() {
+        for (Player player : players) {
+            hands.add(new Hand(cardStack.getCards(numberOfCards), player));
         }
     }
-    private void cleanHands(){
+
+    private void cleanHands() {
         hands.clear();
     }
 
 
-    public List<AbstractCard> getPlayerHand(Player player){
-        for (Hand hand: hands) {
-            if(hand.getHandOwner().equals(player)){
+    public List<AbstractCard> getPlayerHand(Player player) {
+        for (Hand hand : hands) {
+            if (hand.getHandOwner().equals(player)) {
                 List<AbstractCard> tableCards = new ArrayList<AbstractCard>();
 
-                for (MoveTuple tuple:table) {
+                for (MoveTuple tuple : table) {
                     tableCards.add(tuple.getCard());
                 }
                 return hand.getAllowedCards(tableCards); //TODO oder nur die IDs geben
@@ -256,10 +234,11 @@ public class Round{
         return null;
     }
 
+
     public Player getPlayerByName(String playerName) {
         Player foundPlayer = null;
-        for(Player player: players) {
-            if(player.getName().equals(playerName)) {
+        for (Player player : players) {
+            if (player.getName().equals(playerName)) {
                 foundPlayer = player;
                 break;
             } else {
@@ -268,35 +247,33 @@ public class Round{
         }
         return foundPlayer;
     }
+    /*
+    Entfernt gespielte Karte von der Hand des Spielers
+     */
+    public void removeCard(Player player, AbstractCard card) { //throws exception
 
+        for (Hand hand : hands)
+            if (hand.getHandOwner().equals(player))
+                hand.removeCard(card);
+
+    }
+
+    /*
+    Fügt die gespielte Karte des Spielers der Spielmitte hinzu
+     */
     public void playCard(String playerName, int cardID){ //throws exception
 
-        MoveTuple playedTupel = new MoveTuple(getPlayerByName(playerName),cardStack.getCardById(cardID),currentPlayer);
+        Player player = getPlayerByName(playerName);
+        AbstractCard card = cardStack.getCardById(cardID);
+
+        MoveTuple playedTupel = new MoveTuple(player, card, currentPlayer);
         table.add(playedTupel);
+        removeCard(player,card);
         status = RoundStatus.cardIsPicked;
         checkNextStep();
 
-
-        /*
-        for (Hand hand: hands) {
-            if(hand.getHandOwner().equals(player)){
-                List<AbstractCard> tableCards = new ArrayList<AbstractCard>();
-
-                for (MoveTuple tuple:table) {
-                    tableCards.add(tuple.getCard());
-                }
-                for (AbstractCard card:hand.getAllowedCards(tableCards)) {
-                        if (card.getId()==cardID)
-                            table.add(new MoveTuple(player,card,table.size()+1));
-                        else
-                            throw new Exception();
-                }
-            }
-
-        }
-        */
-
     }
+
 
     public Player getWinner(){
 

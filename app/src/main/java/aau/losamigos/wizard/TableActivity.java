@@ -147,8 +147,11 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                        List<AbstractCard> cards =getCardsById(message.cards);
                        setMiddleCards(cards);
                    }
-                   else if(message.action == Actions.AND_THE_WINNER_IS && message.sender != null) {
+                   else if(message.action == Actions.AND_THE_WINNER_IS) {
                        Toast.makeText(getApplicationContext(),"Gewonnen hat: " + message.sender,Toast.LENGTH_LONG).show();
+                   }
+                   else if(message.action == Actions.PICK_CARD) {
+                       //TODO
                    }
             }
         });
