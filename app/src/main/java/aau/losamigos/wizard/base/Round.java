@@ -180,7 +180,7 @@ public class Round{
         Message message = new Message();
         message.action = Actions.PICK_CARD;
         message.sender = player.getName();
-        network.sendToDevice(player.getSalutDevice(),message,new SalutCallback() {
+        network.sendToAllDevices(message,new SalutCallback() {
             @Override
             public void call() {
                 Log.e("WizardApp", "Oh no! The data failed to send.");
