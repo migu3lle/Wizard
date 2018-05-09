@@ -1,7 +1,9 @@
 package aau.losamigos.wizard.base;
 
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.peak.salut.Callbacks.SalutCallback;
 import com.peak.salut.Salut;
@@ -42,7 +44,11 @@ public class Round{
     private int currentPlayer;
     private int currentHandCards;
     private List<MoveTuple> table;
+    private Context context;
 
+    public void setContext(Context context) {
+        this.context = context;
+    }
 
     public Round(GamePlay game, int numberOfCards) {
         this.game = game;
@@ -74,6 +80,7 @@ public class Round{
         generateHands();
     }
     public void startRound(){
+        roundCallBack();
         status = RoundStatus.waitingForCard;
         askForCard(order.get(currentPlayer));
 
@@ -95,9 +102,9 @@ public class Round{
                 }
                 break;
             case tableFull:
-                /*Player winner = getWinner();
+                Player winner = getWinner();
                 sendWinnerOnAll(winner);
-                order = newOrder(winner);
+                /*order = newOrder(winner);
                 table.clear();
                 currentHandCards--;
                 if(currentHandCards>=0)
@@ -117,7 +124,7 @@ public class Round{
     }
 
     private List<Player> newOrder(Player firstPlayer){
-        ArrayList<Player> newOrder = new ArrayList<Player>();
+        List<Player> newOrder = new ArrayList<Player>();
 
         newOrder.add(firstPlayer);
         int indexFP = players.indexOf(firstPlayer);
@@ -170,7 +177,16 @@ public class Round{
     }
 
     private void sendWinnerOnAll(Player player){
-        //TODO Sendet den Gewinner an alle Clients
+        Message message = new Message();
+        message.action = Actions.PICK_CARD;
+        message.sender = player.getName();
+        network.sendToDevice(player.getSalutDevice(),message,new SalutCallback() {
+            @Override
+            public void call() {
+                Log.e("WizardApp", "Oh no! The data failed to send.");
+            }
+        });
+        Toast.makeText(context,"Gewonnen hat: " + player.getName(),Toast.LENGTH_LONG).show();
     }
     private void sendPointsOnAll(){
         //TODO Sendet den Gewinner an alle Clients
@@ -187,7 +203,7 @@ public class Round{
             }
         });
     }
-    private void RoundCallBack() {
+    private void roundCallBack() {
         DataCallback callback = GameConfig.getInstance().getCallBack();
         callback.addCallBackAction(new ICallbackAction() {
             @Override

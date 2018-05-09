@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.peak.salut.Callbacks.SalutCallback;
 import com.peak.salut.Salut;
@@ -106,6 +107,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         GameConfig gcfg = GameConfig.getInstance();
         game = new GamePlay(gcfg.getPlayers());
         game.startGame(5);
+        Round round =  game.getRecentRound();
+        round.setContext(getApplicationContext());
     }
 
     private void notifyHost() {
@@ -143,6 +146,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                    else if(message.action == Actions.TABLECARDS_ARE_COMING && message.cards != null) {
                        List<AbstractCard> cards =getCardsById(message.cards);
                        setMiddleCards(cards);
+                   }
+                   else if(message.action == Actions.AND_THE_WINNER_IS && message.sender != null) {
+                       Toast.makeText(getApplicationContext(),"Gewonnen hat: " + message.sender,Toast.LENGTH_LONG).show();
                    }
             }
         });
