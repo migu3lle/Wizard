@@ -120,9 +120,6 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                            setTrump(clientCardStack.getCardById(message.trumpCard));
                        }
                    }
-                   else if(message.action == Actions.PICK_CARD){
-                       
-                   }
             }
         });
     }
@@ -150,6 +147,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     String sender = message.sender;
                     Log.e("CARD RECEIVED", "Card of Client received: " +sender + ", " + playedCard);
                     //TODO: DO SOMETHING WITH THE CARD
+                    game.getRecentRound().playCard(sender,playedCard);
+
                 }
             }
 
@@ -178,6 +177,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         } else {
             Log.e("CARD PLAYED", "Host played card: " + clickedCard.getId());
             //TODO: do something if the host played the card as well
+            game.getRecentRound().playCard(network.thisDevice.deviceName,clickedCard.getId());
         }
 
     }

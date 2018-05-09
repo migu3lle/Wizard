@@ -242,8 +242,15 @@ public class Round{
         return foundPlayer;
     }
 
-    public void playCard(Player player, int cardID) throws Exception{
-        //TODO Solange Handkarten spielen bis jeder Spieler eine Karte gespielt hat
+    public void playCard(String playerName, int cardID){ //throws exception
+
+        MoveTuple playedTupel = new MoveTuple(getPlayerByName(playerName),cardStack.getCardById(cardID),currentPlayer);
+        table.add(playedTupel);
+        status = RoundStatus.cardIsPicked;
+        checkNextStep();
+
+
+        /*
         for (Hand hand: hands) {
             if(hand.getHandOwner().equals(player)){
                 List<AbstractCard> tableCards = new ArrayList<AbstractCard>();
@@ -260,6 +267,7 @@ public class Round{
             }
 
         }
+        */
 
     }
 
