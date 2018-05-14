@@ -159,7 +159,7 @@
     <TextView
         android:id="@+id/Player6"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="2dp"
         android:text="@string/Player6"

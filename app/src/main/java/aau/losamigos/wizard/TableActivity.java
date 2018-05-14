@@ -106,7 +106,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     private void startGame(){
         GameConfig gcfg = GameConfig.getInstance();
         game = new GamePlay(gcfg.getPlayers());
-        game.startGame(5);
+        game.startGame(1);
         Round round =  game.getRecentRound();
         round.setContext(getApplicationContext());
     }
@@ -276,7 +276,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     private void setCardsToImages(List<AbstractCard> cards) {
         if(cards == null || cards.size() == 0)
             return;
-        int maxIteration = 5;
+        int maxIteration = game.getCountRound();
         if(cards.size() < maxIteration) {
             maxIteration = cards.size();
         }
