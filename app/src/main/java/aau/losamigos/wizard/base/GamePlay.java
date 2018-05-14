@@ -66,6 +66,12 @@ public class GamePlay {
      */
     public void gameFinished(){
             //TODO Dinge welche nach der letzten Runde erledigt werden müssen
+        for(Player player:getPlayers()){
+
+            player.addPoints(Points.getScore(player));
+
+        }
+
     }
 
     public void startGame(int cardCount) {
