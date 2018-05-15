@@ -30,7 +30,6 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
     SalutListViewAdapter adapter;
     ArrayList<SalutDevice> clientList;
 
-    Button btnService;
     Button btnBack;
     Button btnStartGame;
 
@@ -53,8 +52,6 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
         lvClients.setAdapter(adapter);
 
         //Some buttons...
-        btnService = findViewById(R.id.btn_Service);
-        btnService.setOnClickListener(this);
         btnBack = findViewById(R.id.btn_Back);
         btnBack.setOnClickListener(this);
         btnStartGame = findViewById(R.id.btn_StartGame);
@@ -88,6 +85,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
         GameConfig.getInstance().setSalut(network, dataCallback);
         //Add this device (=host) to clientList
         clientList.add(network.thisDevice);
+        setupNetwork();
     }
 
     /*
@@ -95,18 +93,13 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
      */
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.btn_Service){
-            //Start a host service
-            setupNetwork();
-        }
-        else if(v.getId() == R.id.btn_Back){
+        if(v.getId() == R.id.btn_Back){
             finish();
         }
         else if(v.getId() == R.id.btn_StartGame){
             gameStarted = true;
             GameConfig.getInstance().setPlayers(clientList);
             GameConfig.getInstance().setIsHost(true);
-
 
 
             Message myMessage = new Message();
@@ -136,13 +129,6 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
                     adapter.notifyDataSetChanged();
                 }
             });
-            btnService.setText("Stop Service");
-
-        }
-        else
-        {
-            network.stopNetworkService(false);
-            btnService.setText("Start Service");
         }
     }
 
@@ -154,20 +140,28 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("WizardApp", "WaitForPlayersActivity: onDestroy()");
 
         if(network != null) {
             if( network.isRunningAsHost) {
                 try {
+                    Log.d("WizardApp", "WaitForPlayersActivity: Trying stopNetworkService()");
+
+                    /* For any reason cancelConnecting() is needed first to make stopNetworkService functional
+                     * This triggers the WifiP2pManager.stopServiceRequest() method internal.
+                     * Otherwise stopNetworkService throws an SocketException when calling ServerSocket.close() method */
+                    network.cancelConnecting();
                     network.stopNetworkService(true);
 
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
             } else {
                 try {
+                    Log.d("WizardApp", "WaitForPlayersActivity: Trying unregisterClient()");
                     network.unregisterClient(true);
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
             }
         }

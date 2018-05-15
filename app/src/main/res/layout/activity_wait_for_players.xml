@@ -18,10 +18,10 @@
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/lv_Players"
         android:layout_width="368dp"
-        android:layout_height="330dp"
+        android:layout_height="396dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,17 +54,5 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/btn_Service"
-        android:layout_width="136dp"
-        android:layout_height="59dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="4dp"
-        android:background="@android:drawable/alert_light_frame"
-        android:backgroundTint="@color/colorPrimaryLight"
-        android:text="Start Service"
-        app:layout_constraintEnd_toEndOf="@+id/toolbar"
-        app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
 </android.support.constraint.ConstraintLayout>
