@@ -34,6 +34,9 @@ public class Message{
     @JsonField
     public int playedCard;
 
+    @JsonField
+    public int[] playerPoints;
+
     public String[] players;
 
 
