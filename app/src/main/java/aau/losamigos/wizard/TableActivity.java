@@ -1,40 +1,54 @@
 package aau.losamigos.wizard;
 
-import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.peak.salut.Callbacks.SalutCallback;
 import com.peak.salut.Salut;
+import com.peak.salut.SalutDevice;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import aau.losamigos.wizard.base.AbstractCard;
 import aau.losamigos.wizard.base.GameConfig;
+import aau.losamigos.wizard.base.GamePlay;
+import aau.losamigos.wizard.base.Message;
+import aau.losamigos.wizard.base.Round;
+import aau.losamigos.wizard.elements.CardStack;
+import aau.losamigos.wizard.elements.Player;
 import aau.losamigos.wizard.network.DataCallback;
+import aau.losamigos.wizard.network.ICallbackAction;
+import aau.losamigos.wizard.rules.Actions;
+import aau.losamigos.wizard.rules.Client2HostAction;
 
-public class TableActivity extends AppCompatActivity implements View.OnClickListener {
+public class TableActivity extends AppCompatActivity implements View.OnClickListener{
+    Salut network;
+    List<ImageView> cardViews;
+    List<ImageView> middleCards;
+    ImageView trump;
+    GamePlay game;
+    CardStack clientCardStack;
 
-    public Salut network;
-
-    ImageView pCard1;
-    ImageView pCard2;
-    ImageView pCard3;
-    ImageView pCard4;
-    ImageView pCard5;
-
-    ImageView playedCard1;
-
-    Drawable img;
-
-
+    HashMap<Integer, AbstractCard> view2CardMap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_table);
         getSupportActionBar().hide();
 
+        initGui();
+
         network = GameConfig.getInstance().getSalut();
 
-<<<<<<< HEAD
         if(network.isRunningAsHost) {
             defineHostCallBack();
             startGame();
@@ -144,58 +158,164 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void defineHostCallBack() {
-=======
->>>>>>> 3cc8d337a3aa6136ff08d496309728bc18cafc1c
         DataCallback callback = GameConfig.getInstance().getCallBack();
-        pCard1 = findViewById(R.id.PCard1);
-        pCard2 = findViewById(R.id.PCard2);
-        pCard3 = findViewById(R.id.PCard3);
-        pCard4 = findViewById(R.id.PCard4);
-        pCard5 = findViewById(R.id.PCard5);
+        callback.addCallBackAction(new ICallbackAction() {
+            @Override
+            public void execute(Message message) {
+                Log.d("HOST CALLBACK", "Received: " + message);
+                Round round = game.getRecentRound();
+                if(message == null && message.client2HostAction == 0) {
+                    Log.e("CLIENT", "No Message received");
+                }
 
-        pCard1.setOnClickListener(this);
-        pCard2.setOnClickListener(this);
-        pCard3.setOnClickListener(this);
-        pCard4.setOnClickListener(this);
-        pCard5.setOnClickListener(this);
+                else if(message.client2HostAction == Client2HostAction.TABLE_ACTIVITY_STARTED) {
+                    Player p = round.getPlayerByName(message.sender);
+                    if(p != null) {
+                        sendCardsToDevice(p);
+                    }
+                }
 
-        playedCard1 = findViewById(R.id.playedCard1);
+                else if(message.client2HostAction == Client2HostAction.CARD_PLAYED) {
+                    int playedCard = message.playedCard;
+                    String sender = message.sender;
+                    Log.e("CARD RECEIVED", "Card of Client received: " +sender + ", " + playedCard);
+                    //TODO: DO SOMETHING WITH THE CARD
+                    Round round1 = game.getRecentRound();
+                    round1.playCard(sender,playedCard);
+                    setMiddleCards(round1.getPlayedCards());
+                }
+            }
 
+        });
     }
 
-    public void onClick(View v) {
-        ImageView card = (ImageView)v;
-        if(v.getId() == R.id.PCard1){
-            playCard1(card);
+    private List<AbstractCard> getCardsById(int[] cardIds) {
+        List<AbstractCard> cards = new ArrayList<>();
+        for(int i = 0; i < cardIds.length; i++) {
+            cards.add(clientCardStack.getCardById(cardIds[i]));
         }
-        if(v.getId() == R.id.PCard2){
-            playCard1(card);
-        }
-        if(v.getId() == R.id.PCard3){
-            playCard1(card);
-        }
-        if(v.getId() == R.id.PCard4){
-            playCard1(card);
-        }
-        if(v.getId() == R.id.PCard5){
-            playCard1(card);
-        }
-
-
-
-
-        }
-
-   public void playCard1(ImageView card){
-        img = card.getDrawable();
-        playedCard1.setImageDrawable(img);
-        playedCard1.setVisibility(View.VISIBLE);
-
-   }
+        return cards;
+    }
 
     public void resetGame(View view) {
         setContentView(R.layout.activity_table);
     }
+
+    @Override
+    public void onClick(View view) {
+
+        if(view instanceof ImageView) {
+            ImageView imgView = (ImageView) view;
+
+            //card is not visible so do nothing
+            if(imgView.getDrawable() == null) {
+                return;
+            }
+
+            imgView.setImageDrawable(null);
+
+            AbstractCard clickedCard = view2CardMap.get(view.getId());
+            Message message = new Message();
+            message.client2HostAction = Client2HostAction.CARD_PLAYED;
+            message.playedCard = clickedCard.getId();
+            message.sender = network.thisDevice.deviceName;
+
+            if(!network.isRunningAsHost) {
+                network.sendToHost(message, new SalutCallback() {
+                    @Override
+                    public void call() {
+                        Log.e("CARD PLAY", "Client failed to play card");
+                    }
+                });
+            } else {
+                Log.e("CARD PLAYED", "Host played card: " + clickedCard.getId());
+                //TODO: do something if the host played the card as well
+                Round round = game.getRecentRound();
+                round.playCard(network.thisDevice.deviceName,clickedCard.getId());
+                List<AbstractCard> playedCards = round.getPlayedCards();
+                setMiddleCards(playedCards);
+            }
+        }
+    }
+
+    private void sendCardsToDevice(Player player) {
+        Round round = game.getRecentRound();
+        List<AbstractCard> cards = round.getPlayerHand(player);
+        SalutDevice playerDevice = player.getSalutDevice();
+        //then we are host because only host calls this method
+        Message message = new Message();
+        message.action = Actions.INITIAL_CARD_GIVING;
+        message.cards = new int[cards.size()];
+        message.trumpCard = round.getTrump().getId();
+        for(int i = 0; i < cards.size(); i++) {
+            message.cards[i] = cards.get(i).getId();
+        }
+        Log.d("SEND CARDS", message.toString());
+        network.sendToDevice(playerDevice, message, new SalutCallback() {
+            @Override
+            public void call() {
+                Log.e("HOST GIVE CARD", "card giving failed for device: ");
+            }
+        });
+    }
+
+    private void setCardsForHost() {
+        Round round = game.getRecentRound();
+        setTrump(round.getTrump());
+        Player[] players = GameConfig.getInstance().getPlayers();
+        for(int i = 0; i < players.length; i++) {
+            final Player player = players[i];
+            SalutDevice playerDevice = player.getSalutDevice();
+            //then we are host because only host calls this method
+            if(playerDevice == network.thisDevice) {
+                List<AbstractCard> cards = round.getPlayerHand(player);
+                setCardsToImages(cards);
+                break;
+            }
+
+        }
+    }
+
+    private void setCardsToImages(List<AbstractCard> cards) {
+        if(cards == null || cards.size() == 0)
+            return;
+        int maxIteration = 5;
+        if(cards.size() < maxIteration) {
+            maxIteration = cards.size();
+        }
+
+        for(int i = 0; i < maxIteration; i++) {
+            ImageView img =  cardViews.get(i);
+            AbstractCard card = cards.get(i);
+            view2CardMap.put(img.getId(), card);
+            img.setImageResource(card.getResourceId());
+        }
+    }
+
+    private void setTrump(AbstractCard card) {
+        trump.setImageResource(card.getResourceId());
+    }
+
+    private void setMiddleCards(List<AbstractCard> cards) {
+        resetMiddleCards();
+
+        int maxIterations = middleCards.size();
+        if(cards.size() < maxIterations)
+            maxIterations = cards.size();
+
+        for(int i =0; i < maxIterations; i++) {
+            ImageView img = middleCards.get(i);
+            AbstractCard card = cards.get(i);
+            img.setImageResource(card.getResourceId());
+        }
+    }
+
+    private void resetMiddleCards() {
+        for(ImageView img: middleCards) {
+            img.setImageDrawable(null);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
