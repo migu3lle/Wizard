@@ -53,7 +53,7 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
         lvHosts = findViewById(R.id.lv_Hosts);
         lvHosts.setOnItemClickListener(this);
         etClientName = findViewById(R.id.et_ClientName);
-        etClientName.setText(randomFraction());
+        etClientName.setText(Fractions.getRandomFraction());
         //Remove focus from EditText
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -78,7 +78,7 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
         dataReceiver = new SalutDataReceiver(this, dataCallback);
 
         /*Populate the details for our awesome service. */
-        serviceData = new SalutServiceData("testAwesomeService", NetworkHelper.findFreePort(), etClientName.getText().toString());
+        serviceData = new SalutServiceData("wizardService", NetworkHelper.findFreePort(), etClientName.getText().toString());
 
         network = new Salut(dataReceiver, serviceData, new SalutCallback() {
             @Override
@@ -112,7 +112,7 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
                 @Override
                 public void call() {
                     Toast.makeText(getApplicationContext(), "Device: " + network.foundDevices.get(0).instanceName + " found.", Toast.LENGTH_SHORT).show();
-
+                    hostList.clear();
                     for (SalutDevice device : network.foundDevices) {
                         hostList.add(device);
                     }
@@ -134,7 +134,7 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void run() {
                         registerWithHost(device);
-                        System.out.println("Now i want to connect to device " + device.toString());
+                        Log.d("WizardApp", "Now i want to connect to device " + device.toString());
                     }
                 });
     }
@@ -143,12 +143,14 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
         network.registerWithHost(host, new SalutCallback() {
             @Override
             public void call() {
-                System.out.println("We're now registered.");
+                Log.d("WizardApp", "We're now registered.");
+                //Once registered with a host, no other host service should be selectable
+                lvHosts.setClickable(false);
             }
         }, new SalutCallback() {
             @Override
             public void call() {
-                System.out.println("We failed to register.");
+                Log.d("WizardApp", "We failed to register.");
             }
         });
     }
@@ -156,11 +158,5 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
     private void nextActivity() {
         Intent intent = new Intent(this, TableActivity.class);
         startActivity(intent);
-    }
-
-    private String randomFraction() {
-        int pickFraction = new Random().nextInt(Fractions.values().length);
-        Random randNumber = new Random();
-        return Fractions.values()[pickFraction].toString()+String.valueOf(randNumber.nextInt(99-10)+10);
     }
 }

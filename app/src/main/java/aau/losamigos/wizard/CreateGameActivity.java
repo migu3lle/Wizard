@@ -4,17 +4,17 @@ package aau.losamigos.wizard;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 
 import aau.losamigos.wizard.base.GameConfig;
+import aau.losamigos.wizard.types.Fractions;
 
 public class CreateGameActivity extends AppCompatActivity implements View.OnClickListener{
 
-    EditText textGameName;
+    EditText textHostName;
     EditText textMinPlayer;
     EditText textMaxPlayer;
     Switch swPw;
@@ -28,7 +28,7 @@ public class CreateGameActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_game);
 
-        textGameName = findViewById(R.id.editText_gameName);
+        textHostName = findViewById(R.id.editText_hostName);
         textMinPlayer = findViewById(R.id.editText_minPlayer);
         textMaxPlayer = findViewById(R.id.editText_maxPlayer);
         swPw = findViewById(R.id.sw_password);
@@ -43,7 +43,7 @@ public class CreateGameActivity extends AppCompatActivity implements View.OnClic
 
         textMinPlayer.setText("2"); //For Test reasons; TODO: remove
         textMaxPlayer.setText("6"); //For Test reasons; TODO: remove
-
+        textHostName.setText(Fractions.getRandomFraction());
     }
 
     /*
@@ -55,7 +55,6 @@ public class CreateGameActivity extends AppCompatActivity implements View.OnClic
 
             //On first action the GameConfig object is generated
             GameConfig gameConfig = GameConfig.getInstance(
-                    textGameName.getText().toString(),
                     Integer.parseInt(textMinPlayer.getText().toString()),
                     Integer.parseInt(textMaxPlayer.getText().toString()), swPw.isChecked(), swCheat.isChecked());
 
@@ -72,6 +71,7 @@ public class CreateGameActivity extends AppCompatActivity implements View.OnClic
      */
     private void nextActivity() {
         Intent intent = new Intent(this, WaitForPlayersActivity.class);
+        intent.putExtra("hostPlayerName", textHostName.getText().toString());
         startActivity(intent);
     }
 }

@@ -35,6 +35,8 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
     Button btnBack;
     Button btnStartGame;
 
+    Bundle bundle;
+
     public SalutDataReceiver dataReceiver;
     public SalutServiceData serviceData;
     Salut network;
@@ -46,6 +48,8 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait_for_players);
+
+        bundle = getIntent().getExtras();
 
         //For client list view....
         lvClients = findViewById(R.id.lv_Players);
@@ -67,9 +71,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
         dataReceiver = new SalutDataReceiver(this, dataCallback);
 
         /*Populate the details for our service. */
-        System.out.println("Hello: " + GameConfig.getInstance().getName());
-        Log.d("WizardApp", "Game Name: " + GameConfig.getInstance().getName());
-        serviceData = new SalutServiceData("testAwesomeService", NetworkHelper.findFreePort(), GameConfig.getInstance().getName());
+        serviceData = new SalutServiceData("wizardService", NetworkHelper.findFreePort(), bundle.getString("hostPlayerName"));
 
         /*Create an instance of the Salut class, with all of the necessary data from before.
         * We'll also provide a callback just in case a device doesn't support WiFi Direct, which
