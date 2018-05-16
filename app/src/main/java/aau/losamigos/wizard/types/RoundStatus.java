@@ -9,6 +9,5 @@ public enum RoundStatus {
     waitingForCard,
     cardIsPicked,
     tableFull,
-    roundEnded,
-    waitingForStiches
+    roundEnded
 }

@@ -9,13 +9,18 @@ import com.peak.salut.Callbacks.SalutCallback;
 import com.peak.salut.Salut;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import aau.losamigos.wizard.TableActivity;
 import aau.losamigos.wizard.elements.CardStack;
 import aau.losamigos.wizard.elements.MoveTuple;
 import aau.losamigos.wizard.elements.Player;
 import aau.losamigos.wizard.elements.cards.FractionCard;
+import aau.losamigos.wizard.network.DataCallback;
+import aau.losamigos.wizard.network.ICallbackAction;
 import aau.losamigos.wizard.rules.Actions;
+import aau.losamigos.wizard.rules.JesterRule;
 import aau.losamigos.wizard.types.Fractions;
 import aau.losamigos.wizard.types.RoundStatus;
 
@@ -41,7 +46,9 @@ public class Round {
     private List<MoveTuple> table;
     private Context context;
 
-
+    public void setContext(Context context) {
+        this.context = context;
+    }
 
     public Round(GamePlay game, int numberOfCards) {
         this.game = game;
@@ -73,30 +80,14 @@ public class Round {
         generateHands();
     }
 
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
     public void startRound() {
-        status = RoundStatus.waitingForStiches;
-        askForStiches(order.get(currentPlayer));
-        currentPlayer++;
+        status = RoundStatus.waitingForCard;
+        askForCard(order.get(currentPlayer));
+
     }
 
     private void checkNextStep() {
         switch (status) {
-            case waitingForStiches:
-                if(currentPlayer < order.size()){
-                    status = RoundStatus.waitingForStiches;
-                    currentPlayer++;
-                    askForStiches(order.get(currentPlayer));
-                }
-                else{
-                    status = RoundStatus.waitingForCard;
-                    currentPlayer=0;
-                    askForCard(order.get(currentPlayer));
-                }
-                break;
             case waitingForCard:
                 break;
             case cardIsPicked:
@@ -113,22 +104,11 @@ public class Round {
             case tableFull:
                 Player winner = getWinner();
                 sendWinnerOnAll(winner);
-
-                /*
-                    5 Sekunde Pause
-                */
-                try {
-                    Thread.sleep(5000);
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
                 table.clear();
 
                 sendTableOnAll();
 
-                order = newOrder(winner);
+                //order = newOrder(winner);
                 currentHandCards--;
                 if(currentHandCards>=0)
                     askForCard(order.get(currentPlayer));
@@ -150,15 +130,19 @@ public class Round {
         List<Player> newOrder = new ArrayList<Player>();
 
         newOrder.add(firstPlayer);
-
         int indexFP = players.indexOf(firstPlayer);
+        int afterFP = indexFP + 1;
+        int beforeFP = 0;
+        for (int i = 1; i < playerNumber; i++) {
+            if (afterFP <= playerNumber) {
+                newOrder.add(players.get(afterFP));
+                afterFP++;
+            } else {
+                newOrder.add(players.get(beforeFP));
+                beforeFP++;
+            }
 
-        for (int i = indexFP+1; i < playerNumber; i++)
-                newOrder.add(players.get(i));
-
-        for (int i = 0; i < indexFP; i++)
-                newOrder.add(players.get(i));
-
+        }
         currentPlayer = 0;
         return newOrder;
     }
@@ -197,7 +181,7 @@ public class Round {
 
     private void sendWinnerOnAll(Player player) {
         Message message = new Message();
-        message.action = Actions.AND_THE_WINNER_IS;
+        message.action = Actions.PICK_CARD;
         message.sender = player.getName();
         network.sendToAllDevices(message, new SalutCallback() {
             @Override
@@ -209,20 +193,7 @@ public class Round {
     }
 
     private void sendPointsOnAll() {
-        Message message = new Message();
-        message.action = Actions.YOUR_POINTS;
-        for (int i = 0; i < playerNumber ; i++) {
-            message.playerPoints[i] = players.get(i).getPoints();
-        }
-
-        network.sendToAllDevices(message, new SalutCallback() {
-            @Override
-            public void call() {
-                Log.e("WizardApp", "Oh no! The data failed to send.");
-            }
-        });
-
-        //TODO Blende Punkte fürn Host ein
+        //TODO Sendet den Gewinner an alle Clients
     }
 
     private void askForCard(Player player) {
@@ -231,18 +202,6 @@ public class Round {
         mPickCard.action = Actions.PICK_CARD;
 
         network.sendToDevice(player.getSalutDevice(), mPickCard, new SalutCallback() {
-            @Override
-            public void call() {
-                Log.e("WizardApp", "Oh no! The data failed to send.");
-            }
-        });
-    }
-    private void askForStiches(Player player) {
-
-        Message mNumberOfTricks = new Message();
-        mNumberOfTricks.action = Actions.NUMBER_OF_TRICKS;
-
-        network.sendToDevice(player.getSalutDevice(), mNumberOfTricks, new SalutCallback() {
             @Override
             public void call() {
                 Log.e("WizardApp", "Oh no! The data failed to send.");
@@ -276,6 +235,19 @@ public class Round {
         return null;
     }
 
+
+    public Player getPlayerByName(String playerName) {
+        Player foundPlayer = null;
+        for (Player player : players) {
+            if (player.getName().equals(playerName)) {
+                foundPlayer = player;
+                break;
+            } else {
+                Log.d("PLAYER SEARCH", "no match: " + playerName + ", " + player.getName());
+            }
+        }
+        return foundPlayer;
+    }
     /*
     Entfernt gespielte Karte von der Hand des Spielers
      */
@@ -339,22 +311,6 @@ public class Round {
             playedCards.add(tuple.getCard());
         }
         return playedCards;
-    }
-
-    /*********************************************************************************************
-    Hilfsmethoden
-    */
-    private Player getPlayerByName(String playerName) {
-        Player foundPlayer = null;
-        for (Player player : players) {
-            if (player.getName().equals(playerName)) {
-                foundPlayer = player;
-                break;
-            } else {
-                Log.d("PLAYER SEARCH", "no match: " + playerName + ", " + player.getName());
-            }
-        }
-        return foundPlayer;
     }
 
 }

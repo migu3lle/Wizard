@@ -10,6 +10,4 @@ public class Actions {
     public static int CARD_IS_PICKED = 3;
     public static int TABLECARDS_ARE_COMING = 4;
     public static int AND_THE_WINNER_IS = 5;
-    public static int NUMBER_OF_TRICKS = 6;
-    public static int YOUR_POINTS = 7;
 }
