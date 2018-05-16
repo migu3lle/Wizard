@@ -105,6 +105,7 @@ public class Round {
                 Player winner = getWinner();
                 sendWinnerOnAll(winner);
                 table.clear();
+
                 sendTableOnAll();
 
                 //order = newOrder(winner);

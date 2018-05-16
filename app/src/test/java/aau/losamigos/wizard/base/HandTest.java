@@ -30,12 +30,12 @@ public class HandTest {
         p[0] = new Player("Player1");
 
 
-        handcards.add(new WizardCard(3));
-        handcards.add(new JesterCard(4));
-        handcards.add(new FractionCard(5,11,Fractions.Dwarf));
-        handcards.add(new FractionCard(6,5,Fractions.Dwarf));
-        handcards.add(new FractionCard(7,8,Fractions.Giant));
-        handcards.add(new FractionCard(8,13,Fractions.Elb));
+        handcards.add(new WizardCard(3,0));
+        handcards.add(new JesterCard(4,0));
+        handcards.add(new FractionCard(5,11,Fractions.green,0));
+        handcards.add(new FractionCard(6,5,Fractions.green,0));
+        handcards.add(new FractionCard(7,8,Fractions.red,0));
+        handcards.add(new FractionCard(8,13,Fractions.blue,0));
         h[0] = new Hand(handcards,p[0]);
 
        table = new ArrayList<AbstractCard>();
@@ -47,8 +47,8 @@ public class HandTest {
 
     @Test
     public void testWizardFirst() {
-        table.add(new WizardCard(2));
-        table.add(new FractionCard(1,10, Fractions.Dwarf));
+        table.add(new WizardCard(2,0));
+        table.add(new FractionCard(1,10, Fractions.green,0));
 
         int count = 0;
         for (AbstractCard card: h[0].getAllowedCards(table)) {
@@ -59,7 +59,7 @@ public class HandTest {
     }
     @Test
     public void testFractionFirst() {
-        table.add(new FractionCard(1,10, Fractions.Dwarf));
+        table.add(new FractionCard(1,10, Fractions.green, 0));
 
 
         int count = 0;
@@ -71,7 +71,7 @@ public class HandTest {
     }
     @Test
     public void testOnlyJester() {
-        table.add(new JesterCard(20));
+        table.add(new JesterCard(20,0));
 
         int count = 0;
         for (AbstractCard card: h[0].getAllowedCards(table)) {
@@ -82,8 +82,8 @@ public class HandTest {
     }
     @Test
     public void testJesterFraction() {
-        table.add(new JesterCard(20));
-        table.add(new FractionCard(1,10, Fractions.Giant));
+        table.add(new JesterCard(20,0));
+        table.add(new FractionCard(1,10, Fractions.red,0));
 
         int count = 0;
         for (AbstractCard card: h[0].getAllowedCards(table)) {

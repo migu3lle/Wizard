@@ -23,14 +23,13 @@ public class AbstractCardTest {
 
     @Test
     public void TestTypeMatch() {
-        AbstractCard card = new FractionCard(1, 1, Fractions.Dwarf);
+        AbstractCard card = new FractionCard(1, 1, Fractions.green, 0);
         FractionCard fractionCard = card.getExact(FractionCard.class);
-        Assert.assertNotNull("card should have been fractionCard", fractionCard);
+        Assert.assertNotNull(fractionCard);
     }
-
     @Test
     public void TestNoTypeMatch() {
-        AbstractCard card = new WizardCard(1);
+        AbstractCard card = new WizardCard(1,0);
         FractionCard fractionCard = card.getExact(FractionCard.class);
         Assert.assertNull("card should not have been a fractionCard", fractionCard);
     }
