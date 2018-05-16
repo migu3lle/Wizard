@@ -163,26 +163,4 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
         Random randNumber = new Random();
         return Fractions.values()[pickFraction].toString()+String.valueOf(randNumber.nextInt(99-10)+10);
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        if(network != null) {
-            if( network.isRunningAsHost) {
-                try {
-                    network.stopNetworkService(true);
-
-                } catch (Exception e) {
-
-                }
-            } else {
-                try {
-                    network.unregisterClient(true);
-                } catch (Exception e) {
-
-                }
-            }
-        }
-    }
 }

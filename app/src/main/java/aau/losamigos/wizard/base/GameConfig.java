@@ -9,10 +9,16 @@ import com.peak.salut.SalutDevice;
 import com.peak.salut.SalutServiceData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import aau.losamigos.wizard.elements.Player;
+import aau.losamigos.wizard.rules.JesterRule;
+import aau.losamigos.wizard.rules.PointsRule;
+import aau.losamigos.wizard.rules.TrumpCardRule;
+import aau.losamigos.wizard.rules.WizardRule;
+import java.util.HashMap;
 import aau.losamigos.wizard.network.DataCallback;
+
 
 /**
  * Created by gunmic on 13.04.18.
@@ -30,6 +36,7 @@ public class GameConfig {
     HashMap<Player, SalutDevice> playerDeviceMap = new HashMap<>();
     private static Salut salut;
     private static DataCallback callback;
+
 
     private GameConfig(){
         //Singleton pattern, to defeat instantiation
@@ -56,6 +63,13 @@ public class GameConfig {
         this.maxPlayer = maxPlayer;
         this.keyEnabled = keyEnabled;
         this.cheatEnabled = cheatEnabled;
+
+        List<AbstractRule> rules = new ArrayList<AbstractRule>();
+        rules.add(new JesterRule());
+        rules.add(new PointsRule());
+        rules.add(new TrumpCardRule());
+        rules.add(new WizardRule());
+        RuleEngine.getInstance().initializeRules(rules);
     }
 
     /**
@@ -73,8 +87,11 @@ public class GameConfig {
         players = new Player[playerList.size()];
         int i = 0;
         for (SalutDevice device : playerList) {
-            players[i++] = new Player(device.deviceName);
+            Player player =new Player(device.deviceName);
+            player.setSalutDevice(device);
+            players[i] = player;
             playerDeviceMap.put(players[i], device);
+            i++;
         }
         return true;
     }

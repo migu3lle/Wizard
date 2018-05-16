@@ -72,9 +72,9 @@ public class RuleEngineTest {
     @Test
     public void TestWizardRule() {
         List<MoveTuple> move = new ArrayList<>();
-        move.add(new MoveTuple(p1, new FractionCard(2, 11,  Fractions.Human), 1));
-        move.add(new MoveTuple(p2, new WizardCard(1), 2));
-        move.add(new MoveTuple(p3, new FractionCard(3, 10,  Fractions.Human), 3));
+        move.add(new MoveTuple(p1, new FractionCard(2, 11,  Fractions.red,0), 1));
+        move.add(new MoveTuple(p2, new WizardCard(1,0), 2));
+        move.add(new MoveTuple(p3, new FractionCard(3, 10,  Fractions.red,0), 3));
 
         Player winner = ruleEngine.processRound(move, null);
 
@@ -84,9 +84,9 @@ public class RuleEngineTest {
     @Test
     public void TestJesterRule() {
         List<MoveTuple> move = new ArrayList<>();
-        move.add(new MoveTuple(p1, new JesterCard(2), 1));
-        move.add(new MoveTuple(p2, new FractionCard(1, 2, Fractions.Human), 2));
-        move.add(new MoveTuple(p3, new JesterCard(3), 3));
+        move.add(new MoveTuple(p1, new JesterCard(2,0), 1));
+        move.add(new MoveTuple(p2, new FractionCard(1, 2, Fractions.red,0), 2));
+        move.add(new MoveTuple(p3, new JesterCard(3,0), 3));
 
         Player winner = ruleEngine.processRound(move, null);
 
@@ -96,11 +96,11 @@ public class RuleEngineTest {
     @Test
     public void TestTrumpRule() {
         List<MoveTuple> move = new ArrayList<>();
-        move.add(new MoveTuple(p1, new FractionCard(1, 13,  Fractions.Human), 1));
-        move.add(new MoveTuple(p2, new FractionCard(2, 12, Fractions.Human), 2));
-        move.add(new MoveTuple(p3, new FractionCard(3, 1,  Fractions.Dwarf), 3));
+        move.add(new MoveTuple(p1, new FractionCard(1, 13,  Fractions.red,0), 1));
+        move.add(new MoveTuple(p2, new FractionCard(2, 12, Fractions.red,0), 2));
+        move.add(new MoveTuple(p3, new FractionCard(3, 1,  Fractions.green,0), 3));
 
-        Player winner = ruleEngine.processRound(move, Fractions.Dwarf);
+        Player winner = ruleEngine.processRound(move, Fractions.green);
 
         Assert.assertEquals("player 3 should have won", p3, winner);
     }
@@ -108,11 +108,11 @@ public class RuleEngineTest {
     @Test
     public void TestPointsRule() {
         List<MoveTuple> move = new ArrayList<>();
-        move.add(new MoveTuple(p1, new FractionCard(1, 5,  Fractions.Human), 1));
-        move.add(new MoveTuple(p2, new FractionCard(2, 12, Fractions.Human), 2));
-        move.add(new MoveTuple(p3, new FractionCard(3, 1,  Fractions.Human), 3));
+        move.add(new MoveTuple(p1, new FractionCard(1, 5,  Fractions.red,0), 1));
+        move.add(new MoveTuple(p2, new FractionCard(2, 12, Fractions.red,0), 2));
+        move.add(new MoveTuple(p3, new FractionCard(3, 1,  Fractions.red,0), 3));
 
-        Player winner = ruleEngine.processRound(move, Fractions.Dwarf);
+        Player winner = ruleEngine.processRound(move, Fractions.green);
 
         Assert.assertEquals("player 2 should have won", p2, winner);
     }

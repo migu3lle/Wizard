@@ -9,8 +9,10 @@ public class AbstractCard {
     protected int id;
     private boolean allowedToPlay;
 
+    private int resourceId;
 
-    public AbstractCard(int id) {
+    public AbstractCard(int id, int resourceId) {
+        this.resourceId = resourceId;
         this.id = id;
     }
 
@@ -26,6 +28,9 @@ public class AbstractCard {
         return id;
     }
 
+    public int getResourceId() {
+        return this.resourceId;
+    }
     /**
      * method to get the exact derivation of AbstractCard
      * returns null if the card is not of the given type

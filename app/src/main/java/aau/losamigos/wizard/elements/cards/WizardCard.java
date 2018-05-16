@@ -10,7 +10,7 @@ import aau.losamigos.wizard.base.AbstractCard;
  * a wizard always wins
  */
 public class WizardCard extends AbstractCard {
-    public WizardCard(int id) {
-        super(id);
+    public WizardCard(int id, int resourceId) {
+        super(id, resourceId);
     }
 }
