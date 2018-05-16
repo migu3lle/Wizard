@@ -1,5 +1,7 @@
 package aau.losamigos.wizard;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -94,7 +96,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.btn_Back){
-            finish();
+            this.onBackPressed();
         }
         else if(v.getId() == R.id.btn_StartGame){
             gameStarted = true;
@@ -165,5 +167,22 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
                 }
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(R.string.AlertBack)
+                .setMessage(R.string.AlertBackDescription)
+                .setPositiveButton(R.string.AlertBackYes, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.AlertBackNo, null)
+                .show();
     }
 }
