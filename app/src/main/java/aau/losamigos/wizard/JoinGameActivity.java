@@ -98,16 +98,16 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
     */
     @Override
     public void onClick(View v) {
-        Log.d("Tag", "button clicked...");
+        Log.d("WizardApp", "button clicked...");
         if (v.getId() == R.id.btn_Discover) {
             discoverServices();
         }
     }
 
     private void discoverServices() {
-        Log.d("Tag", "want start discovering now...");
+        Log.d("WizardApp", "want start discovering now...");
         if (!network.isRunningAsHost && !network.isDiscovering) {
-            Log.d("Tag", "start discovering...");
+            Log.d("WizardApp", "start discovering...");
             network.discoverNetworkServices(new SalutCallback() {
                 @Override
                 public void call() {
@@ -120,10 +120,12 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
                 }
             }, true);
             btnDiscover.setText("Stop Discovery");
+            etClientName.setEnabled(false);
         } else {
-            Log.d("Tag", "else...");
+            Log.d("WizardApp", "else...");
             network.stopServiceDiscovery(true);
             btnDiscover.setText("DISCOVER");
+            etClientName.setEnabled(true);
         }
     }
 
@@ -133,6 +135,8 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
         view.animate().setDuration(2000).alpha(100).withEndAction(new Runnable() {
                     @Override
                     public void run() {
+                        etClientName.setEnabled(false);
+                        btnDiscover.setClickable(false);
                         registerWithHost(device);
                         Log.d("WizardApp", "Now i want to connect to device " + device.toString());
                     }
@@ -151,6 +155,8 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void call() {
                 Log.d("WizardApp", "We failed to register.");
+                etClientName.setEnabled(true);
+                btnDiscover.setClickable(true);
             }
         });
     }
