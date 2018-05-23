@@ -28,7 +28,6 @@ public class GameConfig {
 
     private static GameConfig singleton = null;
     private boolean host = false;
-    private String name;
     private int minPlayer, maxPlayer;
     private boolean keyEnabled;
     private boolean cheatEnabled;
@@ -42,9 +41,9 @@ public class GameConfig {
         //Singleton pattern, to defeat instantiation
     }
     //Usage for Host
-    public static GameConfig getInstance(String name, int minPlayer, int maxPlayer, boolean keyEnabled, boolean cheatEnabled){
+    public static GameConfig getInstance(int minPlayer, int maxPlayer, boolean keyEnabled, boolean cheatEnabled){
         if(singleton == null){
-            singleton = new GameConfig(name, minPlayer, maxPlayer, keyEnabled, cheatEnabled);
+            singleton = new GameConfig(minPlayer, maxPlayer, keyEnabled, cheatEnabled);
         }
         return singleton;
     }
@@ -57,8 +56,7 @@ public class GameConfig {
         else
             return singleton;
     }
-    private GameConfig(String name, int minPlayer, int maxPlayer, boolean keyEnabled, boolean cheatEnabled){
-        this.name = name;
+    private GameConfig(int minPlayer, int maxPlayer, boolean keyEnabled, boolean cheatEnabled){
         this.minPlayer = minPlayer;
         this.maxPlayer = maxPlayer;
         this.keyEnabled = keyEnabled;
@@ -110,10 +108,6 @@ public class GameConfig {
 
     public void setCheatEnabled(boolean cheatEnabled) {
         this.cheatEnabled = cheatEnabled;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public int getMinPlayer() {
