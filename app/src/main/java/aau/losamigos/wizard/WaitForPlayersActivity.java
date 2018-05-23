@@ -148,13 +148,17 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
 
         if(network != null) {
             if( network.isRunningAsHost) {
-                try {
-                    Log.d("WizardApp", "WaitForPlayersActivity: Trying stopNetworkService()");
-
+                try{
                     /* For any reason cancelConnecting() is needed first to make stopNetworkService functional
                      * This triggers the WifiP2pManager.stopServiceRequest() method internal.
                      * Otherwise stopNetworkService throws an SocketException when calling ServerSocket.close() method */
+                    Log.d("WizardApp", "WaitForPlayersActivity: Trying cancelConnecting()");
                     network.cancelConnecting();
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+                try {
+                    Log.d("WizardApp", "WaitForPlayersActivity: Trying stopNetworkService()");
                     network.stopNetworkService(true);
 
                 } catch (Exception e) {
