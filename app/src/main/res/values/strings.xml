@@ -19,6 +19,9 @@
     <string name="pin_enabled">Passwort benötigt</string>
     <string name="cheat_enabled">Cheatfunktion</string>
 
+    <!-- Toast Strings -->
+    <string name="toast_too_little_players">Nicht genügend Spieler!</string>
+
     <!-- Menu Number Strings -->
 
     <!-- Table Strings-->

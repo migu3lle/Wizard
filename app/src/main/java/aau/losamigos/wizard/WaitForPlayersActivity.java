@@ -101,6 +101,8 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
             this.onBackPressed();
         }
         else if(v.getId() == R.id.btn_StartGame){
+            if(!checkMinPlayer())
+                return;
             gameStarted = true;
             GameConfig.getInstance().setPlayers(clientList);
             GameConfig.getInstance().setIsHost(true);
@@ -117,6 +119,17 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
             });
             nextActivity();
         }
+    }
+
+    /** Checks if List View contains enough players (GameConfig.MinPlayer)
+     * @return true if enough players, false if not
+     */
+    private boolean checkMinPlayer(){
+        if(clientList.size() < GameConfig.getInstance().getMinPlayer()){
+            Toast.makeText(getApplicationContext(), R.string.toast_too_little_players, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     private void setupNetwork()
