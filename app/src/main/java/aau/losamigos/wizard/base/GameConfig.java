@@ -147,4 +147,8 @@ public class GameConfig {
         GameConfig.callback = callback;
         GameConfig.salut = salut;
     }
+
+    public void reset(){
+        singleton = null;
+    }
 }

@@ -198,6 +198,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        GameConfig.getInstance().reset();
                         finish();
                     }
                 })

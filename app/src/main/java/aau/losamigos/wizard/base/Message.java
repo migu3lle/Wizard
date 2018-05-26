@@ -37,6 +37,12 @@ public class Message{
     @JsonField
     public int[] playerPoints;
 
+    @JsonField
+    public int forbiddenTricks;
+
+    @JsonField
+    public int predictedTricks;
+
     public String[] players;
 
 

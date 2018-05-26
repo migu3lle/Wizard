@@ -1,11 +1,13 @@
 package aau.losamigos.wizard;
 
-import android.media.Image;
+import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.peak.salut.Callbacks.SalutCallback;
@@ -28,13 +30,16 @@ import aau.losamigos.wizard.network.ICallbackAction;
 import aau.losamigos.wizard.rules.Actions;
 import aau.losamigos.wizard.rules.Client2HostAction;
 
-public class TableActivity extends AppCompatActivity implements View.OnClickListener{
+public class TableActivity extends AppCompatActivity implements View.OnClickListener, NumberPicker.OnValueChangeListener{
     Salut network;
     List<ImageView> cardViews;
     List<ImageView> middleCards;
     ImageView trump;
     GamePlay game;
     CardStack clientCardStack;
+
+    Button btnPredictTrick;
+    PredictTrickDialogFragment predictDialog;
 
     HashMap<Integer, AbstractCard> view2CardMap;
     @Override
@@ -101,6 +106,14 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         middleCards.add(middleCard5);
         middleCards.add(middleCard6);
 
+        //TODO: REMOVE - BUTTON WAS JUST FOR TEST REASONS
+        btnPredictTrick = findViewById(R.id.btn_predictTrick);
+        btnPredictTrick.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                createPredictionPicker(-1);
+            }
+        });
     }
 
     private void startGame(){
@@ -153,6 +166,10 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                    else if(message.action == Actions.PICK_CARD) {
                        //TODO
                    }
+                   else if(message.action == Actions.NUMBER_OF_TRICKS){
+                       int forbidden = message.forbiddenTricks;
+                       createPredictionPicker(forbidden);
+                   }
             }
         });
     }
@@ -183,6 +200,13 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     Round round1 = game.getRecentRound();
                     round1.playCard(sender,playedCard);
                     setMiddleCards(round1.getPlayedCards());
+                }
+
+                else if (message.client2HostAction == Client2HostAction.PREDICTION_SET){
+                    int tricksPrediction = message.predictedTricks;
+                    String sender = message.sender;
+                    Toast.makeText(getApplicationContext(), "Prediction from " + sender + ": " + tricksPrediction, Toast.LENGTH_SHORT).show();
+                    //TODO: DO SOMETHING WITH THE USERS PREDICTION
                 }
             }
 
@@ -337,5 +361,53 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 }
             }
         }
+    }
+
+    /**
+     * Prediction Picker
+     * Creates NumberPicker Dialog
+     * The selected number is returned in onValueChange() method below
+     */
+    private void createPredictionPicker(int forbiddenTricks){
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("forbiddenTricks", forbiddenTricks);
+
+        FragmentManager manager = getFragmentManager();
+        manager.findFragmentByTag("fragment_prediction");
+        predictDialog = new PredictTrickDialogFragment();
+        //Add bundle information (forbidden tricks) to DialogFragment
+        predictDialog.setArguments(bundle);
+        predictDialog.setValueChangeListener(this);
+        predictDialog.show(manager, "fragment_prediction");
+    }
+
+    /** Fired if predicted number of tricks has been selected in NumberPicker Dialog
+     *  Value can be retrieved by NumberPicker.getValue()
+     * @param picker
+     * @param oldVal
+     * @param newVal
+     */
+    @Override
+    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+        int prediction = Integer.parseInt(picker.getDisplayedValues()[picker.getValue()]);
+        sendNumberOfTricksToHost(prediction);
+    }
+
+    /**
+     * Sends back the number of predicted tricks to host
+     */
+    private void sendNumberOfTricksToHost(int prediction){
+        Message message = new Message();
+        message.client2HostAction = Client2HostAction.PREDICTION_SET;
+        message.sender = network.thisDevice.deviceName;
+        message.predictedTricks = prediction;
+        Log.d("SEND NUMBER OF TRICKS", message.toString());
+        network.sendToHost(message, new SalutCallback() {
+            @Override
+            public void call() {
+                Log.e("CLIENT", "Notification of Host failed");
+            }
+        });
     }
 }
