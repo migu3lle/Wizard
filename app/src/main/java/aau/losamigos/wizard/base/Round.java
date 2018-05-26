@@ -242,6 +242,9 @@ public class Round {
         Message mNumberOfTricks = new Message();
         mNumberOfTricks.action = Actions.NUMBER_OF_TRICKS;
 
+        //TODO: Put information about prohibited prediction
+        mNumberOfTricks.forbiddenTricks = -1;   //!!! Set to -1 if all numbers are allowed !!!
+
         network.sendToDevice(player.getSalutDevice(), mNumberOfTricks, new SalutCallback() {
             @Override
             public void call() {
