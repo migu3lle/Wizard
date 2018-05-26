@@ -206,7 +206,15 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     int tricksPrediction = message.predictedTricks;
                     String sender = message.sender;
                     Toast.makeText(getApplicationContext(), "Prediction from " + sender + ": " + tricksPrediction, Toast.LENGTH_SHORT).show();
-                    //TODO: DO SOMETHING WITH THE USERS PREDICTION
+
+                    //Write prediction to Player object
+                    Player[] players = GameConfig.getInstance().getPlayers();
+                    for (Player player : players) {
+                        if(player.getSalutDeviceName().equals(sender)){
+                            player.setCalledStiches(tricksPrediction);
+                            break;
+                        }
+                    }
                 }
             }
 

@@ -151,4 +151,8 @@ public class GameConfig {
     public void reset(){
         singleton = null;
     }
+
+    public HashMap<Player, SalutDevice> getPlayerDeviceMap(){
+        return playerDeviceMap;
+    }
 }
