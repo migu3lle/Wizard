@@ -72,6 +72,10 @@ public class Player {
         return this.actualStiches;
     }
 
+    public String getSalutDeviceName(){
+        return salutDevice.deviceName;
+    }
+
     public void setCalledStiches(int stiches) {
         this.calledStiches = stiches;
     }

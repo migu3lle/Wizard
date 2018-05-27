@@ -38,6 +38,9 @@
     <string name="AlertBackDescription">Möchtest du das Spiel beenden?</string>
     <string name="AlertBackYes">Ja</string>
     <string name="AlertBackNo">Nein</string>
+    <string name="AlertPredictRoundNo">Runde</string>
+    <string name="AlertPredictText">Wähle deine Stiche</string>
+    <string name="AlertPredictSetButton">OK</string>
 
     <!-- Menu Button Strings -->
     <string name="create_new_game">Erstellen</string>
