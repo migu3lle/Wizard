@@ -34,7 +34,7 @@ script:
 
 addons:
   sonarcloud:
-    organization: "ad527e94494572d3af33e8461653398863e594bd" # der key der organisation auf sonarcloud.io
+    organization: "chregger-github" # der key der organisation auf sonarcloud.io
     token:
       secure: $SONAR_TOKEN       # $SONAR_TOKEN -> Umgebungsvariable auf travis-ci.org
 
