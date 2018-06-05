@@ -30,7 +30,7 @@ before_script:
 script:
     - chmod +x gradlew
     - ./gradlew test
-    - sonar-scanner
+    - sonar-scanner -x
 
 addons:
   sonarcloud:
