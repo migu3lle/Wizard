@@ -231,6 +231,9 @@ public class Round {
 
         //TODO Blende Punkte fürn Host ein
     }
+    public void returnNumberOfStiches(){
+        checkNextStep();
+    }
 
     private void askForCard(Player player) {
 
