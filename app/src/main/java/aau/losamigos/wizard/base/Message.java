@@ -43,6 +43,12 @@ public class Message{
     @JsonField
     public int predictedTricks;
 
+    @JsonField
+    public int playerCount;
+
+    @JsonField
+    public int roundCount;
+
     public String[] players;
 
 
