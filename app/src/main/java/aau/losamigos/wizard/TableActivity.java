@@ -184,10 +184,6 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
     private void startGame(){
         GameConfig gcfg = GameConfig.getInstance();
-        Log.d("WizardApp", "TableActivity: Creating new GamePlay with players: ");
-        for (Player player : gcfg.getPlayers()) {
-            Log.d("WizardApp", "Player: " + player.getName());
-        }
         game = new GamePlay(gcfg.getPlayers());
         game.startGame(game.getCountRound());
         Round round =  game.getRecentRound();
