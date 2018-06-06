@@ -1,5 +1,7 @@
 package aau.losamigos.wizard;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,9 +32,10 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
     SalutListViewAdapter adapter;
     ArrayList<SalutDevice> clientList;
 
-    Button btnService;
     Button btnBack;
     Button btnStartGame;
+
+    Bundle bundle;
 
     public SalutDataReceiver dataReceiver;
     public SalutServiceData serviceData;
@@ -46,6 +49,8 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait_for_players);
 
+        bundle = getIntent().getExtras();
+
         //For client list view....
         lvClients = findViewById(R.id.lv_Players);
         clientList = new ArrayList<>();
@@ -53,8 +58,6 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
         lvClients.setAdapter(adapter);
 
         //Some buttons...
-        btnService = findViewById(R.id.btn_Service);
-        btnService.setOnClickListener(this);
         btnBack = findViewById(R.id.btn_Back);
         btnBack.setOnClickListener(this);
         btnStartGame = findViewById(R.id.btn_StartGame);
@@ -68,9 +71,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
         dataReceiver = new SalutDataReceiver(this, dataCallback);
 
         /*Populate the details for our service. */
-        System.out.println("Hello: " + GameConfig.getInstance().getName());
-        Log.d("WizardApp", "Game Name: " + GameConfig.getInstance().getName());
-        serviceData = new SalutServiceData("testAwesomeService", NetworkHelper.findFreePort(), GameConfig.getInstance().getName());
+        serviceData = new SalutServiceData("wizardService", NetworkHelper.findFreePort(), bundle.getString("hostPlayerName"));
 
         /*Create an instance of the Salut class, with all of the necessary data from before.
         * We'll also provide a callback just in case a device doesn't support WiFi Direct, which
@@ -88,6 +89,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
         GameConfig.getInstance().setSalut(network, dataCallback);
         //Add this device (=host) to clientList
         clientList.add(network.thisDevice);
+        setupNetwork();
     }
 
     /*
@@ -95,18 +97,15 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
      */
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.btn_Service){
-            //Start a host service
-            setupNetwork();
-        }
-        else if(v.getId() == R.id.btn_Back){
-            finish();
+        if(v.getId() == R.id.btn_Back){
+            this.onBackPressed();
         }
         else if(v.getId() == R.id.btn_StartGame){
+            if(!checkMinPlayer())
+                return;
             gameStarted = true;
             GameConfig.getInstance().setPlayers(clientList);
             GameConfig.getInstance().setIsHost(true);
-
 
 
             Message myMessage = new Message();
@@ -120,6 +119,17 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
             });
             nextActivity();
         }
+    }
+
+    /** Checks if List View contains enough players (GameConfig.MinPlayer)
+     * @return true if enough players, false if not
+     */
+    private boolean checkMinPlayer(){
+        if(clientList.size() < GameConfig.getInstance().getMinPlayer()){
+            Toast.makeText(getApplicationContext(), R.string.toast_too_little_players, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     private void setupNetwork()
@@ -136,13 +146,6 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
                     adapter.notifyDataSetChanged();
                 }
             });
-            btnService.setText("Stop Service");
-
-        }
-        else
-        {
-            network.stopNetworkService(false);
-            btnService.setText("Start Service");
         }
     }
 
@@ -154,22 +157,52 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("WizardApp", "WaitForPlayersActivity: onDestroy()");
 
         if(network != null) {
             if( network.isRunningAsHost) {
+                try{
+                    /* For any reason cancelConnecting() is needed first to make stopNetworkService functional
+                     * This triggers the WifiP2pManager.stopServiceRequest() method internal.
+                     * Otherwise stopNetworkService throws an SocketException when calling ServerSocket.close() method */
+                    Log.d("WizardApp", "WaitForPlayersActivity: Trying cancelConnecting()");
+                    network.cancelConnecting();
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
                 try {
+                    Log.d("WizardApp", "WaitForPlayersActivity: Trying stopNetworkService()");
                     network.stopNetworkService(true);
 
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
             } else {
                 try {
+                    Log.d("WizardApp", "WaitForPlayersActivity: Trying unregisterClient()");
                     network.unregisterClient(true);
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(R.string.AlertBack)
+                .setMessage(R.string.AlertBackDescription)
+                .setPositiveButton(R.string.AlertBackYes, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        GameConfig.getInstance().reset();
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.AlertBackNo, null)
+                .show();
     }
 }

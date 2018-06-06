@@ -18,7 +18,7 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <EditText
-        android:id="@+id/editText_gameName"
+        android:id="@+id/editText_hostName"
         android:layout_width="317dp"
         android:layout_height="57dp"
         android:layout_marginBottom="448dp"
@@ -30,7 +30,6 @@
         android:ems="10"
         android:hint="@string/game_title"
         android:inputType="textPersonName"
-        android:text="New Wizard Game"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryLight"
         android:textSize="24sp"
@@ -97,8 +96,8 @@
         android:textColor="@color/colorPrimaryLight"
         android:textColorHint="@color/colorPrimaryLight"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/editText_gameName"
-        app:layout_constraintTop_toBottomOf="@+id/editText_gameName" />
+        app:layout_constraintEnd_toEndOf="@+id/editText_hostName"
+        app:layout_constraintTop_toBottomOf="@+id/editText_hostName" />
 
     <Switch
         android:id="@+id/sw_password"
