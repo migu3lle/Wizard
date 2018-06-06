@@ -4,10 +4,13 @@ import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.peak.salut.Callbacks.SalutCallback;
@@ -36,7 +39,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     List<ImageView> middleCards;
     ImageView trump;
     GamePlay game;
+    TextView player2, player3, player4, player5, player6;
     CardStack clientCardStack;
+    ImageView playerC2,playerC3,playerC4,playerC5,playerC6;
 
     Button btnPredictTrick;
     PredictTrickDialogFragment predictDialog;
@@ -44,6 +49,11 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     HashMap<Integer, AbstractCard> view2CardMap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        player2 =findViewById(R.id.Player2);
+        player3 =findViewById(R.id.Player3);
+        player4 =findViewById(R.id.Player4);
+        player5 =findViewById(R.id.Player5);
+        player6 =findViewById(R.id.Player6);
 
         super.onCreate(savedInstanceState);
 
@@ -51,6 +61,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         getSupportActionBar().hide();
 
         initGui();
+
 
         network = GameConfig.getInstance().getSalut();
 
@@ -65,46 +76,90 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+
     private void initGui() {
         view2CardMap = new HashMap<>();
-        cardViews = new ArrayList<>();
         middleCards = new ArrayList<>();
-        final ImageView playCard1 = findViewById(R.id.PCard1);
-        playCard1.setOnClickListener(this);
+        switch (game.getPlayers().size()){
 
-        final ImageView playCard2 = findViewById(R.id.PCard2);
-        playCard2.setOnClickListener(this);
+            case 2: playerC4 = findViewById(R.id.playerC4);
+                playerC4.setVisibility(View.VISIBLE);
+                player4.setVisibility(View.VISIBLE);
+                break;
+            case 3:playerC3= findViewById(R.id.playerC3);
+                playerC3.setVisibility(View.VISIBLE);
+                player3.setVisibility(View.VISIBLE);
+                playerC5= findViewById(R.id.playerC5);
+                playerC5.setVisibility(View.VISIBLE);
+                player5.setVisibility(View.VISIBLE);
+                break;
+            case 4: playerC2=findViewById(R.id.playerC2);
+                playerC2.setVisibility(View.VISIBLE);
+                player2.setVisibility(View.VISIBLE);
+                playerC4= findViewById(R.id.playerC4);
+                playerC4.setVisibility(View.VISIBLE);
+                player4.setVisibility(View.VISIBLE);
+                playerC6= findViewById(R.id.playerC6);
+                playerC6.setVisibility(View.VISIBLE);
+                player6.setVisibility(View.VISIBLE);
+                break;
+            case 5:
+                playerC2= findViewById(R.id.playerC2);
+                playerC2.setVisibility(View.VISIBLE);
+                player2.setVisibility(View.VISIBLE);
+                playerC3= findViewById(R.id.playerC3);
+                playerC3.setVisibility(View.VISIBLE);
+                player3.setVisibility(View.VISIBLE);
+                playerC5= findViewById(R.id.playerC5);
+                playerC5.setVisibility(View.VISIBLE);
+                player5.setVisibility(View.VISIBLE);
+                playerC6= findViewById(R.id.playerC6);
+                playerC6.setVisibility(View.VISIBLE);
+                player6.setVisibility(View.VISIBLE);
+                break;
+            case 6:
+                playerC4= findViewById(R.id.playerC4);
+                playerC4.setVisibility(View.VISIBLE);
+                player4.setVisibility(View.VISIBLE);
+                playerC2= findViewById(R.id.playerC2);
+                playerC2.setVisibility(View.VISIBLE);
+                player2.setVisibility(View.VISIBLE);
+                playerC3= findViewById(R.id.playerC3);
+                playerC3.setVisibility(View.VISIBLE);
+                player3.setVisibility(View.VISIBLE);
+                playerC5= findViewById(R.id.playerC5);
+                playerC5.setVisibility(View.VISIBLE);
+                player5.setVisibility(View.VISIBLE);
+                playerC6= findViewById(R.id.playerC6);
+                playerC6.setVisibility(View.VISIBLE);
+                player6.setVisibility(View.VISIBLE);
+                break;
 
-        final ImageView playCard3 = findViewById(R.id.PCard3);
-        playCard3.setOnClickListener(this);
+        }
 
-        final ImageView playCard4 = findViewById(R.id.PCard4);
-        playCard4.setOnClickListener(this);
+        LinearLayout cardHand = findViewById(R.id.cardHand);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        for (int i = 0; i < game.getCountRound(); i++) {
 
-        final ImageView playCard5 = findViewById(R.id.PCard5);
-        playCard5.setOnClickListener(this);
+            View view = inflater.inflate(R.layout.card,cardHand,false);
+            ImageView imageView = view.findViewById(R.id.imageView);
 
+            imageView.setClickable(true);
+
+
+
+            // TODO: get wright image of the drawable for each card
+            //AbstractCard cardIds=clientCardStack.getCardById(i);
+            //String cid = cardIds.toString();
+            //imageView.setImageResource(R.drawable.cid);
+
+
+            cardHand.addView(view);
+        }
         trump = findViewById(R.id.Trump);
 
-        cardViews.add(playCard1);
-        cardViews.add(playCard2);
-        cardViews.add(playCard3);
-        cardViews.add(playCard4);
-        cardViews.add(playCard5);
 
-        final ImageView middleCard1 = findViewById(R.id.Middle1);
-        final ImageView middleCard2 = findViewById(R.id.Middle2);
-        final ImageView middleCard3 = findViewById(R.id.Middle3);
-        final ImageView middleCard4 = findViewById(R.id.Middle4);
-        final ImageView middleCard5 = findViewById(R.id.Middle5);
-        final ImageView middleCard6 = findViewById(R.id.Middle6);
 
-        middleCards.add(middleCard1);
-        middleCards.add(middleCard2);
-        middleCards.add(middleCard3);
-        middleCards.add(middleCard4);
-        middleCards.add(middleCard5);
-        middleCards.add(middleCard6);
 
         //TODO: REMOVE - BUTTON WAS JUST FOR TEST REASONS
         btnPredictTrick = findViewById(R.id.btn_predictTrick);
@@ -119,8 +174,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     private void startGame(){
         GameConfig gcfg = GameConfig.getInstance();
         game = new GamePlay(gcfg.getPlayers());
-        game.startGame(5);
         Round round =  game.getRecentRound();
+        game.startGame(game.getCountRound());
+
         round.setContext(getApplicationContext());
     }
 
@@ -418,4 +474,5 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             }
         });
     }
+
 }
