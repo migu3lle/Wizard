@@ -263,8 +263,6 @@ public class Round {
                 }
             });
         }
-
-
     }
 
     private void generateHands() {

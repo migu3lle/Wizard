@@ -184,6 +184,10 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
     private void startGame(){
         GameConfig gcfg = GameConfig.getInstance();
+        Log.d("WizardApp", "TableActivity: Creating new GamePlay with players: ");
+        for (Player player : gcfg.getPlayers()) {
+            Log.d("WizardApp", "Player: " + player.getName());
+        }
         game = new GamePlay(gcfg.getPlayers());
         game.startGame(game.getCountRound());
         Round round =  game.getRecentRound();
@@ -275,14 +279,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     String sender = message.sender;
                     Toast.makeText(getApplicationContext(), "Prediction from " + sender + ": " + tricksPrediction, Toast.LENGTH_SHORT).show();
 
-                    //Write prediction to Player object
-                    Player[] players = GameConfig.getInstance().getPlayers();
-                    for (Player player : players) {
-                        if(player.getSalutDeviceName().equals(sender)){
-                            player.setCalledStiches(tricksPrediction);
-                            break;
-                        }
-                    }
+                    writePredictionToPlayer(tricksPrediction, sender);
                 }
                 else if (message.client2HostAction == Client2HostAction.PLAYERSTATES_REQUESTED) {
                     Player p = round.getPlayerByName(message.sender);
@@ -301,6 +298,17 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             }
 
         });
+    }
+
+    // Writes prediction to Player object
+    private void writePredictionToPlayer(int tricksPrediction, String sender) {
+        Player[] players = GameConfig.getInstance().getPlayers();
+        for (Player player : players) {
+            if(player.getSalutDeviceName().equals(sender)){
+                player.setCalledStiches(tricksPrediction);
+                break;
+            }
+        }
     }
 
     private List<AbstractCard> getCardsById(int[] cardIds) {
@@ -490,7 +498,12 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         int prediction = Integer.parseInt(picker.getDisplayedValues()[picker.getValue()]);
-        sendNumberOfTricksToHost(prediction);
+        if(GameConfig.getInstance().isHost()){
+            writePredictionToPlayer(prediction, network.thisDevice.deviceName);
+        }
+        else{
+            sendNumberOfTricksToHost(prediction);
+        }
     }
 
     /**
