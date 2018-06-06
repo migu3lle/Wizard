@@ -11,6 +11,7 @@ import com.peak.salut.Salut;
 import java.util.ArrayList;
 import java.util.List;
 
+import aau.losamigos.wizard.TableActivity;
 import aau.losamigos.wizard.elements.CardStack;
 import aau.losamigos.wizard.elements.MoveTuple;
 import aau.losamigos.wizard.elements.Player;
@@ -40,6 +41,7 @@ public class Round {
     private int currentHandCards;
     private List<MoveTuple> table;
     private Context context;
+    private TableActivity ta;
 
 
 
@@ -65,9 +67,9 @@ public class Round {
         this.currentPlayer = 0;
         this.currentHandCards = this.numberOfCards;
 
-        List<Player> order = new ArrayList<Player>();
+        this.order = new ArrayList<Player>();
         for (Player player : players) {
-            order.add(player);
+            this.order.add(player);
         }
 
         generateHands();
@@ -77,10 +79,13 @@ public class Round {
         this.context = context;
     }
 
+    public void setTa(TableActivity ta) {
+        this.ta = ta;
+    }
+
     public void startRound() {
         status = RoundStatus.waitingForStiches;
-        askForStiches(order.get(currentPlayer));
-        currentPlayer++;
+        checkNextStep();
     }
 
     private void checkNextStep() {
@@ -88,8 +93,10 @@ public class Round {
             case waitingForStiches:
                 if(currentPlayer < order.size()){
                     status = RoundStatus.waitingForStiches;
+                    do{
+                        askForStiches(order.get(currentPlayer));
+                    }while(order.get(currentPlayer).getCalledStiches()<0 || order.get(currentPlayer).getCalledStiches()>order.size());
                     currentPlayer++;
-                    askForStiches(order.get(currentPlayer));
                 }
                 else{
                     status = RoundStatus.waitingForCard;
@@ -239,18 +246,25 @@ public class Round {
     }
     private void askForStiches(Player player) {
 
-        Message mNumberOfTricks = new Message();
-        mNumberOfTricks.action = Actions.NUMBER_OF_TRICKS;
+        if(GameConfig.getInstance().isHost()){
+            ta.hostStiches();
+        }
+        else {
+            Message mNumberOfTricks = new Message();
+            mNumberOfTricks.action = Actions.NUMBER_OF_TRICKS;
 
-        //TODO: Put information about prohibited prediction
-        mNumberOfTricks.forbiddenTricks = -1;   //!!! Set to -1 if all numbers are allowed !!!
+            //TODO: Put information about prohibited prediction
+            mNumberOfTricks.forbiddenTricks = -1;   //!!! Set to -1 if all numbers are allowed !!!
 
-        network.sendToDevice(player.getSalutDevice(), mNumberOfTricks, new SalutCallback() {
-            @Override
-            public void call() {
-                Log.e("WizardApp", "Oh no! The data failed to send.");
-            }
-        });
+            network.sendToDevice(player.getSalutDevice(), mNumberOfTricks, new SalutCallback() {
+                @Override
+                public void call() {
+                    Log.e("WizardApp", "Oh no! The data failed to send.");
+                }
+            });
+        }
+
+
     }
 
     private void generateHands() {

@@ -37,6 +37,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     ImageView trump;
     GamePlay game;
     CardStack clientCardStack;
+    boolean allowedToClick;
 
     Button btnPredictTrick;
     PredictTrickDialogFragment predictDialog;
@@ -122,6 +123,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         game.startGame(5);
         Round round =  game.getRecentRound();
         round.setContext(getApplicationContext());
+        round.setTa(this);
+        round.startRound();
     }
 
     private void notifyHost() {
@@ -164,7 +167,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                        Toast.makeText(getApplicationContext(),"Gewonnen hat: " + message.sender,Toast.LENGTH_LONG).show();
                    }
                    else if(message.action == Actions.PICK_CARD) {
-                       //TODO
+
+                       allowedToClick = true;
+
                    }
                    else if(message.action == Actions.NUMBER_OF_TRICKS){
                        int forbidden = message.forbiddenTricks;
@@ -173,6 +178,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             }
         });
     }
+
 
     private void defineHostCallBack() {
         DataCallback callback = GameConfig.getInstance().getCallBack();
@@ -233,6 +239,11 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_table);
     }
 
+    public void hostStiches(){
+        createPredictionPicker(-1);
+        allowedToClick=true;
+    }
+
     @Override
     public void onClick(View view) {
 
@@ -243,6 +254,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             if(imgView.getDrawable() == null) {
                 return;
             }
+            if(allowedToClick==false)
+                return;
 
             imgView.setImageDrawable(null);
 
