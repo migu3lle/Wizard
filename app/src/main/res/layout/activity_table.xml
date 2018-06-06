@@ -12,6 +12,74 @@
 
     <!--Temporäre OnClickFunktion für neue Karten-->
     <ImageView
+        android:id="@+id/Middle6"
+        android:layout_width="50dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="8dp"
+
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/Middle5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.497" />
+
+    <ImageView
+        android:id="@+id/Middle5"
+        android:layout_width="50dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="8dp"
+
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/Middle4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.497" />
+
+    <ImageView
+        android:id="@+id/Middle4"
+        android:layout_width="50dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="8dp"
+
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.497" />
+
+    <ImageView
+        android:id="@+id/Middle3"
+        android:layout_width="50dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="8dp"
+
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/Middle4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.497" />
+
+    <ImageView
+        android:id="@+id/Middle2"
+        android:layout_width="50dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="8dp"
+
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/Middle3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.497" />
+
+    <ImageView
         android:id="@+id/Trump"
         android:layout_width="60dp"
         android:layout_height="80dp"
@@ -171,21 +239,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Trump" />
 
-    <Button
-        android:id="@+id/btn_predictTrick"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Vorhersage"
-        app:layout_constraintBottom_toTopOf="@+id/playerHand"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <HorizontalScrollView
         android:id="@+id/playerHand"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="70dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -200,31 +257,35 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-
+            android:gravity="center"
             />
     </HorizontalScrollView>
 
-    <HorizontalScrollView
-        android:layout_width="0dp"
-        android:layout_height="50dp"
+
+    <ImageView
+        android:id="@+id/Middle1"
+        android:layout_width="50dp"
+        android:layout_height="70dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
+
         android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        android:scrollbars="none"
-        android:foregroundGravity="center"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/Middle2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.497" />
 
-        app:layout_constraintBottom_toTopOf="@+id/btn_predictTrick"
-        app:layout_constraintEnd_toStartOf="@+id/playerC6"
-        app:layout_constraintStart_toEndOf="@+id/playerC2"
-        app:layout_constraintTop_toBottomOf="@+id/Player4">
-
-        <LinearLayout
-            android:id="@+id/playedCards"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal" />
-    </HorizontalScrollView>
+    <Button
+        android:id="@+id/btn_predictTrick"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Vorhersage"
+        app:layout_constraintBottom_toTopOf="@+id/playerHand"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Middle3" />
 
 </android.support.constraint.ConstraintLayout>

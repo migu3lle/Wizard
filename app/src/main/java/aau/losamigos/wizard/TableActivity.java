@@ -1,8 +1,8 @@
 package aau.losamigos.wizard;
 
 import android.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -140,9 +140,21 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 break;
 
         }
+        final ImageView middleCard1 = findViewById(R.id.Middle1);
+        final ImageView middleCard2 = findViewById(R.id.Middle2);
+        final ImageView middleCard3 = findViewById(R.id.Middle3);
+        final ImageView middleCard4 = findViewById(R.id.Middle4);
+        final ImageView middleCard5 = findViewById(R.id.Middle5);
+        final ImageView middleCard6 = findViewById(R.id.Middle6);
+
+        middleCards.add(middleCard1);
+        middleCards.add(middleCard2);
+        middleCards.add(middleCard3);
+        middleCards.add(middleCard4);
+        middleCards.add(middleCard5);
+        middleCards.add(middleCard6);
 
         LinearLayout cardHand = findViewById(R.id.cardHand);
-        LinearLayout playedCards = findViewById(R.id.playedCards);
         LayoutInflater inflater = LayoutInflater.from(this);
         for (int i = 0; i < roundCount; i++) {
 
@@ -156,12 +168,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             cardViews.add(imageView);
         }
 
-        for (int i =0; i < playerCount; i++) {
-            View view = inflater.inflate(R.layout.card, playedCards,false);
-            ImageView imageView = view.findViewById(R.id.imageView);
-            playedCards.addView(view);
-            middleCards.add(imageView);
-        }
+
 
         //TODO: REMOVE - BUTTON WAS JUST FOR TEST REASONS
         btnPredictTrick = findViewById(R.id.btn_predictTrick);
