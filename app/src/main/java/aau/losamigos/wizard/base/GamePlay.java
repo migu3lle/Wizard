@@ -35,6 +35,7 @@ public class GamePlay {
     }
 
     public GamePlay(Player[] players) {
+        countRound =20;
         this.players = new ArrayList<Player>();
 
         for (Player player:players) {
@@ -53,7 +54,7 @@ public class GamePlay {
         if(countRound<=maxRounds){
             countRound++;
             cardStack.reset(); //Kartenstapel wird neu gemischt
-            recentRound = new Round(this, 5);
+            recentRound = new Round(this, countRound);
             recentRound.startRound();
         }
         else{

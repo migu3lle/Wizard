@@ -1,13 +1,16 @@
 package aau.losamigos.wizard;
 
 import android.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.peak.salut.Callbacks.SalutCallback;
@@ -35,8 +38,12 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     List<ImageView> cardViews;
     List<ImageView> middleCards;
     ImageView trump;
+
+    //instance only available for host
     GamePlay game;
+    TextView player2, player3, player4, player5, player6;
     CardStack clientCardStack;
+    ImageView playerC2,playerC3,playerC4,playerC5,playerC6;
 
     Button btnPredictTrick;
     PredictTrickDialogFragment predictDialog;
@@ -50,13 +57,21 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_table);
         getSupportActionBar().hide();
 
-        initGui();
+        player2 =findViewById(R.id.Player2);
+        player3 =findViewById(R.id.Player3);
+        player4 =findViewById(R.id.Player4);
+        player5 =findViewById(R.id.Player5);
+        player6 =findViewById(R.id.Player6);
 
         network = GameConfig.getInstance().getSalut();
-
+        cardViews = new ArrayList<>();
+        middleCards = new ArrayList<>();
+        view2CardMap = new HashMap<>();
+        trump = findViewById(R.id.Trump);
         if(network.isRunningAsHost) {
             defineHostCallBack();
             startGame();
+            initGui(game.getPlayers().size(), game.getCountRound());
             setCardsForHost();
         } else {
             clientCardStack = new CardStack();
@@ -65,33 +80,66 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void initGui() {
-        view2CardMap = new HashMap<>();
-        cardViews = new ArrayList<>();
-        middleCards = new ArrayList<>();
-        final ImageView playCard1 = findViewById(R.id.PCard1);
-        playCard1.setOnClickListener(this);
 
-        final ImageView playCard2 = findViewById(R.id.PCard2);
-        playCard2.setOnClickListener(this);
+    private void initGui(int playerCount, int roundCount) {
+        Log.e("INIT", "init gui: " + playerCount + ", " + roundCount);
 
-        final ImageView playCard3 = findViewById(R.id.PCard3);
-        playCard3.setOnClickListener(this);
+        switch (playerCount){
 
-        final ImageView playCard4 = findViewById(R.id.PCard4);
-        playCard4.setOnClickListener(this);
+            case 2: playerC4 = findViewById(R.id.playerC4);
+                playerC4.setVisibility(View.VISIBLE);
+                player4.setVisibility(View.VISIBLE);
+                break;
+            case 3:playerC3= findViewById(R.id.playerC3);
+                playerC3.setVisibility(View.VISIBLE);
+                player3.setVisibility(View.VISIBLE);
+                playerC5= findViewById(R.id.playerC5);
+                playerC5.setVisibility(View.VISIBLE);
+                player5.setVisibility(View.VISIBLE);
+                break;
+            case 4: playerC2=findViewById(R.id.playerC2);
+                playerC2.setVisibility(View.VISIBLE);
+                player2.setVisibility(View.VISIBLE);
+                playerC4= findViewById(R.id.playerC4);
+                playerC4.setVisibility(View.VISIBLE);
+                player4.setVisibility(View.VISIBLE);
+                playerC6= findViewById(R.id.playerC6);
+                playerC6.setVisibility(View.VISIBLE);
+                player6.setVisibility(View.VISIBLE);
+                break;
+            case 5:
+                playerC2= findViewById(R.id.playerC2);
+                playerC2.setVisibility(View.VISIBLE);
+                player2.setVisibility(View.VISIBLE);
+                playerC3= findViewById(R.id.playerC3);
+                playerC3.setVisibility(View.VISIBLE);
+                player3.setVisibility(View.VISIBLE);
+                playerC5= findViewById(R.id.playerC5);
+                playerC5.setVisibility(View.VISIBLE);
+                player5.setVisibility(View.VISIBLE);
+                playerC6= findViewById(R.id.playerC6);
+                playerC6.setVisibility(View.VISIBLE);
+                player6.setVisibility(View.VISIBLE);
+                break;
+            case 6:
+                playerC4= findViewById(R.id.playerC4);
+                playerC4.setVisibility(View.VISIBLE);
+                player4.setVisibility(View.VISIBLE);
+                playerC2= findViewById(R.id.playerC2);
+                playerC2.setVisibility(View.VISIBLE);
+                player2.setVisibility(View.VISIBLE);
+                playerC3= findViewById(R.id.playerC3);
+                playerC3.setVisibility(View.VISIBLE);
+                player3.setVisibility(View.VISIBLE);
+                playerC5= findViewById(R.id.playerC5);
+                playerC5.setVisibility(View.VISIBLE);
+                player5.setVisibility(View.VISIBLE);
+                playerC6= findViewById(R.id.playerC6);
+                playerC6.setVisibility(View.VISIBLE);
+                player6.setVisibility(View.VISIBLE);
+                break;
 
-        final ImageView playCard5 = findViewById(R.id.PCard5);
-        playCard5.setOnClickListener(this);
-
-        trump = findViewById(R.id.Trump);
-
-        cardViews.add(playCard1);
-        cardViews.add(playCard2);
-        cardViews.add(playCard3);
-        cardViews.add(playCard4);
-        cardViews.add(playCard5);
-
+        }
         final ImageView middleCard1 = findViewById(R.id.Middle1);
         final ImageView middleCard2 = findViewById(R.id.Middle2);
         final ImageView middleCard3 = findViewById(R.id.Middle3);
@@ -106,6 +154,22 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         middleCards.add(middleCard5);
         middleCards.add(middleCard6);
 
+        LinearLayout cardHand = findViewById(R.id.cardHand);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        for (int i = 0; i < roundCount; i++) {
+
+            View view = inflater.inflate(R.layout.card,cardHand,false);
+            ImageView imageView = view.findViewById(R.id.imageView);
+
+            imageView.setClickable(true);
+            imageView.setOnClickListener(this);
+            cardHand.addView(view);
+
+            cardViews.add(imageView);
+        }
+
+
+
         //TODO: REMOVE - BUTTON WAS JUST FOR TEST REASONS
         btnPredictTrick = findViewById(R.id.btn_predictTrick);
         btnPredictTrick.setOnClickListener(new View.OnClickListener(){
@@ -119,7 +183,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     private void startGame(){
         GameConfig gcfg = GameConfig.getInstance();
         game = new GamePlay(gcfg.getPlayers());
-        game.startGame(5);
+        game.startGame(game.getCountRound());
         Round round =  game.getRecentRound();
         round.setContext(getApplicationContext());
     }
@@ -148,7 +212,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                        Log.e("CLIENT", "No Action defined; Client is blind");
                    }
                    else if(message.action == Actions.INITIAL_CARD_GIVING) {
-                       if(message.cards != null && message.cards.length > 0) {
+                       if(message.cards != null && message.cards.length > 0 && message.playerCount > 0 && message.roundCount > 0) {
+                           initGui(message.playerCount, message.roundCount);
                            List<AbstractCard> cards =getCardsById(message.cards);
                            setCardsToImages(cards);
                        }
@@ -279,6 +344,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         message.action = Actions.INITIAL_CARD_GIVING;
         message.cards = new int[cards.size()];
         message.trumpCard = round.getTrump().getId();
+        message.playerCount = game.getPlayers().size();
+        message.roundCount = game.getCountRound();
         for(int i = 0; i < cards.size(); i++) {
             message.cards[i] = cards.get(i).getId();
         }
@@ -311,7 +378,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     private void setCardsToImages(List<AbstractCard> cards) {
         if(cards == null || cards.size() == 0)
             return;
-        int maxIteration = 5;
+        int maxIteration = cardViews.size();
         if(cards.size() < maxIteration) {
             maxIteration = cards.size();
         }
@@ -322,6 +389,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             view2CardMap.put(img.getId(), card);
             img.setImageResource(card.getResourceId());
         }
+
     }
 
     private void setTrump(AbstractCard card) {
@@ -418,4 +486,5 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             }
         });
     }
+
 }
