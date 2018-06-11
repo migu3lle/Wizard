@@ -96,11 +96,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
-    public void showScoreSheet(View view) {
-        EditText tf = findViewById(R.id.player_count_test);
-        String playerCount = tf.getText().toString();
-        Intent intent = new Intent(this, ScoreTableActivity.class);
-        intent.putExtra("PLAYER_COUNT", playerCount);
-        startActivity(intent);
-    }
+   
 }

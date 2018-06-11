@@ -9,6 +9,7 @@
 
     <!-- General Strings -->
     <string name="back_button">Zurück</string>
+    <string name="buttonBdw">BDW</string>
 
     <!-- Menu PlainText Strings -->
     <string name="game_title">Spielname</string>

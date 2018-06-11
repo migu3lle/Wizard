@@ -35,7 +35,7 @@ public class GameConfig {
     HashMap<Player, SalutDevice> playerDeviceMap = new HashMap<>();
     private static Salut salut;
     private static DataCallback callback;
-
+    private static GamePlay currentGamePlay;
 
     private GameConfig(){
         //Singleton pattern, to defeat instantiation
@@ -154,5 +154,13 @@ public class GameConfig {
 
     public HashMap<Player, SalutDevice> getPlayerDeviceMap(){
         return playerDeviceMap;
+    }
+
+    public GamePlay getCurrentGamePlay() {
+        return currentGamePlay;
+    }
+
+    public void setCurrentGamePlay(GamePlay currentGamePlay) {
+        GameConfig.currentGamePlay = currentGamePlay;
     }
 }

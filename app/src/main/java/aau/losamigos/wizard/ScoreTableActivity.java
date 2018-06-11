@@ -3,6 +3,7 @@ package aau.losamigos.wizard;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -10,8 +11,21 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.peak.salut.Callbacks.SalutCallback;
+import com.peak.salut.Salut;
+
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
+import aau.losamigos.wizard.base.GameConfig;
+import aau.losamigos.wizard.base.Message;
+import aau.losamigos.wizard.elements.PlayerRoundState;
+import aau.losamigos.wizard.network.DataCallback;
+import aau.losamigos.wizard.network.ICallbackAction;
+import aau.losamigos.wizard.rules.Actions;
+import aau.losamigos.wizard.rules.Client2HostAction;
 
 public class ScoreTableActivity extends AppCompatActivity {
 
@@ -30,11 +44,58 @@ public class ScoreTableActivity extends AppCompatActivity {
         setTitle(R.string.title_score_sheet);
         mapOfIds = new HashMap<>();
 
-        int playerCount = Integer.parseInt(getIntent().getStringExtra("PLAYER_COUNT"));
+        int playerCount = 0;
+        try {
+            playerCount = getIntent().getIntExtra("PLAYER_COUNT", 3);
+        } catch (Exception e) {
+            Log.e("SCORETABLE", "failed to get Playercount");
+        }
+        if(playerCount < 3)
+            playerCount = 3;
 
         generateNewScoreSheet(playerCount);
 
-        generateFakeData(playerCount);
+        Salut network = GameConfig.getInstance().getSalut();
+
+        if(network.isRunningAsHost) {
+            setData(GameConfig.getInstance().getCurrentGamePlay().getPlayerRoundStates());
+        } else {
+            final DataCallback callback = GameConfig.getInstance().getCallBack();
+            callback.addFireOnceCallBackAction(new ICallbackAction() {
+                @Override
+                public void execute(Message message) {
+                    if(message.playerStates != null && message.action == Actions.PLAYERSTATES_SENT) {
+                        setData(message.playerStates);
+                    } else {
+                        Log.e("CLIENT", "oh nooo.. no data received");
+                    }
+                }
+            });
+
+            Message message = new Message();
+            message.client2HostAction = Client2HostAction.TABLE_ACTIVITY_STARTED;
+            message.sender = network.thisDevice.deviceName;
+            network.sendToHost(message, new SalutCallback() {
+                @Override
+                public void call() {
+                    Log.e("CLIENT", "Failed to receive score data from host");
+                }
+            });
+        }
+        //generateFakeData(playerCount);
+    }
+
+    private void setData(Map<String, List<PlayerRoundState>> states) {
+        for (Map.Entry<String, List<PlayerRoundState>> entry : states.entrySet())
+        {
+            List<PlayerRoundState> roundStates = entry.getValue();
+            for(int i = 0; i < roundStates.size(); i++) {
+                PlayerRoundState state = roundStates.get(i);
+                setActualStich(i, i, state.actualStiches);
+                setEstimatedStich(i, i, state.calledStiches);
+                setActualPoints(i, i, state.points);
+            }
+        }
     }
 
     private void generateNewScoreSheet(int numberOfPlayers) {
@@ -167,13 +228,6 @@ public class ScoreTableActivity extends AppCompatActivity {
         cell.setText("" + value);
     }
 
-    public int getActualStich(int roundNumber, int playerNumber) {
-        TextView cell = getSelectedCell(buildIdKey(roundNumber, playerNumber, idPatternActualStich));
-        String value = cell.getText().toString();
-        if(value != null)
-            return Integer.parseInt(value);
-        return 0;
-    }
 
     public void setActualPoints(int roundNumber, int playerNumber, int value) {
         TextView cell = getSelectedCell(buildIdKey(roundNumber, playerNumber, idPatternActualScore));

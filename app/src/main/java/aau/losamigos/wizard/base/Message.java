@@ -8,7 +8,9 @@ import com.peak.salut.SalutDevice;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import aau.losamigos.wizard.elements.PlayerRoundState;
 import aau.losamigos.wizard.rules.Actions;
 import aau.losamigos.wizard.rules.Client2HostAction;
 
@@ -49,9 +51,6 @@ public class Message{
     @JsonField
     public int roundCount;
 
-    public String[] players;
-
-
     @JsonField
     public int action;
 
@@ -61,13 +60,8 @@ public class Message{
     @JsonField
     public String sender;
 
-    /*
-     * Note that since this field isn't annotated as a
-     * @JsonField, LoganSquare will ignore it when parsing
-     * and serializing this class.
-     */
-    public int nonJsonField;
-
+    @JsonField
+    public Map<String, List<PlayerRoundState>> playerStates;
 
     @Override
     public String toString() {
@@ -77,8 +71,6 @@ public class Message{
                 ", trump=" + trumpCard +
                 ", action=" + action +
                 ", client2HostAction=" + client2HostAction +
-                ", sender='" + sender + '\'' +
-                ", nonJsonField=" + nonJsonField +
                 '}';
     }
 }

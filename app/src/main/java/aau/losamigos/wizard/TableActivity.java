@@ -1,6 +1,7 @@
 package aau.losamigos.wizard;
 
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -38,7 +39,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     List<ImageView> cardViews;
     List<ImageView> middleCards;
     ImageView trump;
-
+    int playerCount;
     //instance only available for host
     GamePlay game;
     TextView player2, player3, player4, player5, player6;
@@ -82,6 +83,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
 
     private void initGui(int playerCount, int roundCount) {
+        this.playerCount = playerCount;
         Log.e("INIT", "init gui: " + playerCount + ", " + roundCount);
 
         switch (playerCount){
@@ -186,6 +188,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         game.startGame(game.getCountRound());
         Round round =  game.getRecentRound();
         round.setContext(getApplicationContext());
+        gcfg.setCurrentGamePlay(game);
     }
 
     private void notifyHost() {
@@ -281,6 +284,20 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                         }
                     }
                 }
+                else if (message.client2HostAction == Client2HostAction.PLAYERSTATES_REQUESTED) {
+                    Player p = round.getPlayerByName(message.sender);
+                    if(p != null) {
+                        Message m1 = new Message();
+                        message.playerStates = game.getPlayerRoundStates();
+                        network.sendToDevice(p.getSalutDevice(), m1, new SalutCallback() {
+                            @Override
+                            public void call() {
+                                Log.e("SEND PLAYER STATES", "failed to send player states");
+                            }
+                        });
+                    }
+
+                }
             }
 
         });
@@ -333,6 +350,12 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 setMiddleCards(playedCards);
             }
         }
+    }
+
+    public void onClickBdw(View view) {
+        Intent intent = new Intent(this, ScoreTableActivity.class);
+        intent.putExtra("PLAYER_COUNT", this.playerCount);
+        startActivity(intent);
     }
 
     private void sendCardsToDevice(Player player) {

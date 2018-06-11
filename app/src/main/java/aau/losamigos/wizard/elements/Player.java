@@ -2,6 +2,9 @@ package aau.losamigos.wizard.elements;
 
 import com.peak.salut.SalutDevice;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import aau.losamigos.wizard.base.Hand;
 
 /**
@@ -18,6 +21,8 @@ public class Player {
 
     private SalutDevice salutDevice;
 
+    private List<PlayerRoundState> roundStates;
+
     private int points;
 
     private int actualStiches;
@@ -32,6 +37,9 @@ public class Player {
         this.name = name;
         this.points = 0;
         this.actualStiches =0;
+
+        roundStates = new ArrayList<>();
+
     }
 
     private static int getNextId(){
@@ -65,7 +73,9 @@ public class Player {
     }
 
     public void restStiches() {
+        addRoundState(new PlayerRoundState(getActualStiches(), getCalledStiches(), getPoints()));
         this.actualStiches = 0;
+        this.calledStiches = 0;
     }
 
     public int getActualStiches() {
@@ -91,6 +101,14 @@ public class Player {
 
     public void setSalutDevice(SalutDevice salutDevice) {
         this.salutDevice = salutDevice;
+    }
+
+    public void addRoundState(PlayerRoundState state) {
+        roundStates.add(state);
+    }
+
+    public List<PlayerRoundState> getRoundStates() {
+        return roundStates;
     }
 
     @Override
