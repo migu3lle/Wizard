@@ -27,6 +27,7 @@ import java.util.List;
 import aau.losamigos.wizard.base.AbstractCard;
 import aau.losamigos.wizard.base.GameConfig;
 import aau.losamigos.wizard.base.GamePlay;
+import aau.losamigos.wizard.base.IClearable;
 import aau.losamigos.wizard.base.Message;
 import aau.losamigos.wizard.base.Round;
 import aau.losamigos.wizard.elements.CardStack;
@@ -36,7 +37,8 @@ import aau.losamigos.wizard.network.ICallbackAction;
 import aau.losamigos.wizard.rules.Actions;
 import aau.losamigos.wizard.rules.Client2HostAction;
 
-public class TableActivity extends AppCompatActivity implements View.OnClickListener, NumberPicker.OnValueChangeListener{
+public class TableActivity extends AppCompatActivity implements View.OnClickListener, NumberPicker.OnValueChangeListener,
+        IClearable{
     Salut network;
     List<ImageView> cardViews;
     List<ImageView> middleCards;
@@ -191,6 +193,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         Round round =  game.getRecentRound();
         round.setContext(getApplicationContext());
         gcfg.setCurrentGamePlay(game);
+        round.setClearable(this);
     }
 
     private void notifyHost() {
@@ -342,6 +345,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             imgView.setImageDrawable(null);
 
             AbstractCard clickedCard = view2CardMap.get(view.getId());
+            Log.d("CLICKEDCARD", "id: " + clickedCard.getId());
             Message message = new Message();
             message.client2HostAction = Client2HostAction.CARD_PLAYED;
             message.playedCard = clickedCard.getId();
@@ -442,6 +446,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         for(int i =0; i < maxIterations; i++) {
             ImageView img = middleCards.get(i);
             AbstractCard card = cards.get(i);
+
+            Log.d("SETMIDDLECARD", "id: " + card.getId());
             img.setImageResource(card.getResourceId());
         }
     }
@@ -586,4 +592,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 .show();
     }
 
+    @Override
+    public void clearTable() {
+        resetMiddleCards();
+    }
 }

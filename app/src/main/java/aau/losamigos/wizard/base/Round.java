@@ -41,7 +41,8 @@ public class Round {
     private int currentHandCards;
     private List<MoveTuple> table;
     private Context context;
-
+    //instance of clearable to be able to clear table of host
+    private IClearable clearable;
 
 
     public Round(GamePlay game, int numberOfCards) {
@@ -76,6 +77,10 @@ public class Round {
 
     public void setContext(Context context) {
         this.context = context;
+    }
+
+    public void setClearable(IClearable clearable) {
+        this.clearable = clearable;
     }
 
     public void startRound() {
@@ -125,6 +130,8 @@ public class Round {
                     public void run() {
 
                         table.clear();
+
+                        clearable.clearTable();
 
                         sendTableOnAll();
 
