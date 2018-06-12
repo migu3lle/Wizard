@@ -20,8 +20,7 @@
     <EditText
         android:id="@+id/editText_hostName"
         android:layout_width="0dp"
-        android:layout_height="57dp"
-        android:layout_marginBottom="344dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -33,15 +32,15 @@
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryLight"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <Button
         android:id="@+id/btn_Back"
-        android:layout_width="150dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:background="@android:drawable/alert_light_frame"
@@ -54,8 +53,8 @@
 
     <Button
         android:id="@+id/btn_create"
-        android:layout_width="150dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:background="@android:drawable/alert_light_frame"
@@ -70,6 +69,7 @@
         android:id="@+id/editText_maxPlayer"
         android:layout_width="80dp"
         android:layout_height="45dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@android:drawable/edit_text"
         android:backgroundTint="@color/colorPrimaryDark"
@@ -80,12 +80,14 @@
         android:textColorHint="@color/colorPrimaryLight"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/editText_minPlayer"
+        app:layout_constraintStart_toEndOf="@+id/tv_maxPlayer"
         app:layout_constraintTop_toBottomOf="@+id/editText_minPlayer" />
 
     <EditText
         android:id="@+id/editText_minPlayer"
         android:layout_width="80dp"
         android:layout_height="45dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@android:drawable/edit_text"
         android:backgroundTint="@color/colorPrimaryDark"
@@ -95,7 +97,7 @@
         android:textColor="@color/colorPrimaryLight"
         android:textColorHint="@color/colorPrimaryLight"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/editText_hostName"
+        app:layout_constraintStart_toEndOf="@+id/tv_minPlayer"
         app:layout_constraintTop_toBottomOf="@+id/editText_hostName" />
 
     <Switch
@@ -111,7 +113,7 @@
         android:textOn="On"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/editText_maxPlayer"
-        app:layout_constraintTop_toBottomOf="@+id/tv_maxPlayer" />
+        app:layout_constraintTop_toBottomOf="@+id/editText_maxPlayer" />
 
     <Switch
         android:id="@+id/sw_cheating"
@@ -131,25 +133,29 @@
         android:id="@+id/tv_maxPlayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/max_player"
         android:textColor="@color/colorPrimaryLight"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/editText_maxPlayer"
-        app:layout_constraintEnd_toEndOf="@+id/tv_minPlayer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_minPlayer" />
 
     <TextView
         android:id="@+id/tv_minPlayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:text="@string/min_player"
         android:textColor="@color/colorPrimaryLight"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/editText_minPlayer"
-        app:layout_constraintEnd_toStartOf="@+id/editText_minPlayer"
-        app:layout_constraintTop_toBottomOf="@+id/editText_hostName" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
