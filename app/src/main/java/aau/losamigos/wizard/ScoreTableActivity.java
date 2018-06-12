@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.peak.salut.Callbacks.SalutCallback;
 import com.peak.salut.Salut;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import java.util.Random;
 import aau.losamigos.wizard.base.GameConfig;
 import aau.losamigos.wizard.base.Message;
 import aau.losamigos.wizard.elements.PlayerRoundState;
+import aau.losamigos.wizard.elements.PlayerRoundStateParser;
 import aau.losamigos.wizard.network.DataCallback;
 import aau.losamigos.wizard.network.ICallbackAction;
 import aau.losamigos.wizard.rules.Actions;
@@ -85,12 +87,12 @@ public class ScoreTableActivity extends AppCompatActivity {
         //generateFakeData(playerCount);
     }
 
-    private void setData(Map<String, List<PlayerRoundState>> states) {
-        for (Map.Entry<String, List<PlayerRoundState>> entry : states.entrySet())
+    private void setData(Map<String, List<String>> states) {
+        for (Map.Entry<String, List<String>> entry : states.entrySet())
         {
-            List<PlayerRoundState> roundStates = entry.getValue();
+            List<String> roundStates = entry.getValue();
             for(int i = 0; i < roundStates.size(); i++) {
-                PlayerRoundState state = roundStates.get(i);
+                PlayerRoundState state = PlayerRoundStateParser.parse(roundStates.get(i));
                 setActualStich(i, i, state.actualStiches);
                 setEstimatedStich(i, i, state.calledStiches);
                 setActualPoints(i, i, state.points);

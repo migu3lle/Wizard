@@ -8,6 +8,7 @@ import java.util.Map;
 import aau.losamigos.wizard.elements.CardStack;
 import aau.losamigos.wizard.elements.Player;
 import aau.losamigos.wizard.elements.PlayerRoundState;
+import aau.losamigos.wizard.elements.PlayerRoundStateParser;
 
 /**
  * Created by Andreas.Mairitsch on 02.05.2018.
@@ -88,11 +89,15 @@ public class GamePlay {
         return this.recentRound;
     }
 
-    public Map<String, List<PlayerRoundState>> getPlayerRoundStates() {
-        HashMap<String, List<PlayerRoundState>> map = new HashMap<>();
+    public Map<String, List<String>> getPlayerRoundStates() {
+        HashMap<String, List<String>> map = new HashMap<>();
         for(int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
-            map.put(player.getName(), player.getRoundStates());
+            List<String> ls = new ArrayList<>();
+            for(PlayerRoundState state : player.getRoundStates()) {
+                ls.add(PlayerRoundStateParser.convert(state));
+            }
+            map.put(player.getName(), ls);
         }
         return map;
     }

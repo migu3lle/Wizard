@@ -1,5 +1,7 @@
 package aau.losamigos.wizard.elements;
 
+import com.bluelinelabs.logansquare.annotation.JsonField;
+
 import java.io.Serializable;
 
 /**
@@ -7,13 +9,19 @@ import java.io.Serializable;
  */
 
 public class PlayerRoundState implements Serializable {
+
+
     public int actualStiches;
+
+
     public int calledStiches;
+
+
     public int points;
 
     public PlayerRoundState(int actual, int estimated, int points) {
-        actualStiches = actual;
-        calledStiches = estimated;
-        points = points;
+        this.actualStiches = actual;
+        this.calledStiches = estimated;
+        this.points = points;
     }
 }

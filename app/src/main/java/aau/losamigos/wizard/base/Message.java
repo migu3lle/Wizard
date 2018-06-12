@@ -61,7 +61,7 @@ public class Message{
     public String sender;
 
     @JsonField
-    public Map<String, List<PlayerRoundState>> playerStates;
+    public Map<String, List<String>> playerStates;
 
     @Override
     public String toString() {
