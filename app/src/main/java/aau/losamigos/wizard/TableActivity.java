@@ -1,6 +1,8 @@
 package aau.losamigos.wizard;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -238,6 +240,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                        int forbidden = message.forbiddenTricks;
                        createPredictionPicker(forbidden);
                    }
+                   else if(message.action == Actions.QUIT_GAME){
+                       buildQuitMessage(message.sender);
+                   }
             }
         });
     }
@@ -290,6 +295,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                         });
                     }
 
+                }
+                else if(message.action == Actions.QUIT_GAME){
+                    buildQuitMessage(message.sender);
                 }
             }
 
@@ -517,6 +525,64 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 Log.e("CLIENT", "Notification of Host failed");
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(R.string.AlertBack)
+                .setMessage(R.string.AlertBackDescription)
+                .setPositiveButton(R.string.AlertBackYes, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendQuitGameToAll();
+                        GameConfig.getInstance().reset();
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.AlertBackNo, null)
+                .show();
+    }
+
+    private void sendQuitGameToAll(){
+        Message message = new Message();
+        message.sender = network.thisDevice.deviceName;
+        message.action = Actions.QUIT_GAME;
+        Log.d("SEND QUIT GAME TO ALL", message.toString());
+        if(network.isRunningAsHost == true){
+            network.sendToAllDevices(message, new SalutCallback() {
+                @Override
+                public void call() {
+                    Log.e("CLIENT", "Notification of other devices failed");
+                }
+            });
+        }
+        else{
+            network.sendToHost(message, new SalutCallback() {
+                @Override
+                public void call() {
+                    Log.e("CLIENT", "Notification of other devices failed");
+                }
+            });
+        }
+    }
+
+    private void buildQuitMessage(String sender){
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(R.string.AlertQuitTitle)
+                .setMessage(sender + "" + R.string.AlertQuitText)
+                .setPositiveButton(R.string.AlertQuitOkButton, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        GameConfig.getInstance().reset();
+                        finish();
+                    }
+                })
+                .show();
     }
 
 }

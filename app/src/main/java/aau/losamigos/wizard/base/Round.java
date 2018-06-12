@@ -11,7 +11,6 @@ import com.peak.salut.Salut;
 import java.util.ArrayList;
 import java.util.List;
 
-import aau.losamigos.wizard.TableActivity;
 import aau.losamigos.wizard.elements.CardStack;
 import aau.losamigos.wizard.elements.MoveTuple;
 import aau.losamigos.wizard.elements.Player;
@@ -27,7 +26,6 @@ import aau.losamigos.wizard.types.RoundStatus;
 public class Round {
 
     private List<Player> players;
-    private Player host;
     private int playerNumber;
     private GamePlay game;
     private CardStack cardStack;
@@ -42,7 +40,6 @@ public class Round {
     private int currentHandCards;
     private List<MoveTuple> table;
     private Context context;
-    private TableActivity ta;
 
 
 
@@ -58,8 +55,8 @@ public class Round {
 
         this.cardStack = game.getCardStack();
 
-        this.hands = new ArrayList<>();
-        this.table = new ArrayList<>();
+        this.hands = new ArrayList<Hand>();
+        this.table = new ArrayList<MoveTuple>();
 
         this.trump = cardStack.getTrump();
         this.ruleEngine = RuleEngine.getInstance();
@@ -67,11 +64,11 @@ public class Round {
         this.network = GameConfig.getInstance().getSalut();
         this.currentPlayer = 0;
         this.currentHandCards = this.numberOfCards;
-        this.host = players.get(0);
 
-        this.order = new ArrayList<>();
-        this.order.addAll(players);
-
+        List<Player> order = new ArrayList<Player>();
+        for (Player player : players) {
+            order.add(player);
+        }
 
         generateHands();
     }
@@ -80,25 +77,19 @@ public class Round {
         this.context = context;
     }
 
-    public void setTa(TableActivity ta) {
-        this.ta = ta;
-    }
-
     public void startRound() {
         status = RoundStatus.waitingForStiches;
-        checkNextStep();
+        askForStiches(order.get(currentPlayer));
+        currentPlayer++;
     }
 
     private void checkNextStep() {
         switch (status) {
             case waitingForStiches:
-
                 if(currentPlayer < order.size()){
                     status = RoundStatus.waitingForStiches;
-                    do{
-                        askForStiches(order.get(currentPlayer));
-                    }while(order.get(currentPlayer).getCalledStiches()<0 || order.get(currentPlayer).getCalledStiches()>currentHandCards);
                     currentPlayer++;
+                    askForStiches(order.get(currentPlayer));
                 }
                 else{
                     status = RoundStatus.waitingForCard;
@@ -143,7 +134,7 @@ public class Round {
                     askForCard(order.get(currentPlayer));
                 else
                     status = RoundStatus.roundEnded;
-                    checkNextStep();
+                checkNextStep();
                 break;
             case roundEnded:
                 calcPlayerPoints();
@@ -153,6 +144,23 @@ public class Round {
 
 
         }
+    }
+
+    private List<Player> newOrder(Player firstPlayer) {
+        List<Player> newOrder = new ArrayList<Player>();
+
+        newOrder.add(firstPlayer);
+
+        int indexFP = players.indexOf(firstPlayer);
+
+        for (int i = indexFP+1; i < playerNumber; i++)
+            newOrder.add(players.get(i));
+
+        for (int i = 0; i < indexFP; i++)
+            newOrder.add(players.get(i));
+
+        currentPlayer = 0;
+        return newOrder;
     }
 
 
@@ -216,67 +224,33 @@ public class Round {
 
         //TODO Blende Punkte fürn Host ein
     }
-    public void returnNumberOfStiches(){
-        checkNextStep();
-    }
-
-    /**
-     * Sends the information which Cards allowed to play to the client
-     *
-     */
 
     private void askForCard(Player player) {
 
-        List<AbstractCard> handCards = getPlayerHand(player);
+        Message mPickCard = new Message();
+        mPickCard.action = Actions.PICK_CARD;
 
-        List<Integer> allowedHandCardsId = new ArrayList<>();
-        for (AbstractCard card:handCards) {
-            if(card.isAllowedToPlay())
-                allowedHandCardsId.add(card.getId());
-        }
-
-        if(player.equals(host)){
-            ta.hostPickCard(allowedHandCardsId);
-        }
-        else {
-            int arrayToSend[] = new int[allowedHandCardsId.size()];
-
-            for (int i = 0; i < allowedHandCardsId.size(); i++) {
-                arrayToSend[i]=allowedHandCardsId.get(i);
+        network.sendToDevice(player.getSalutDevice(), mPickCard, new SalutCallback() {
+            @Override
+            public void call() {
+                Log.e("WizardApp", "Oh no! The data failed to send.");
             }
-
-            Message mPickCard = new Message();
-            mPickCard.action = Actions.PICK_CARD;
-            mPickCard.cardsAllowedToPlay = arrayToSend;
-
-
-            network.sendToDevice(player.getSalutDevice(), mPickCard, new SalutCallback() {
-                @Override
-                public void call() {
-                    Log.e("WizardApp", "Oh no! The data failed to send.");
-                }
-            });
-        }
+        });
     }
     private void askForStiches(Player player) {
 
-            if(player.equals(host)){
-                ta.hostStiches();
+        Message mNumberOfTricks = new Message();
+        mNumberOfTricks.action = Actions.NUMBER_OF_TRICKS;
+
+        //TODO: Put information about prohibited prediction
+        mNumberOfTricks.forbiddenTricks = -1;   //!!! Set to -1 if all numbers are allowed !!!
+
+        network.sendToDevice(player.getSalutDevice(), mNumberOfTricks, new SalutCallback() {
+            @Override
+            public void call() {
+                Log.e("WizardApp", "Oh no! The data failed to send.");
             }
-            else {
-                Message mNumberOfTricks = new Message();
-                mNumberOfTricks.action = Actions.NUMBER_OF_TRICKS;
-
-                //TODO: Put information about prohibited prediction
-                mNumberOfTricks.forbiddenTricks = -1;   //!!! Set to -1 if all numbers are allowed !!!
-
-                network.sendToDevice(player.getSalutDevice(), mNumberOfTricks, new SalutCallback() {
-                    @Override
-                    public void call() {
-                        Log.e("WizardApp", "Oh no! The data failed to send.");
-                    }
-                });
-        }
+        });
     }
 
     private void generateHands() {
@@ -285,15 +259,20 @@ public class Round {
         }
     }
 
+    private void cleanHands() {
+        hands.clear();
+    }
+
+
     public List<AbstractCard> getPlayerHand(Player player) {
         for (Hand hand : hands) {
             if (hand.getHandOwner().equals(player)) {
-                List<AbstractCard> tableCards = new ArrayList<>();
+                List<AbstractCard> tableCards = new ArrayList<AbstractCard>();
 
                 for (MoveTuple tuple : table) {
                     tableCards.add(tuple.getCard());
                 }
-                return hand.getAllowedCards(tableCards);
+                return hand.getAllowedCards(tableCards); //TODO oder nur die IDs geben
             }
 
         }
@@ -303,7 +282,7 @@ public class Round {
     /*
     Entfernt gespielte Karte von der Hand des Spielers
      */
-    private void removeCard(Player player, AbstractCard card) { //throws exception
+    public void removeCard(Player player, AbstractCard card) { //throws exception
 
         for (Hand hand : hands)
             if (hand.getHandOwner().equals(player))
@@ -327,13 +306,8 @@ public class Round {
 
     }
 
-    /**
-     *Calls the method processRound from Class ruleEngine which calculates the winner of the actual
-     *table
-     *
-     * * @return Returns the instance of the Player who got the Trick
-     */
-    private Player getWinner(){
+
+    public Player getWinner(){
 
         FractionCard trumpCard = trump.getExact(FractionCard.class);
         Fractions trumpFraction = null;
@@ -344,16 +318,10 @@ public class Round {
         return ruleEngine.processRound(table, trumpFraction);
     }
 
-    /**
-    Returns the trump card
-     */
     public AbstractCard getTrump() {
         return trump;
     }
 
-    /**
-    Calculates the points of the player after the round and write it in each player instances
-     */
     private void calcPlayerPoints(){
         for (Player player: players ) {
             int actualStiches = player.getActualStiches();
@@ -368,12 +336,6 @@ public class Round {
         }
     }
 
-    /**
-     *
-     *
-     *
-     * * @return
-     */
     public List<AbstractCard> getPlayedCards() {
         List<AbstractCard> playedCards = new ArrayList<>();
         for(MoveTuple tuple:table) {
@@ -382,9 +344,9 @@ public class Round {
         return playedCards;
     }
 
-    /*
-    Hilfsmethoden
-    */
+    /*********************************************************************************************
+     Hilfsmethoden
+     */
     public Player getPlayerByName(String playerName) {
         Player foundPlayer = null;
         for (Player player : players) {
@@ -396,23 +358,6 @@ public class Round {
             }
         }
         return foundPlayer;
-    }
-
-    private List<Player> newOrder(Player firstPlayer) {
-        List<Player> newOrder = new ArrayList<>();
-
-        newOrder.add(firstPlayer);
-
-        int indexFP = players.indexOf(firstPlayer);
-
-        for (int i = indexFP+1; i < playerNumber; i++)
-            newOrder.add(players.get(i));
-
-        for (int i = 0; i < indexFP; i++)
-            newOrder.add(players.get(i));
-
-        currentPlayer = 0;
-        return newOrder;
     }
 
 }
