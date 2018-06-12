@@ -91,6 +91,14 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             defineClientCallBack();
             notifyHost();
         }
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+
+        if (GameConfig.getInstance().isCheatEnabled() == true) {
+            cheating();
+        }
+
     }
 
 
@@ -185,11 +193,20 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             cardViews.add(imageView);
         }
 
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
+        //TODO: REMOVE - BUTTON WAS JUST FOR TEST REASONS
+        btnPredictTrick = findViewById(R.id.btn_predictTrick);
+        btnPredictTrick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createPredictionPicker(-1);
+                }
+            }
 
-        if (GameConfig.getInstance().isCheatEnabled() == true) {
+        );
+    }
+    private void cheating(){
+
             if (accelerometerSensor == null) {
 
                 Toast.makeText(this, "No Cheating possible", Toast.LENGTH_SHORT).show();
@@ -213,6 +230,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
                         } else if (sensorEvent.values[2] >= -0.4f && sensorEvent.values[2] <= 0.4f) {
 
+
                         }
                     }
 
@@ -221,20 +239,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
                     }
                 };
-            }
+
         }
 
-
-        //TODO: REMOVE - BUTTON WAS JUST FOR TEST REASONS
-        btnPredictTrick = findViewById(R.id.btn_predictTrick);
-        btnPredictTrick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createPredictionPicker(-1);
-                }
-            }
-
-        );
     }
 
     private void cardLeftPlayer() throws InterruptedException {
@@ -246,10 +253,10 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
         try {
             wait(3000);
+            cheating();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        message.client2HostAction = Client2HostAction.PLAYERSTATES_REQUESTED;
     }
 
 
@@ -262,12 +269,10 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
         try {
             wait(3000);
+            cheating();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        message.client2HostAction = Client2HostAction.PLAYERSTATES_REQUESTED;
-
-
     }
 
 

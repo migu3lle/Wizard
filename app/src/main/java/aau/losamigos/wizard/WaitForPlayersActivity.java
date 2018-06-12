@@ -32,7 +32,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
     SalutListViewAdapter adapter;
     ArrayList<SalutDevice> clientList;
 
-    Button btnBack;
+
     Button btnStartGame;
 
     Bundle bundle;
@@ -58,8 +58,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
         lvClients.setAdapter(adapter);
 
         //Some buttons...
-        btnBack = findViewById(R.id.btn_Back);
-        btnBack.setOnClickListener(this);
+
         btnStartGame = findViewById(R.id.btn_StartGame);
         btnStartGame.setOnClickListener(this);
 
@@ -97,10 +96,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
      */
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.btn_Back){
-            this.onBackPressed();
-        }
-        else if(v.getId() == R.id.btn_StartGame){
+        if(v.getId() == R.id.btn_StartGame){
             if(!checkMinPlayer())
                 return;
             gameStarted = true;

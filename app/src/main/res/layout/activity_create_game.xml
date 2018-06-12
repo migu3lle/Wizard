@@ -9,13 +9,6 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="aau.losamigos.wizard.CreateGameActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <EditText
         android:id="@+id/editText_hostName"
@@ -33,37 +26,25 @@
         android:textColor="@color/colorPrimaryLight"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-    <Button
-        android:id="@+id/btn_Back"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@android:drawable/alert_light_frame"
-        android:backgroundTint="@color/colorPrimaryLight"
-        android:text="@string/back_button"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btn_create"
-        android:layout_width="100dp"
+        android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
         android:background="@android:drawable/alert_light_frame"
         android:backgroundTint="@color/colorPrimaryLight"
         android:text="@string/create_new_game"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sw_cheating" />
 
     <EditText
         android:id="@+id/editText_maxPlayer"
@@ -101,24 +82,11 @@
         app:layout_constraintTop_toBottomOf="@+id/editText_hostName" />
 
     <Switch
-        android:id="@+id/sw_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:switchPadding="10dp"
-        android:text="@string/pin_enabled"
-        android:textColor="@color/colorPrimaryLight"
-        android:textOff="Off"
-        android:textOn="On"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="@+id/editText_maxPlayer"
-        app:layout_constraintTop_toBottomOf="@+id/editText_maxPlayer" />
-
-    <Switch
         android:id="@+id/sw_cheating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:switchPadding="10dp"
         android:text="@string/cheat_enabled"
@@ -126,8 +94,9 @@
         android:textOff="Off"
         android:textOn="On"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="@+id/sw_password"
-        app:layout_constraintTop_toBottomOf="@+id/sw_password" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText_maxPlayer" />
 
     <TextView
         android:id="@+id/tv_maxPlayer"
