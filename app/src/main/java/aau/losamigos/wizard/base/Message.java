@@ -63,6 +63,9 @@ public class Message{
     @JsonField
     public Map<String, List<PlayerRoundState>> playerStates;
 
+    @JsonField
+    public List<AbstractCard> getPlayerHand;
+
     @Override
     public String toString() {
         return "Message{" +

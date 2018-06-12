@@ -13,6 +13,5 @@ public class Actions {
     public static int NUMBER_OF_TRICKS = 6;
     public static int YOUR_POINTS = 7;
     public static int PLAYERSTATES_SENT = 8;
-    public static int GET_LEFT_CARDS = 9;
-    public static int GET_RIGHT_CARDS = 10;
+    public static int GET_HAND_CARDS = 9;
 }

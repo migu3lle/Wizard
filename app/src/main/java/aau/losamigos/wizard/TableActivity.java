@@ -326,15 +326,13 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 } else if (message.action == Actions.NUMBER_OF_TRICKS) {
                     int forbidden = message.forbiddenTricks;
                     createPredictionPicker(forbidden);
-                } else if (message.action == Actions.GET_LEFT_CARDS) {
-
                 }
             }
         });
     }
 
     private void defineHostCallBack() {
-        DataCallback callback = GameConfig.getInstance().getCallBack();
+        final DataCallback callback = GameConfig.getInstance().getCallBack();
         callback.addCallBackAction(new ICallbackAction() {
             @Override
             public void execute(Message message) {
@@ -382,7 +380,19 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                         });
                     }
 
-                }
+                }else if (message.client2HostAction == Client2HostAction.GET_LEFT_CARDS) {
+                    Player p = round.getPlayerByName(message.sender);
+                    Player s = null;
+                    Player[] players = GameConfig.getInstance().getPlayers();
+                   for (int i =0; i< game.getPlayers().size(); i++){
+                       if (players[i] == p) {
+                           s = players[i+1];
+                       }
+                   }
+                   Message ms1 = new Message();
+
+
+                   }
             }
 
         });
