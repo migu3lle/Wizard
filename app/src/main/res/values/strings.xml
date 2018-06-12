@@ -42,6 +42,9 @@
     <string name="AlertPredictRoundNo">Runde</string>
     <string name="AlertPredictText">Wähle deine Stiche</string>
     <string name="AlertPredictSetButton">OK</string>
+    <string name="AlertQuitTitle">Spiel beendet!</string>
+    <string name="AlertQuitOkButton">OK</string>
+    <string name="AlertQuitText"> hat das Spiel beendet.</string>
 
     <!-- Menu Button Strings -->
     <string name="create_new_game">Erstellen</string>

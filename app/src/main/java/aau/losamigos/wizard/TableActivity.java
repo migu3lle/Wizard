@@ -1,6 +1,8 @@
 package aau.losamigos.wizard;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -238,6 +240,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                        int forbidden = message.forbiddenTricks;
                        createPredictionPicker(forbidden);
                    }
+                   else if(message.action == Actions.QUIT_GAME){
+                       buildQuitMessage(message.sender);
+                   }
             }
         });
     }
@@ -275,14 +280,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     String sender = message.sender;
                     Toast.makeText(getApplicationContext(), "Prediction from " + sender + ": " + tricksPrediction, Toast.LENGTH_SHORT).show();
 
-                    //Write prediction to Player object
-                    Player[] players = GameConfig.getInstance().getPlayers();
-                    for (Player player : players) {
-                        if(player.getSalutDeviceName().equals(sender)){
-                            player.setCalledStiches(tricksPrediction);
-                            break;
-                        }
-                    }
+                    writePredictionToPlayer(tricksPrediction, sender);
                 }
                 else if (message.client2HostAction == Client2HostAction.PLAYERSTATES_REQUESTED) {
                     Player p = round.getPlayerByName(message.sender);
@@ -299,9 +297,23 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     }
 
                 }
+                else if(message.action == Actions.QUIT_GAME){
+                    buildQuitMessage(message.sender);
+                }
             }
 
         });
+    }
+
+    // Writes prediction to Player object
+    private void writePredictionToPlayer(int tricksPrediction, String sender) {
+        Player[] players = GameConfig.getInstance().getPlayers();
+        for (Player player : players) {
+            if(player.getSalutDeviceName().equals(sender)){
+                player.setCalledStiches(tricksPrediction);
+                break;
+            }
+        }
     }
 
     private List<AbstractCard> getCardsById(int[] cardIds) {
@@ -491,7 +503,12 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         int prediction = Integer.parseInt(picker.getDisplayedValues()[picker.getValue()]);
-        sendNumberOfTricksToHost(prediction);
+        if(GameConfig.getInstance().isHost()){
+            writePredictionToPlayer(prediction, network.thisDevice.deviceName);
+        }
+        else{
+            sendNumberOfTricksToHost(prediction);
+        }
     }
 
     /**
@@ -509,6 +526,64 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 Log.e("CLIENT", "Notification of Host failed");
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(R.string.AlertBack)
+                .setMessage(R.string.AlertBackDescription)
+                .setPositiveButton(R.string.AlertBackYes, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendQuitGameToAll();
+                        GameConfig.getInstance().reset();
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.AlertBackNo, null)
+                .show();
+    }
+
+    private void sendQuitGameToAll(){
+        Message message = new Message();
+        message.sender = network.thisDevice.deviceName;
+        message.action = Actions.QUIT_GAME;
+        Log.d("SEND QUIT GAME TO ALL", message.toString());
+        if(network.isRunningAsHost == true){
+            network.sendToAllDevices(message, new SalutCallback() {
+                @Override
+                public void call() {
+                    Log.e("CLIENT", "Notification of other devices failed");
+                }
+            });
+        }
+        else{
+            network.sendToHost(message, new SalutCallback() {
+                @Override
+                public void call() {
+                    Log.e("CLIENT", "Notification of other devices failed");
+                }
+            });
+        }
+    }
+
+    private void buildQuitMessage(String sender){
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(R.string.AlertQuitTitle)
+                .setMessage(sender + "" + R.string.AlertQuitText)
+                .setPositiveButton(R.string.AlertQuitOkButton, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        GameConfig.getInstance().reset();
+                        finish();
+                    }
+                })
+                .show();
     }
 
 }

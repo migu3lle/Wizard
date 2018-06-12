@@ -134,7 +134,7 @@ public class Round {
                     askForCard(order.get(currentPlayer));
                 else
                     status = RoundStatus.roundEnded;
-                    checkNextStep();
+                checkNextStep();
                 break;
             case roundEnded:
                 calcPlayerPoints();
@@ -154,10 +154,10 @@ public class Round {
         int indexFP = players.indexOf(firstPlayer);
 
         for (int i = indexFP+1; i < playerNumber; i++)
-                newOrder.add(players.get(i));
+            newOrder.add(players.get(i));
 
         for (int i = 0; i < indexFP; i++)
-                newOrder.add(players.get(i));
+            newOrder.add(players.get(i));
 
         currentPlayer = 0;
         return newOrder;
@@ -345,8 +345,8 @@ public class Round {
     }
 
     /*********************************************************************************************
-    Hilfsmethoden
-    */
+     Hilfsmethoden
+     */
     public Player getPlayerByName(String playerName) {
         Player foundPlayer = null;
         for (Player player : players) {
