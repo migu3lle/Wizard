@@ -2,6 +2,7 @@ package aau.losamigos.wizard.base;
 
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -111,30 +112,36 @@ public class Round {
                 }
                 break;
             case tableFull:
-                Player winner = getWinner();
+                final Player winner = getWinner();
+                //show winner on host
+                Toast.makeText(context, "Gewonnen hat: " + winner.getName(), Toast.LENGTH_LONG).show();
+
+                //show winner on clients
                 sendWinnerOnAll(winner);
 
-                /*
-                    5 Sekunde Pause
-                */
-                try {
-                    Thread.sleep(5000);
+                Handler handler = new Handler();
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                        table.clear();
 
-                table.clear();
+                        sendTableOnAll();
 
-                sendTableOnAll();
+                        order = newOrder(winner);
+                        currentHandCards--;
+                        if(currentHandCards>=0)
+                        {
+                            askForCard(order.get(currentPlayer));
+                        } else {
+                            status = RoundStatus.roundEnded;
+                            checkNextStep();
+                        }
+                    }
+                };
 
-                order = newOrder(winner);
-                currentHandCards--;
-                if(currentHandCards>=0)
-                    askForCard(order.get(currentPlayer));
-                else
-                    status = RoundStatus.roundEnded;
-                checkNextStep();
+                handler.postDelayed(r, 3000);
+
                 break;
             case roundEnded:
                 calcPlayerPoints();
@@ -196,6 +203,7 @@ public class Round {
     }
 
     private void sendWinnerOnAll(Player player) {
+        Log.d("HOSTDEVICE", "send winner on all; player: " + player);
         Message message = new Message();
         message.action = Actions.AND_THE_WINNER_IS;
         message.sender = player.getName();
@@ -205,7 +213,6 @@ public class Round {
                 Log.e("WizardApp", "Oh no! The data failed to send.");
             }
         });
-        Toast.makeText(context, "Gewonnen hat: " + player.getName(), Toast.LENGTH_LONG).show();
     }
 
     private void sendPointsOnAll() {

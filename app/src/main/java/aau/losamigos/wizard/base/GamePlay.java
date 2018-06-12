@@ -39,7 +39,7 @@ public class GamePlay {
     }
 
     public GamePlay(Player[] players) {
-        countRound =20;
+        countRound =1;
         this.players = new ArrayList<Player>();
 
         for (Player player:players) {
