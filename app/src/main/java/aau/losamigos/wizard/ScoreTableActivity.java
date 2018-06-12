@@ -75,7 +75,7 @@ public class ScoreTableActivity extends AppCompatActivity {
             });
 
             Message message = new Message();
-            message.client2HostAction = Client2HostAction.TABLE_ACTIVITY_STARTED;
+            message.client2HostAction = Client2HostAction.PLAYERSTATES_REQUESTED;
             message.sender = network.thisDevice.deviceName;
             network.sendToHost(message, new SalutCallback() {
                 @Override

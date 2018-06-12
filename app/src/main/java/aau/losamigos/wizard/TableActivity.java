@@ -288,7 +288,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     Player p = round.getPlayerByName(message.sender);
                     if(p != null) {
                         Message m1 = new Message();
-                        message.playerStates = game.getPlayerRoundStates();
+                        m1.playerStates = game.getPlayerRoundStates();
+                        m1.action = Actions.PLAYERSTATES_SENT;
                         network.sendToDevice(p.getSalutDevice(), m1, new SalutCallback() {
                             @Override
                             public void call() {
