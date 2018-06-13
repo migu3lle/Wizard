@@ -27,7 +27,7 @@ import java.util.List;
 import aau.losamigos.wizard.base.AbstractCard;
 import aau.losamigos.wizard.base.GameConfig;
 import aau.losamigos.wizard.base.GamePlay;
-import aau.losamigos.wizard.base.IClearable;
+import aau.losamigos.wizard.base.IGameActivity;
 import aau.losamigos.wizard.base.Message;
 import aau.losamigos.wizard.base.Round;
 import aau.losamigos.wizard.elements.CardStack;
@@ -38,7 +38,7 @@ import aau.losamigos.wizard.rules.Actions;
 import aau.losamigos.wizard.rules.Client2HostAction;
 
 public class TableActivity extends AppCompatActivity implements View.OnClickListener, NumberPicker.OnValueChangeListener,
-        IClearable{
+        IGameActivity {
     Salut network;
     List<ImageView> cardViews;
     List<ImageView> middleCards;
@@ -193,7 +193,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         Round round =  game.getRecentRound();
         round.setContext(getApplicationContext());
         gcfg.setCurrentGamePlay(game);
-        round.setClearable(this);
+        round.setGameActivity(this);
     }
 
     private void notifyHost() {
@@ -245,6 +245,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                    }
                    else if(message.action == Actions.QUIT_GAME){
                        buildQuitMessage(message.sender);
+                   }
+                   else if (message.action == Actions.YOUR_POINTS) {
+                       Toast.makeText(getApplicationContext(), "Your Points: " + message.playerPoints, Toast.LENGTH_LONG).show();
                    }
             }
         });
@@ -375,7 +378,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         startActivity(intent);
     }
 
-    private void sendCardsToDevice(Player player) {
+    public void sendCardsToDevice(Player player) {
         Round round = game.getRecentRound();
         List<AbstractCard> cards = round.getPlayerHand(player);
         SalutDevice playerDevice = player.getSalutDevice();
@@ -398,7 +401,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    private void setCardsForHost() {
+    public void setCardsForHost() {
         Round round = game.getRecentRound();
         setTrump(round.getTrump());
         Player[] players = GameConfig.getInstance().getPlayers();

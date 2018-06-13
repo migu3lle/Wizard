@@ -37,7 +37,7 @@ public class Message{
     public int playedCard;
 
     @JsonField
-    public int[] playerPoints;
+    public int playerPoints;
 
     @JsonField
     public int forbiddenTricks;

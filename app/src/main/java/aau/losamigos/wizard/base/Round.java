@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.peak.salut.Callbacks.SalutCallback;
 import com.peak.salut.Salut;
+import com.peak.salut.SalutDevice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +37,13 @@ public class Round {
     private RoundStatus status;
     private Salut network;
     private RuleEngine ruleEngine;
-    private List<Player> order;
+    private static List<Player> order;
     private int currentPlayer;
     private int currentHandCards;
     private List<MoveTuple> table;
     private Context context;
-    //instance of clearable to be able to clear table of host
-    private IClearable clearable;
+    //instance of gameActivity to be able to clear table of host
+    private static IGameActivity gameActivity;
 
 
     public Round(GamePlay game, int numberOfCards) {
@@ -67,10 +68,13 @@ public class Round {
         this.currentPlayer = 0;
         this.currentHandCards = this.numberOfCards;
 
-        List<Player> order = new ArrayList<Player>();
-        for (Player player : players) {
-            order.add(player);
+        if(order == null) {
+            List<Player> order = new ArrayList<Player>();
+            for (Player player : players) {
+                order.add(player);
+            }
         }
+
 
         generateHands();
     }
@@ -79,11 +83,18 @@ public class Round {
         this.context = context;
     }
 
-    public void setClearable(IClearable clearable) {
-        this.clearable = clearable;
+    public void setGameActivity(IGameActivity gameActivity) {
+        this.gameActivity = gameActivity;
     }
 
     public void startRound() {
+        for(Player player : players) {
+            if(player.getSalutDevice() == network.thisDevice) {
+                gameActivity.setCardsForHost();
+            } else {
+                gameActivity.sendCardsToDevice(player);
+            }
+        }
         status = RoundStatus.waitingForStiches;
         askForStiches(order.get(currentPlayer));
         currentPlayer++;
@@ -131,13 +142,13 @@ public class Round {
 
                         table.clear();
 
-                        clearable.clearTable();
+                        gameActivity.clearTable();
 
                         sendTableOnAll();
 
                         order = newOrder(winner);
                         currentHandCards--;
-                        if(currentHandCards>=0)
+                        if(currentHandCards>0)
                         {
                             askForCard(order.get(currentPlayer));
                         } else {
@@ -151,6 +162,7 @@ public class Round {
 
                 break;
             case roundEnded:
+                Log.d("ROUNDENDED", "round ended");
                 calcPlayerPoints();
                 sendPointsOnAll();
                 game.nextRound();
@@ -223,20 +235,28 @@ public class Round {
     }
 
     private void sendPointsOnAll() {
+        Log.d("PLAYERPOINTS", "atemting to send points");
         Message message = new Message();
         message.action = Actions.YOUR_POINTS;
         for (int i = 0; i < playerNumber ; i++) {
-            message.playerPoints[i] = players.get(i).getPoints();
-        }
+            Player player = players.get(i);
+            SalutDevice device = player.getSalutDevice();
+            message.playerPoints = player.getPoints();
 
-        network.sendToAllDevices(message, new SalutCallback() {
-            @Override
-            public void call() {
-                Log.e("WizardApp", "Oh no! The data failed to send.");
+            //host
+            if(network.thisDevice == device) {
+                Toast.makeText(context, "Your Points: "+ message.playerPoints, Toast.LENGTH_LONG).show();
             }
-        });
-
-        //TODO Blende Punkte fürn Host ein
+            //client
+            else {
+                network.sendToDevice(device, message, new SalutCallback() {
+                    @Override
+                    public void call() {
+                        Log.e("POINTS", "failed to send points to device");
+                    }
+                });
+            }
+        }
     }
 
     private void askForCard(Player player) {
