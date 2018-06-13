@@ -48,10 +48,13 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     GamePlay game;
     TextView player2, player3, player4, player5, player6;
     CardStack clientCardStack;
+    boolean allowedToClick;
     ImageView playerC2,playerC3,playerC4,playerC5,playerC6;
 
     Button btnPredictTrick;
     PredictTrickDialogFragment predictDialog;
+    boolean initialPrediction;
+    int playerJoinCount;
 
     HashMap<Integer, AbstractCard> view2CardMap;
     @Override
@@ -237,7 +240,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                        Toast.makeText(getApplicationContext(),"Gewonnen hat: " + message.sender,Toast.LENGTH_LONG).show();
                    }
                    else if(message.action == Actions.PICK_CARD) {
-                       //TODO
+                       allowedToClick = true;
                    }
                    else if(message.action == Actions.NUMBER_OF_TRICKS){
                        int forbidden = message.forbiddenTricks;
@@ -268,6 +271,13 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     Player p = round.getPlayerByName(message.sender);
                     if(p != null) {
                         sendCardsToDevice(p);
+                        playerJoinCount++;
+                        Log.d("WizardApp", "Received TABLE_ACTIVITY_STARTED from a device");
+                        if(playerJoinCount == game.getPlayers().size()-1){
+                            Log.d("WizardApp", "Enough TABLE_ACTIVITY_STARTED received. Ask for predictions");
+                            initialPrediction = true;
+                            round.askFirstPredictions();
+                        }
                     }
                 }
 
@@ -287,6 +297,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(getApplicationContext(), "Prediction from " + sender + ": " + tricksPrediction, Toast.LENGTH_SHORT).show();
 
                     writePredictionToPlayer(tricksPrediction, sender);
+                    if(initialPrediction){
+                        game.getRecentRound().askFirstPredictions();
+                    }
                 }
                 else if (message.client2HostAction == Client2HostAction.PLAYERSTATES_REQUESTED) {
                     Player p = round.getPlayerByName(message.sender);
@@ -318,9 +331,14 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         for (Player player : players) {
             if(player.getSalutDeviceName().equals(sender)){
                 player.setCalledStiches(tricksPrediction);
+                //game.getRecentRound().returnNumberOfStiches();
                 break;
             }
         }
+    }
+
+    public void setInitialPrediction(boolean predict){
+        initialPrediction = predict;
     }
 
     private List<AbstractCard> getCardsById(int[] cardIds) {
@@ -335,6 +353,11 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_table);
     }
 
+    public void hostStiches(){
+        createPredictionPicker(-1);
+        allowedToClick=true;
+    }
+
     @Override
     public void onClick(View view) {
 
@@ -343,6 +366,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
             //card is not visible so do nothing
             if(imgView.getDrawable() == null) {
+                return;
+            }
+            if(allowedToClick==false) {
                 return;
             }
 
@@ -513,7 +539,11 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         int prediction = Integer.parseInt(picker.getDisplayedValues()[picker.getValue()]);
-        if(GameConfig.getInstance().isHost()){
+        if(GameConfig.getInstance().isHost() && initialPrediction){
+            writePredictionToPlayer(prediction, network.thisDevice.deviceName);
+            game.getRecentRound().askFirstPredictions();
+        }
+        else if(GameConfig.getInstance().isHost()){
             writePredictionToPlayer(prediction, network.thisDevice.deviceName);
         }
         else{
