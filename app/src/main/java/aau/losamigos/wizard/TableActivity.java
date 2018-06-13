@@ -301,6 +301,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
                 }
                 else if(message.action == Actions.QUIT_GAME){
+                    sendQuitGameToAll();
                     buildQuitMessage(message.sender);
                 }
             }
