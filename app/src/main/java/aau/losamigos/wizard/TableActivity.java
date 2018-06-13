@@ -13,9 +13,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.collect.Table;
 import com.peak.salut.Callbacks.SalutCallback;
 import com.peak.salut.Salut;
 import com.peak.salut.SalutDevice;
@@ -53,7 +55,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     Button btnPredictTrick;
     PredictTrickDialogFragment predictDialog;
 
-    HashMap<Integer, AbstractCard> view2CardMap;
+    HashMap<String, AbstractCard> view2CardMap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -160,22 +162,11 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         middleCards.add(middleCard5);
         middleCards.add(middleCard6);
 
-        LinearLayout cardHand = findViewById(R.id.cardHand);
-        LayoutInflater inflater = LayoutInflater.from(this);
+
         for (int i = 0; i < roundCount; i++) {
-
-            View view = inflater.inflate(R.layout.card,cardHand,false);
-            ImageView imageView = view.findViewById(R.id.imageView);
-
-            imageView.setClickable(true);
-            imageView.setOnClickListener(this);
-            cardHand.addView(view);
-
-            cardViews.add(imageView);
+            addImageToScrollView();
         }
-
-
-
+        
         //TODO: REMOVE - BUTTON WAS JUST FOR TEST REASONS
         btnPredictTrick = findViewById(R.id.btn_predictTrick);
         btnPredictTrick.setOnClickListener(new View.OnClickListener(){
@@ -184,6 +175,18 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 createPredictionPicker(-1);
             }
         });
+    }
+
+    private void addImageToScrollView() {
+        LinearLayout cardHand = findViewById(R.id.cardHand);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View view = inflater.inflate(R.layout.card,cardHand,false);
+        ImageView imageView = view.findViewById(R.id.imageView);
+        imageView.setClickable(true);
+        imageView.setOnClickListener(this);
+        cardHand.addView(view);
+        imageView.setContentDescription("" + View.generateViewId());
+        cardViews.add(imageView);
     }
 
     private void startGame(){
@@ -221,7 +224,12 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                    }
                    else if(message.action == Actions.INITIAL_CARD_GIVING) {
                        if(message.cards != null && message.cards.length > 0 && message.playerCount > 0 && message.roundCount > 0) {
-                           initGui(message.playerCount, message.roundCount);
+                           if(message.roundCount ==1) {
+                               initGui(message.playerCount, message.roundCount);
+                           } else {
+                               addImageToScrollView();
+                           }
+
                            List<AbstractCard> cards =getCardsById(message.cards);
                            setCardsToImages(cards);
                        }
@@ -348,7 +356,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
             imgView.setImageDrawable(null);
 
-            AbstractCard clickedCard = view2CardMap.get(view.getId());
+            AbstractCard clickedCard = view2CardMap.get(view.getContentDescription().toString());
             Log.d("CLICKEDCARD", "id: " + clickedCard.getId());
             Message message = new Message();
             message.client2HostAction = Client2HostAction.CARD_PLAYED;
@@ -384,22 +392,31 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         List<AbstractCard> cards = round.getPlayerHand(player);
         SalutDevice playerDevice = player.getSalutDevice();
         //then we are host because only host calls this method
-        Message message = new Message();
-        message.action = Actions.INITIAL_CARD_GIVING;
-        message.cards = new int[cards.size()];
-        message.trumpCard = round.getTrump().getId();
-        message.playerCount = game.getPlayers().size();
-        message.roundCount = game.getCountRound();
-        for(int i = 0; i < cards.size(); i++) {
-            message.cards[i] = cards.get(i).getId();
-        }
-        Log.d("SEND CARDS", message.toString());
-        network.sendToDevice(playerDevice, message, new SalutCallback() {
-            @Override
-            public void call() {
-                Log.e("HOST GIVE CARD", "card giving failed for device: ");
+        int playerCount = game.getPlayers().size();
+        int roundCount = game.getCountRound();
+
+        Log.d("SEND CARDS", "send cards to: " + player.getName());
+
+        if(player.getSalutDevice() == network.thisDevice) {
+            addImageToScrollView();
+            setCardsToImages(cards);
+        } else {
+            Message message = new Message();
+            message.action = Actions.INITIAL_CARD_GIVING;
+            message.cards = new int[cards.size()];
+            message.trumpCard = round.getTrump().getId();
+            message.playerCount = playerCount;
+            message.roundCount = roundCount;
+            for(int i = 0; i < cards.size(); i++) {
+                message.cards[i] = cards.get(i).getId();
             }
-        });
+            network.sendToDevice(playerDevice, message, new SalutCallback() {
+                @Override
+                public void call() {
+                    Log.e("HOST GIVE CARD", "card giving failed for device: ");
+                }
+            });
+        }
     }
 
     public void setCardsForHost() {
@@ -430,7 +447,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         for(int i = 0; i < maxIteration; i++) {
             ImageView img =  cardViews.get(i);
             AbstractCard card = cards.get(i);
-            view2CardMap.put(img.getId(), card);
+            view2CardMap.put(img.getContentDescription().toString(), card);
             img.setImageResource(card.getResourceId());
         }
 

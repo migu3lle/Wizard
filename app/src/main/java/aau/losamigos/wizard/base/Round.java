@@ -41,7 +41,7 @@ public class Round {
     private int currentPlayer;
     private int currentHandCards;
     private List<MoveTuple> table;
-    private Context context;
+    private static Context context;
     //instance of gameActivity to be able to clear table of host
     private static IGameActivity gameActivity;
 
@@ -89,15 +89,11 @@ public class Round {
 
     public void startRound() {
         for(Player player : players) {
-            if(player.getSalutDevice() == network.thisDevice) {
-                gameActivity.setCardsForHost();
-            } else {
-                gameActivity.sendCardsToDevice(player);
-            }
+            gameActivity.sendCardsToDevice(player);
         }
         status = RoundStatus.waitingForStiches;
-        askForStiches(order.get(currentPlayer));
-        currentPlayer++;
+        //askForStiches(order.get(currentPlayer));
+        //currentPlayer++;
     }
 
     private void checkNextStep() {
