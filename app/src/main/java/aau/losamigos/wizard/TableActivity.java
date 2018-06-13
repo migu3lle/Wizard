@@ -166,7 +166,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         for (int i = 0; i < roundCount; i++) {
             addImageToScrollView();
         }
-        
+
         //TODO: REMOVE - BUTTON WAS JUST FOR TEST REASONS
         btnPredictTrick = findViewById(R.id.btn_predictTrick);
         btnPredictTrick.setOnClickListener(new View.OnClickListener(){
@@ -400,6 +400,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         if(player.getSalutDevice() == network.thisDevice) {
             addImageToScrollView();
             setCardsToImages(cards);
+            setTrump(round.getTrump());
         } else {
             Message message = new Message();
             message.action = Actions.INITIAL_CARD_GIVING;
