@@ -14,4 +14,5 @@ public class Actions {
     public static int YOUR_POINTS = 7;
     public static int PLAYERSTATES_SENT = 8;
     public static int GET_HAND_CARDS = 9;
+    public static int CHEAT_TRIGGER = 10;
 }

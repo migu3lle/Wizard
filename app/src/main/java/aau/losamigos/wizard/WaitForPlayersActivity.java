@@ -105,6 +105,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
 
 
             Message myMessage = new Message();
+            myMessage.cheatEnabled= GameConfig.getInstance().isCheatEnabled();
             myMessage.description = "Los gehts";
 
             network.sendToAllDevices(myMessage, new SalutCallback() {
@@ -113,7 +114,7 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
                     Log.e("WizardApp", "Oh no! The data failed to send.");
                 }
             });
-            nextActivity();
+            nextActivity(myMessage.cheatEnabled);
         }
     }
 
@@ -145,9 +146,11 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
         }
     }
 
-    private void nextActivity() {
+    private void nextActivity(boolean b) {
         Intent intent = new Intent(this, TableActivity.class);
+        intent.putExtra("CheatEnabled", b);
         startActivity(intent);
+
     }
 
     @Override

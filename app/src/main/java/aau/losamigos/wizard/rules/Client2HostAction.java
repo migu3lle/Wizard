@@ -11,4 +11,5 @@ public class Client2HostAction {
     public static int PLAYERSTATES_REQUESTED = 4;
     public static int GET_LEFT_CARDS = 5;
     public static int GET_RIGHT_CARDS = 6;
+    public static int CHEAT_DETECT = 7;
 }

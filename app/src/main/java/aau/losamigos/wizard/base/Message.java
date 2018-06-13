@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import aau.losamigos.wizard.elements.Player;
 import aau.losamigos.wizard.elements.PlayerRoundState;
 import aau.losamigos.wizard.rules.Actions;
 import aau.losamigos.wizard.rules.Client2HostAction;
@@ -64,7 +65,14 @@ public class Message{
     public Map<String, List<PlayerRoundState>> playerStates;
 
     @JsonField
-    public List<AbstractCard> getPlayerHand;
+    public int [] getPlayerHand;
+
+    @JsonField
+    public String cheatPlayer;
+
+    @JsonField
+    public boolean cheatEnabled;
+
 
     @Override
     public String toString() {

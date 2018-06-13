@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
 
     android:background="@color/colorGreen"
-    android:clickable="false"
     android:visibility="visible"
     tools:context="aau.losamigos.wizard.TableActivity">
 
@@ -247,9 +246,8 @@
             android:id="@+id/cardHand"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
             android:gravity="center"
-            />
+            android:orientation="horizontal" />
     </HorizontalScrollView>
 
 
@@ -276,7 +274,8 @@
         app:layout_constraintBottom_toTopOf="@+id/playerHand"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Middle3" />
+        app:layout_constraintTop_toBottomOf="@+id/Middle3"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/button"
@@ -290,5 +289,16 @@
         app:layout_constraintBottom_toTopOf="@+id/playerC2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/playerC3" />
+
+    <Button
+        android:id="@+id/cheatdetect"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Cheat "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_predictTrick"
+        tools:layout_editor_absoluteY="195dp" />
 
 </android.support.constraint.ConstraintLayout>

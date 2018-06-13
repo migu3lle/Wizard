@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +47,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     List<ImageView> middleCards;
     ImageView trump;
     int playerCount;
+    boolean cheat;
+
     //instance only available for host
     GamePlay game;
     TextView player2, player3, player4, player5, player6;
@@ -53,11 +56,12 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     ImageView playerC2, playerC3, playerC4, playerC5, playerC6;
 
     Button btnPredictTrick;
+    Button cheatdetect;
     PredictTrickDialogFragment predictDialog;
 
-    private SensorManager sensorManager;
-    private Sensor accelerometerSensor;
-    private SensorEventListener accelerometerEventListener;
+    SensorManager sensorManager;
+    Sensor accelerometerSensor;
+    SensorEventListener accelerometerEventListener;
 
 
     HashMap<Integer, AbstractCard> view2CardMap;
@@ -66,6 +70,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        boolean b =getIntent().getBooleanExtra("CheatEnabled",false);
 
         setContentView(R.layout.activity_table);
         getSupportActionBar().hide();
@@ -95,8 +100,10 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
 
-        if (GameConfig.getInstance().isCheatEnabled() == true) {
+        if (b) {
+            cheat = false;
             cheating();
+
         }
 
     }
@@ -179,6 +186,16 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         middleCards.add(middleCard5);
         middleCards.add(middleCard6);
 
+        cheatdetect = findViewById(R.id.cheatdetect);
+        cheatdetect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Message message = new Message();
+                message.client2HostAction = Client2HostAction.CHEAT_DETECT;
+
+            }
+        });
+
         LinearLayout cardHand = findViewById(R.id.cardHand);
         LayoutInflater inflater = LayoutInflater.from(this);
         for (int i = 0; i < roundCount; i++) {
@@ -197,82 +214,61 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         //TODO: REMOVE - BUTTON WAS JUST FOR TEST REASONS
         btnPredictTrick = findViewById(R.id.btn_predictTrick);
         btnPredictTrick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createPredictionPicker(-1);
-                }
-            }
+                                               @Override
+                                               public void onClick(View v) {
+                                                   createPredictionPicker(-1);
+                                               }
+                                           }
 
         );
     }
-    private void cheating(){
 
-            if (accelerometerSensor == null) {
+    private void cheating() {
+        //check if there is a Sensor
+        if (accelerometerSensor == null) {
 
-                Toast.makeText(this, "No Cheating possible", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No Cheating possible", Toast.LENGTH_SHORT).show();
+            //detect the movement along the z-axis (horizontal skip left/right)
+        } else {
+            accelerometerEventListener = new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent sensorEvent) {
+                    if (sensorEvent.values[2] > 0.4f) {
+                        cardRightPlayer();
 
-            } else {
-                accelerometerEventListener = new SensorEventListener() {
-                    @Override
-                    public void onSensorChanged(SensorEvent sensorEvent) {
-                        if (sensorEvent.values[2] > 0.4f) {
-                            try {
-                                cardRightPlayer();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        } else if (sensorEvent.values[2] < -0.4f) {
-                            try {
-                                cardLeftPlayer();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                    } else if (sensorEvent.values[2] < -0.4f) {
+                        cardLeftPlayer();
 
-                        } else if (sensorEvent.values[2] >= -0.4f && sensorEvent.values[2] <= 0.4f) {
+                    } else if (sensorEvent.values[2] >= -0.4f && sensorEvent.values[2] <= 0.4f) {
 
-
-                        }
+                        //DO NOTHING
                     }
+                }
 
-                    @Override
-                    public void onAccuracyChanged(Sensor sensor, int i) {
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int i) {
 
-                    }
-                };
+                }
+            };
 
         }
 
     }
 
-    private void cardLeftPlayer() throws InterruptedException {
+    private void cardLeftPlayer() {
 
         Message message = new Message();
-        //int p = (game.getPlayerNumber() + 1) % (game.getPlayers().size()-1);
         message.sender = network.thisDevice.deviceName;
         message.client2HostAction = Client2HostAction.GET_LEFT_CARDS;
 
-        try {
-            wait(3000);
-            cheating();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
 
-    private void cardRightPlayer() throws InterruptedException {
+    private void cardRightPlayer(){
 
         Message message = new Message();
-        //int p = (game.getPlayerNumber() -1) % (game.getPlayers().size()-1);
         message.sender = network.thisDevice.deviceName;
-        message.client2HostAction = Client2HostAction.GET_LEFT_CARDS;
-
-        try {
-            wait(3000);
-            cheating();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        message.client2HostAction = Client2HostAction.GET_RIGHT_CARDS;
     }
 
 
@@ -326,9 +322,41 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 } else if (message.action == Actions.NUMBER_OF_TRICKS) {
                     int forbidden = message.forbiddenTricks;
                     createPredictionPicker(forbidden);
+                }else if(message.action == Actions.GET_HAND_CARDS){
+
+                    List<AbstractCard> card = getCardsById(message.getPlayerHand);
+                    setCardsToImages(card);
+
+
+                    Handler handler = new Handler();
+                    Runnable r = new Runnable() {
+                        @Override
+                        public void run() {
+                            //TODO: create the old owner hand
+                        }
+                    };
+                    handler.postDelayed(r,3000);
+                }else if (message.action == Actions.CHEAT_TRIGGER){
+                    cheat=true;
+
+                    Handler handler = new Handler();
+                    Runnable r = new Runnable() {
+                        @Override
+                        public void run() {
+                            cheat = false;
+                        }
+                    };
+                    handler.postDelayed(r,3000);
+
                 }
             }
         });
+    }
+
+    private void cheatEnabled(String player) {
+
+
+
     }
 
     private void defineHostCallBack() {
@@ -380,19 +408,40 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                         });
                     }
 
-                }else if (message.client2HostAction == Client2HostAction.GET_LEFT_CARDS) {
+                } else if (message.client2HostAction == Client2HostAction.GET_LEFT_CARDS) {
                     Player p = round.getPlayerByName(message.sender);
                     Player s = null;
                     Player[] players = GameConfig.getInstance().getPlayers();
-                   for (int i =0; i< game.getPlayers().size(); i++){
-                       if (players[i] == p) {
-                           s = players[i+1];
-                       }
-                   }
-                   Message ms1 = new Message();
+                    for (int i = 0; i < game.getPlayers().size(); i++) {
+                        if (players[i] == p) {
+                            s = players[i + 1];
+                        }
+                    }
+                    Message ms1 = new Message();
+                    ms1.action= Actions.GET_HAND_CARDS;
+                    int [] cards = new int [round.getPlayerHand(s).size()];
+                    for (int i = 0; i<cards.length;i++){
+                        cards[i] = round.getPlayerHand(s).getId(i);
+                    }
+                    ms1.getPlayerHand =cards;
+                    Message ms2 = new Message();
+                    ms2.action = Actions.CHEAT_TRIGGER;
+                    ms2.cheatPlayer= p.getName();
+                    network.sendToDevice(s.getSalutDevice(), ms2, new SalutCallback() {
+                        @Override
+                        public void call() {
+                            Log.e("DETECT CHEATING", "cheat detection don´t trigger");
+                        }
+                    });
+                    network.sendToDevice(p.getSalutDevice(), ms1, new SalutCallback() {
+                        @Override
+                        public void call() {
+                            Log.e("SEND LEFT CARDS", "cards sending failed");
+                        }
+                    });
+                }else if(message.client2HostAction == Client2HostAction.CHEAT_DETECT) {
 
-
-                   }
+                }
             }
 
         });
