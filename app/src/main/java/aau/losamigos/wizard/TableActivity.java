@@ -57,6 +57,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     PredictTrickDialogFragment predictDialog;
     boolean initialPrediction;
     int playerJoinCount;
+    int forbiddenTricks;
 
     HashMap<String, AbstractCard> view2CardMap;
     @Override
@@ -170,12 +171,13 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             addImageToScrollView();
         }
 
-        //TODO: REMOVE - BUTTON WAS JUST FOR TEST REASONS
         btnPredictTrick = findViewById(R.id.btn_predictTrick);
+        btnPredictTrick.setClickable(false);
+        btnPredictTrick.setAlpha(.5f);
         btnPredictTrick.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                createPredictionPicker(-1);
+                createPredictionPicker(forbiddenTricks);
             }
         });
     }
@@ -251,8 +253,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                        allowedToClick = true;
                    }
                    else if(message.action == Actions.NUMBER_OF_TRICKS){
-                       int forbidden = message.forbiddenTricks;
-                       createPredictionPicker(forbidden);
+                       forbiddenTricks = message.forbiddenTricks;
+                       btnPredictTrick.setClickable(true);
+                       btnPredictTrick.setAlpha(1);
                    }
                    else if(message.action == Actions.QUIT_GAME){
                        buildQuitMessage(message.sender);
@@ -362,7 +365,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void hostStiches(){
-        createPredictionPicker(-1);
+        forbiddenTricks = -1;
+        btnPredictTrick.setClickable(true);
+        btnPredictTrick.setAlpha(1);
         allowedToClick=true;
     }
 
@@ -563,15 +568,21 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         int prediction = Integer.parseInt(picker.getDisplayedValues()[picker.getValue()]);
         if(GameConfig.getInstance().isHost() && initialPrediction){
+            btnPredictTrick.setClickable(false);
+            btnPredictTrick.setAlpha(.5f);
             Log.d("WizardApp", "onValueChange() received initial prediction from host.");
             writePredictionToPlayer(prediction, network.thisDevice.deviceName);
             game.getRecentRound().askFirstPredictions();
         }
         else if(GameConfig.getInstance().isHost()){
+            btnPredictTrick.setClickable(false);
+            btnPredictTrick.setAlpha(.5f);
             Log.d("WizardApp", "onValueChange() received a later prediction from host.");
             writePredictionToPlayer(prediction, network.thisDevice.deviceName);
         }
         else{
+            btnPredictTrick.setClickable(false);
+            btnPredictTrick.setAlpha(.5f);
             Log.d("WizardApp", "onValueChange() received prediction from client.");
             sendNumberOfTricksToHost(prediction);
         }

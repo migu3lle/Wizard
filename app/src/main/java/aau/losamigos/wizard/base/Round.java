@@ -107,17 +107,19 @@ public class Round {
 
     //Asks for first prediction (when TableActivity onCreate()), beginning with host
     public void askFirstPredictions(){
-        Log.d("WizardApp", "Ask host: " + GameConfig.getInstance().getPlayers()[0] + " for stiches.");
+        //Ask host
         if(initialPredictionCount == 0){
             Log.d("WizardApp", "Ask host: " + GameConfig.getInstance().getPlayers()[0] + " for stiches.");
             gameActivity.hostStiches();
             initialPredictionCount++;
         }
-        else if(initialPredictionCount > 0 && initialPredictionCount < GameConfig.getInstance().getPlayers().length){
+        //Ask clients
+        else if(initialPredictionCount > 0 && initialPredictionCount < players.size()){
             Log.d("WizardApp", "Ask player: " + initialPredictionCount + " for stiches.");
             askForStiches(GameConfig.getInstance().getPlayers()[initialPredictionCount]);
             initialPredictionCount++;
         }
+        //All players asked, go to next state
         else{
             Log.d("WizardApp", "Initial predictions are done now.");
             gameActivity.setInitialPrediction(false);
@@ -132,10 +134,8 @@ public class Round {
             case waitingForStiches:
                 if(currentPlayer < order.size()){
                     status = RoundStatus.waitingForStiches;
-                    do{
-                        Log.d("WizardApp", "Now aks for Stiches to player: " + order.get(currentPlayer).getSalutDeviceName() + "(currentPlayer = " + currentPlayer + ")");
-                        askForStiches(order.get(currentPlayer));
-                    }while(order.get(currentPlayer).getCalledStiches()<0 || order.get(currentPlayer).getCalledStiches()>order.size());
+                    Log.d("WizardApp", "Now aks for Stiches to player: " + order.get(currentPlayer).getSalutDeviceName() + "(currentPlayer = " + currentPlayer + ")");
+                    askForStiches(order.get(currentPlayer));
                     currentPlayer++;
                 }
                 else{
@@ -279,7 +279,19 @@ public class Round {
             mNumberOfTricks.action = Actions.NUMBER_OF_TRICKS;
 
             //TODO: Put information about prohibited prediction
-            mNumberOfTricks.forbiddenTricks = -1;   //!!! Set to -1 if all numbers are allowed !!!
+            //In case of asking the last player for prediction, check which number to exclude
+            if((currentPlayer == players.size()-1) || (initialPredictionCount == players.size()-1)){
+                int predictionCount = 0;
+                for (Player p : players) {
+                    predictionCount += p.getCalledStiches();
+                }
+                //Calc the difference to real number of tricks and set this number as not allowed for last prediction
+                mNumberOfTricks.forbiddenTricks = numberOfCards-predictionCount;
+            }
+            else{
+                //All numbers allowed
+                mNumberOfTricks.forbiddenTricks = -1;
+            }
 
             network.sendToDevice(player.getSalutDevice(), mNumberOfTricks, new SalutCallback() {
                 @Override
