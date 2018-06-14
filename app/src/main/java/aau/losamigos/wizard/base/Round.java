@@ -98,6 +98,7 @@ public class Round {
                 Log.d("WizardApp", "startRound(): sendCardsToDevice(player = " + player.getSalutDeviceName() + ")");
                 gameActivity.sendCardsToDevice(player);
             }
+            gameActivity.sendCardsToDevice(player);
         }
         status = RoundStatus.waitingForStiches;
         Log.d("WizardApp", "Changed state to waitingForStiches");
