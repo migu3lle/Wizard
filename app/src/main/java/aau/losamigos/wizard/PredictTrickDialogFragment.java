@@ -37,13 +37,13 @@ public class PredictTrickDialogFragment extends DialogFragment{
             if(i == notAllowed)
                 continue;
             numbersArray[j] = String.valueOf(i);
-            Log.d("WizardApp", "DialogFragment: numbersArray[" + j + "] = " + numbersArray[j]);
+            //Log.d("WizardApp", "DialogFragment: numbersArray[" + j + "] = " + numbersArray[j]);
             j++;
         }
 
-        for (int i = 0; i < numbersArray.length; i++) {
+        /*for (int i = 0; i < numbersArray.length; i++) {
             Log.d("WizardApp", "DialogFragment: numbersArray[" + i + "] = " + numbersArray[i]);
-        }
+        }*/
 
         final NumberPicker numberPicker = new NumberPicker(getActivity());
 

@@ -331,7 +331,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         for (Player player : players) {
             if(player.getSalutDeviceName().equals(sender)){
                 player.setCalledStiches(tricksPrediction);
-                //game.getRecentRound().returnNumberOfStiches();
+                game.getRecentRound().returnNumberOfStiches();
                 break;
             }
         }
@@ -429,6 +429,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void setCardsForHost() {
+        Log.d("SETCARDSFORHOST", "method called");
         Round round = game.getRecentRound();
         setTrump(round.getTrump());
         Player[] players = GameConfig.getInstance().getPlayers();
@@ -437,7 +438,11 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             SalutDevice playerDevice = player.getSalutDevice();
             //then we are host because only host calls this method
             if(playerDevice == network.thisDevice) {
+                Log.d("SETCARDSFORHOST", "host device found, now setCardsToImages()");
                 List<AbstractCard> cards = round.getPlayerHand(player);
+                for (AbstractCard card : cards) {
+                    Log.d("SETCARDSFORHOST", "card: " + card.getId());
+                }
                 setCardsToImages(cards);
                 break;
             }
@@ -540,13 +545,16 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         int prediction = Integer.parseInt(picker.getDisplayedValues()[picker.getValue()]);
         if(GameConfig.getInstance().isHost() && initialPrediction){
+            Log.d("WizardApp", "onValueChange() received initial prediction from host.");
             writePredictionToPlayer(prediction, network.thisDevice.deviceName);
             game.getRecentRound().askFirstPredictions();
         }
         else if(GameConfig.getInstance().isHost()){
+            Log.d("WizardApp", "onValueChange() received a later prediction from host.");
             writePredictionToPlayer(prediction, network.thisDevice.deviceName);
         }
         else{
+            Log.d("WizardApp", "onValueChange() received prediction from client.");
             sendNumberOfTricksToHost(prediction);
         }
     }

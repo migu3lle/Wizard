@@ -8,7 +8,8 @@
     android:background="@color/colorGreen"
     android:clickable="false"
     android:visibility="visible"
-    tools:context="aau.losamigos.wizard.TableActivity">
+    tools:context="aau.losamigos.wizard.TableActivity"
+    tools:layout_editor_absoluteY="81dp">
 
     <!--Temporäre OnClickFunktion für neue Karten-->
     <ImageView
@@ -240,7 +241,7 @@
         android:layout_height="70dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="32dp"
         android:onClick="onClick"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -251,9 +252,8 @@
             android:id="@+id/cardHand"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
             android:gravity="center"
-            />
+            android:orientation="horizontal" />
     </HorizontalScrollView>
 
 

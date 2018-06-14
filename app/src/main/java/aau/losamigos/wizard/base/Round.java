@@ -41,7 +41,7 @@ public class Round {
     private int currentPlayer;
     private int currentHandCards;
     private List<MoveTuple> table;
-    private Context context;
+    private static Context context;
     //instance of gameActivity to be able to clear table of host
     private static IGameActivity gameActivity;
     private int initialPredictionCount = 0;
@@ -92,8 +92,10 @@ public class Round {
         Log.d("WizardApp", "Start method startRound()");
         for(Player player : players) {
             if(player.getSalutDevice() == network.thisDevice) {
+                Log.d("WizardApp", "startRound(): Now setCardsForHost");
                 gameActivity.setCardsForHost();
             } else {
+                Log.d("WizardApp", "startRound(): sendCardsToDevice(player = " + player.getSalutDeviceName() + ")");
                 gameActivity.sendCardsToDevice(player);
             }
         }
@@ -118,6 +120,9 @@ public class Round {
         else{
             Log.d("WizardApp", "Initial predictions are done now.");
             gameActivity.setInitialPrediction(false);
+            status = RoundStatus.waitingForCard;
+            currentPlayer=0;
+            checkNextStep();
         }
     }
 
@@ -127,7 +132,7 @@ public class Round {
                 if(currentPlayer < order.size()){
                     status = RoundStatus.waitingForStiches;
                     do{
-                        Log.d("WizardApp", "Now aks for Stiches to player: " + order.get(currentPlayer));
+                        Log.d("WizardApp", "Now aks for Stiches to player: " + order.get(currentPlayer).getSalutDeviceName() + "(currentPlayer = " + currentPlayer + ")");
                         askForStiches(order.get(currentPlayer));
                     }while(order.get(currentPlayer).getCalledStiches()<0 || order.get(currentPlayer).getCalledStiches()>order.size());
                     currentPlayer++;
@@ -259,13 +264,16 @@ public class Round {
     }
 
     private void askForStiches(Player player) {
+        Log.d("WizardApp", "askForStiches(): player = " + player.getSalutDeviceName());
 
         //Compare to Player Array, if host build local prediction picker. If client send message
         if(player.equals(GameConfig.getInstance().getPlayers()[0])){
+            Log.d("WizardApp", "Ask for hostStiches()");
             gameActivity.hostStiches();
 
         }
         else {
+            Log.d("WizardApp", "Ask for clientStiches per message to player: " + player.getSalutDeviceName());
             Message mNumberOfTricks = new Message();
             mNumberOfTricks.action = Actions.NUMBER_OF_TRICKS;
 
@@ -339,6 +347,7 @@ public class Round {
                 List<AbstractCard> tableCards = new ArrayList<AbstractCard>();
 
                 for (MoveTuple tuple : table) {
+                    Log.d("WizardApp", "Adding card " + tuple.getCard().getId() + " to hand of player: " + hand.getHandOwner().getSalutDeviceName());
                     tableCards.add(tuple.getCard());
                 }
                 return hand.getAllowedCards(tableCards); //TODO oder nur die IDs geben
