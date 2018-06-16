@@ -54,6 +54,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
     Button btnPredictTrick;
     PredictTrickDialogFragment predictDialog;
+    boolean initialPrediction;
+    int playerJoinCount;
+    int forbiddenTricks;
 
     HashMap<String, AbstractCard> view2CardMap;
     @Override
@@ -167,12 +170,13 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             addImageToScrollView();
         }
 
-        //TODO: REMOVE - BUTTON WAS JUST FOR TEST REASONS
         btnPredictTrick = findViewById(R.id.btn_predictTrick);
+        btnPredictTrick.setClickable(false);
+        btnPredictTrick.setAlpha(.5f);
         btnPredictTrick.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                createPredictionPicker(-1);
+                createPredictionPicker(forbiddenTricks);
             }
         });
     }
@@ -248,8 +252,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                        //TODO
                    }
                    else if(message.action == Actions.NUMBER_OF_TRICKS){
-                       int forbidden = message.forbiddenTricks;
-                       createPredictionPicker(forbidden);
+                       forbiddenTricks = message.forbiddenTricks;
+                       btnPredictTrick.setClickable(true);
+                       btnPredictTrick.setAlpha(1);
                    }
                    else if(message.action == Actions.QUIT_GAME){
                        buildQuitMessage(message.sender);
@@ -326,6 +331,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         for (Player player : players) {
             if(player.getSalutDeviceName().equals(sender)){
                 player.setCalledStiches(tricksPrediction);
+                game.getRecentRound().returnNumberOfStiches();
                 break;
             }
         }
@@ -341,6 +347,13 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
     public void resetGame(View view) {
         setContentView(R.layout.activity_table);
+    }
+
+    public void hostStiches(){
+        forbiddenTricks = -1;
+        btnPredictTrick.setClickable(true);
+        btnPredictTrick.setAlpha(1);
+        allowedToClick=true;
     }
 
     @Override
@@ -421,6 +434,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void setCardsForHost() {
+        Log.d("SETCARDSFORHOST", "method called");
         Round round = game.getRecentRound();
         setTrump(round.getTrump());
         Player[] players = GameConfig.getInstance().getPlayers();
@@ -429,7 +443,11 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             SalutDevice playerDevice = player.getSalutDevice();
             //then we are host because only host calls this method
             if(playerDevice == network.thisDevice) {
+                Log.d("SETCARDSFORHOST", "host device found, now setCardsToImages()");
                 List<AbstractCard> cards = round.getPlayerHand(player);
+                for (AbstractCard card : cards) {
+                    Log.d("SETCARDSFORHOST", "card: " + card.getId());
+                }
                 setCardsToImages(cards);
                 break;
             }
@@ -531,10 +549,23 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         int prediction = Integer.parseInt(picker.getDisplayedValues()[picker.getValue()]);
-        if(GameConfig.getInstance().isHost()){
+        if(GameConfig.getInstance().isHost() && initialPrediction){
+            btnPredictTrick.setClickable(false);
+            btnPredictTrick.setAlpha(.5f);
+            Log.d("WizardApp", "onValueChange() received initial prediction from host.");
+            writePredictionToPlayer(prediction, network.thisDevice.deviceName);
+            game.getRecentRound().askFirstPredictions();
+        }
+        else if(GameConfig.getInstance().isHost()){
+            btnPredictTrick.setClickable(false);
+            btnPredictTrick.setAlpha(.5f);
+            Log.d("WizardApp", "onValueChange() received a later prediction from host.");
             writePredictionToPlayer(prediction, network.thisDevice.deviceName);
         }
         else{
+            btnPredictTrick.setClickable(false);
+            btnPredictTrick.setAlpha(.5f);
+            Log.d("WizardApp", "onValueChange() received prediction from client.");
             sendNumberOfTricksToHost(prediction);
         }
     }

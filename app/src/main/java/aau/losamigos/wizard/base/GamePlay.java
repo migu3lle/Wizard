@@ -1,5 +1,7 @@
 package aau.losamigos.wizard.base;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +62,7 @@ public class GamePlay {
             cardStack.reset(); //Kartenstapel wird neu gemischt
             resetPlayerStiches();
             recentRound = new Round(this, countRound);
+            Log.d("WizardApp", "nextRound(): start new round, count " + countRound);
             recentRound.startRound();
         }
         else{

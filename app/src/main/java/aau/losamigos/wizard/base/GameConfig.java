@@ -78,6 +78,10 @@ public class GameConfig {
         if(players != null){
             throw new IllegalStateException("GameConfig: Players may only be instantiated once.");
         }
+        else if(playerList.size() == 0){
+            Log.d("Players not added","Players not added because of empty playerList.");
+            return false;
+        }
         else if(playerList.size() < minPlayer || playerList.size() > maxPlayer){
             Log.d("Players not added","Players not added cause of min/max Players criterion.");
             return false;
