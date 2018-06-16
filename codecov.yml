@@ -1,0 +1,8 @@
+
+coverage:
+  round: up
+  range: 10..50
+  precision: 5
+
+codecov:
+  token: 18427210-a573-4454-b54b-9ed43b3d8874

@@ -30,6 +30,12 @@ before_script:
 script:
     - chmod +x gradlew
     - ./gradlew test
+    - sonar-scanner -X 
+addons: 
+  sonarcloud: 
+     organization: "wizard" # der key der organisation auf sonarcloud.io 
+     token: 
+       secure: $SONAR_TOKEN       # $SONAR_TOKEN -> Umgebungsvariable auf travis-ci.org 
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -39,6 +45,9 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
+    
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 
 # benachrichtigungen per email auszuschalten
 #notifications:

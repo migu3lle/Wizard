@@ -19,32 +19,39 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".CreateGameActivity"
             android:label="@string/title_activity_create_game"
-            android:theme="@style/AppTheme.ActionBar" />
+            android:theme="@style/AppTheme.ActionBar"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".WaitForPlayersActivity"
             android:label="@string/title_activity_wait_for_players"
-            android:theme="@style/AppTheme.ActionBar" />
+            android:theme="@style/AppTheme.ActionBar"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".JoinGameActivity"
             android:label="@string/title_activity_join_game"
-            android:theme="@style/AppTheme.ActionBar" />
+            android:theme="@style/AppTheme.ActionBar"
+            android:screenOrientation="landscape"
+            />
         <activity
             android:name=".RulesActivity"
             android:label="@string/title_activity_rules"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".ScoreTableActivity" />
+        <activity android:name=".SettingsActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".ScoreTableActivity"
+            android:screenOrientation="landscape"/>
         <activity android:name=".TestMessageActivity"></activity>
         <activity android:name=".TableActivity" android:screenOrientation="landscape"></activity>
     </application>
