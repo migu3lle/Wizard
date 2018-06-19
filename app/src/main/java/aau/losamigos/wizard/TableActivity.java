@@ -30,6 +30,7 @@ import java.util.List;
 import aau.losamigos.wizard.base.AbstractCard;
 import aau.losamigos.wizard.base.GameConfig;
 import aau.losamigos.wizard.base.GamePlay;
+import aau.losamigos.wizard.base.Hand;
 import aau.losamigos.wizard.base.Message;
 import aau.losamigos.wizard.base.Round;
 import aau.losamigos.wizard.elements.CardStack;
@@ -48,6 +49,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     ImageView trump;
     int playerCount;
     boolean cheat;
+    private List<AbstractCard> oldHand;
 
     //instance only available for host
     GamePlay game;
@@ -70,7 +72,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        boolean b =getIntent().getBooleanExtra("CheatEnabled",false);
+        boolean b = getIntent().getBooleanExtra("CheatEnabled", false);
 
         setContentView(R.layout.activity_table);
         getSupportActionBar().hide();
@@ -192,6 +194,12 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             public void onClick(View view) {
                 Message message = new Message();
                 message.client2HostAction = Client2HostAction.CHEAT_DETECT;
+                network.sendToHost(message, new SalutCallback() {
+                    @Override
+                    public void call() {
+                        Log.e("CHEATING NEXT TO ME", "No cheat possible");
+                    }
+                });
 
             }
         });
@@ -260,11 +268,16 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         Message message = new Message();
         message.sender = network.thisDevice.deviceName;
         message.client2HostAction = Client2HostAction.GET_LEFT_CARDS;
+        network.sendToHost(message, new SalutCallback() {
+            @Override
+            public void call() {
+                Log.e("LOOK LEFT","Looking failed");            }
+        });
 
     }
 
 
-    private void cardRightPlayer(){
+    private void cardRightPlayer() {
 
         Message message = new Message();
         message.sender = network.thisDevice.deviceName;
@@ -322,7 +335,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 } else if (message.action == Actions.NUMBER_OF_TRICKS) {
                     int forbidden = message.forbiddenTricks;
                     createPredictionPicker(forbidden);
-                }else if(message.action == Actions.GET_HAND_CARDS){
+                } else if (message.action == Actions.GET_HAND_CARDS) {
+
+                    // TODO: save own hand
 
                     List<AbstractCard> card = getCardsById(message.getPlayerHand);
                     setCardsToImages(card);
@@ -335,9 +350,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                             //TODO: create the old owner hand
                         }
                     };
-                    handler.postDelayed(r,3000);
-                }else if (message.action == Actions.CHEAT_TRIGGER){
-                    cheat=true;
+                    handler.postDelayed(r, 3000);
+                } else if (message.action == Actions.CHEAT_TRIGGER) {
+                    cheat = true;
 
                     Handler handler = new Handler();
                     Runnable r = new Runnable() {
@@ -346,7 +361,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                             cheat = false;
                         }
                     };
-                    handler.postDelayed(r,3000);
+                    handler.postDelayed(r, 3000);
 
                 }
             }
@@ -354,7 +369,6 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void cheatEnabled(String player) {
-
 
 
     }
@@ -411,35 +425,50 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 } else if (message.client2HostAction == Client2HostAction.GET_LEFT_CARDS) {
                     Player p = round.getPlayerByName(message.sender);
                     Player s = null;
+
                     Player[] players = GameConfig.getInstance().getPlayers();
+                    //check the left neighbor of cheater
                     for (int i = 0; i < game.getPlayers().size(); i++) {
                         if (players[i] == p) {
-                            s = players[i + 1];
+
+                            //if neighbor is the first player
+                            if ((i + 1) > game.getPlayers().size()) {
+                                s = players[1];
+
+                                //each other
+                            } else {
+                                s = players[i + 1];
+                            }
                         }
                     }
+                    // actual cards of the left sided player
+                    List<AbstractCard> hand = round.getPlayerHand(s);
                     Message ms1 = new Message();
-                    ms1.action= Actions.GET_HAND_CARDS;
-                    int [] cards = new int [round.getPlayerHand(s).size()];
-                    for (int i = 0; i<cards.length;i++){
-                        cards[i] = round.getPlayerHand(s).getId(i);
+                    ms1.action = Actions.GET_HAND_CARDS;
+                    int[] cards = new int[round.getPlayerHand(s).size()];
+                    for (int i = 0; i < cards.length; i++) {
+                        cards[i] = hand.get(i).getId();
                     }
-                    ms1.getPlayerHand =cards;
+                    ms1.getPlayerHand = cards;
+
                     Message ms2 = new Message();
                     ms2.action = Actions.CHEAT_TRIGGER;
-                    ms2.cheatPlayer= p.getName();
+                    ms2.cheatPlayer = p.getName();
+                    //activate cheat detection for the cheated player
                     network.sendToDevice(s.getSalutDevice(), ms2, new SalutCallback() {
                         @Override
                         public void call() {
                             Log.e("DETECT CHEATING", "cheat detection don´t trigger");
                         }
                     });
+                    //send hand of the left player to the cheater
                     network.sendToDevice(p.getSalutDevice(), ms1, new SalutCallback() {
                         @Override
                         public void call() {
                             Log.e("SEND LEFT CARDS", "cards sending failed");
                         }
                     });
-                }else if(message.client2HostAction == Client2HostAction.CHEAT_DETECT) {
+                } else if (message.client2HostAction == Client2HostAction.CHEAT_DETECT) {
 
                 }
             }
