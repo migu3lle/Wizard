@@ -30,7 +30,6 @@ import java.util.List;
 import aau.losamigos.wizard.base.AbstractCard;
 import aau.losamigos.wizard.base.GameConfig;
 import aau.losamigos.wizard.base.GamePlay;
-import aau.losamigos.wizard.base.Hand;
 import aau.losamigos.wizard.base.Message;
 import aau.losamigos.wizard.base.Round;
 import aau.losamigos.wizard.elements.CardStack;
@@ -39,8 +38,6 @@ import aau.losamigos.wizard.network.DataCallback;
 import aau.losamigos.wizard.network.ICallbackAction;
 import aau.losamigos.wizard.rules.Actions;
 import aau.losamigos.wizard.rules.Client2HostAction;
-
-import static android.hardware.Sensor.TYPE_ACCELEROMETER;
 
 public class TableActivity extends AppCompatActivity implements View.OnClickListener, NumberPicker.OnValueChangeListener {
     Salut network;
@@ -192,6 +189,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         cheatdetect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (cheat == true){
                 Message message = new Message();
                 message.client2HostAction = Client2HostAction.CHEAT_DETECT;
                 network.sendToHost(message, new SalutCallback() {
@@ -201,6 +199,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
 
+            }else if(cheat == false){
+
+                }
             }
         });
 
@@ -339,9 +340,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
                     // TODO: save own hand
 
+
                     List<AbstractCard> card = getCardsById(message.getPlayerHand);
                     setCardsToImages(card);
-
 
                     Handler handler = new Handler();
                     Runnable r = new Runnable() {
@@ -424,32 +425,21 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
                 } else if (message.client2HostAction == Client2HostAction.GET_LEFT_CARDS) {
                     Player p = round.getPlayerByName(message.sender);
-                    Player s = null;
+                    Player s = checkLeft(p);
 
-                    Player[] players = GameConfig.getInstance().getPlayers();
-                    //check the left neighbor of cheater
-                    for (int i = 0; i < game.getPlayers().size(); i++) {
-                        if (players[i] == p) {
-
-                            //if neighbor is the first player
-                            if ((i + 1) > game.getPlayers().size()) {
-                                s = players[1];
-
-                                //each other
-                            } else {
-                                s = players[i + 1];
-                            }
-                        }
-                    }
                     // actual cards of the left sided player
                     List<AbstractCard> hand = round.getPlayerHand(s);
                     Message ms1 = new Message();
                     ms1.action = Actions.GET_HAND_CARDS;
+
+
                     int[] cards = new int[round.getPlayerHand(s).size()];
                     for (int i = 0; i < cards.length; i++) {
                         cards[i] = hand.get(i).getId();
                     }
                     ms1.getPlayerHand = cards;
+                    ms1.cheatPlayer = p.getName();
+                    ms1.roundCount =  game.getCountRound();
 
                     Message ms2 = new Message();
                     ms2.action = Actions.CHEAT_TRIGGER;
@@ -474,6 +464,25 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             }
 
         });
+    }
+
+    private Player checkLeft(Player p) {
+        Player s = null;
+        Player[] players = GameConfig.getInstance().getPlayers();
+        //check the left neighbor of cheater
+        for (int i = 0; i < game.getPlayers().size(); i++) {
+            if (players[i] == p) {
+
+                //if neighbor is the first player
+                if ((i + 1) > game.getPlayers().size()) {
+                    s = players[1];
+
+                    //each other
+                } else {
+                    s = players[i + 1];
+                }
+            }
+        }return s;
     }
 
     private List<AbstractCard> getCardsById(int[] cardIds) {
