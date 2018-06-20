@@ -31,6 +31,9 @@ public class Message{
     public int[] cards;
 
     @JsonField
+    public int[] cardsAllowedToPlay;
+
+    @JsonField
     public int trumpCard;
 
     @JsonField

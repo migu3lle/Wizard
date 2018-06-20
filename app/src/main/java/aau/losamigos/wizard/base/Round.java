@@ -324,15 +324,36 @@ public class Round {
     }
     private void askForCard(Player player) {
 
-        Message mPickCard = new Message();
-        mPickCard.action = Actions.PICK_CARD;
+        List<AbstractCard> handCards = getPlayerHand(player);
 
-        network.sendToDevice(player.getSalutDevice(), mPickCard, new SalutCallback() {
-            @Override
-            public void call() {
-                Log.e("WizardApp", "Oh no! The data failed to send.");
+        List<Integer> allowedHandCardsId = new ArrayList<>();
+        for (AbstractCard card:handCards) {
+            if(card.isAllowedToPlay())
+                allowedHandCardsId.add(card.getId());
+        }
+
+        if(player.equals(GameConfig.getInstance().getPlayers()[0])){
+            gameActivity.hostPickCard(allowedHandCardsId);
+        }
+        else {
+            int arrayToSend[] = new int[allowedHandCardsId.size()];
+
+            for (int i = 0; i < allowedHandCardsId.size(); i++) {
+                arrayToSend[i]=allowedHandCardsId.get(i);
             }
-        });
+
+            Message mPickCard = new Message();
+            mPickCard.action = Actions.PICK_CARD;
+            mPickCard.cardsAllowedToPlay = arrayToSend;
+
+
+            network.sendToDevice(player.getSalutDevice(), mPickCard, new SalutCallback() {
+                @Override
+                public void call() {
+                    Log.e("WizardApp", "Oh no! The data failed to send.");
+                }
+            });
+        }
     }
 
     private void generateHands() {
