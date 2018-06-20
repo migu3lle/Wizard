@@ -1,5 +1,8 @@
 package aau.losamigos.wizard.base;
 
+
+import java.util.List;
+
 import aau.losamigos.wizard.elements.Player;
 
 /**
@@ -12,5 +15,6 @@ public interface IGameActivity {
     void sendCardsToDevice(Player player);
     void setCardsForHost();
     void hostStiches();
+    void hostPickCard(List<Integer> cards);
     void setInitialPrediction(boolean predict);
 }
