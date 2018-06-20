@@ -44,7 +44,7 @@ public class Round {
     private static Context context;
     //instance of gameActivity to be able to clear table of host
     private static IGameActivity gameActivity;
-
+    private int initialPredictionCount = 0;
 
     public Round(GamePlay game, int numberOfCards) {
         this.game = game;
@@ -324,6 +324,10 @@ public class Round {
                 });
             }
         }
+    }
+
+    public void returnNumberOfStiches(){
+        checkNextStep();
     }
 
     private void askForCard(Player player) {

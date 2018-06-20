@@ -51,7 +51,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     TextView player2, player3, player4, player5, player6;
     CardStack clientCardStack;
     ImageView playerC2,playerC3,playerC4,playerC5,playerC6;
-
+    boolean allowedToClick;
     Button btnPredictTrick;
     PredictTrickDialogFragment predictDialog;
     boolean initialPrediction;
@@ -335,6 +335,10 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 break;
             }
         }
+    }
+
+    public void setInitialPrediction(boolean predict){
+        initialPrediction = predict;
     }
 
     private List<AbstractCard> getCardsById(int[] cardIds) {
