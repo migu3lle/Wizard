@@ -255,7 +255,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                        for(int i=0;i<message.cardsAllowedToPlay.length;i++){
                            cardsAllowedToPlay.add(Integer.valueOf(message.cardsAllowedToPlay[i]));
                        }
-                       setNotAllowedCards(cardsAllowedToPlay);
+                       setNotAllowedCards();
                        allowedToClick = true;
                    }
                    else if(message.action == Actions.NUMBER_OF_TRICKS){
@@ -378,7 +378,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     }
     public void hostPickCard(List<Integer> cards){
         cardsAllowedToPlay = cards;
-        setNotAllowedCards(cardsAllowedToPlay);
+        setNotAllowedCards();
         allowedToClick = true;
 
     }
@@ -428,7 +428,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 List<AbstractCard> playedCards = round.getPlayedCards();
                 setMiddleCards(playedCards);
             }
+            clearNotAllowedCards();
             allowedToClick=false;
+
         }
     }
 
@@ -509,18 +511,21 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         }
 
     }
-    private void setNotAllowedCards(List<Integer> CardsId) {
-        if(CardsId == null || CardsId.size() == 0)
-            return;
-
-
+    private void setNotAllowedCards() {
         for(int i = 0; i < cardViews.size(); i++) {
             ImageView img =  cardViews.get(i);
-            AbstractCard clickedCard = view2CardMap.get(img.getId());
-            if(CardsId.contains(Integer.valueOf(clickedCard.getId()))==false){
+            AbstractCard card = view2CardMap.get(img.getId());
+            if(cardsAllowedToPlay.contains(Integer.valueOf(card.getId()))==false){
                 img.setImageAlpha(50);
             }
 
+        }
+    }
+    private void clearNotAllowedCards() {
+
+        for(int i = 0; i < cardViews.size(); i++) {
+            ImageView img =  cardViews.get(i);
+            img.setImageAlpha(50);
         }
     }
 
