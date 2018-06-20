@@ -22,33 +22,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/PasswordInput" />
-
-    <EditText
-        android:id="@+id/PasswordInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textPassword"
-        android:text="PasswordInput"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/Password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Password"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/PasswordInput"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/PlayerNameInput" />
 
     <TextView
         android:id="@+id/Player"
@@ -58,7 +32,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:text="Playername"
-        app:layout_constraintBottom_toTopOf="@+id/Password"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/PlayerNameInput"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -72,7 +46,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:text="PlayerNameInput"
-        app:layout_constraintBottom_toTopOf="@+id/PasswordInput"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -17,11 +17,10 @@ public class CreateGameActivity extends AppCompatActivity implements View.OnClic
     EditText textHostName;
     EditText textMinPlayer;
     EditText textMaxPlayer;
-    Switch swPw;
     Switch swCheat;
 
     Button btnCreateGame;
-    Button btnBack;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +30,12 @@ public class CreateGameActivity extends AppCompatActivity implements View.OnClic
         textHostName = findViewById(R.id.editText_hostName);
         textMinPlayer = findViewById(R.id.editText_minPlayer);
         textMaxPlayer = findViewById(R.id.editText_maxPlayer);
-        swPw = findViewById(R.id.sw_password);
         swCheat = findViewById(R.id.sw_cheating);
 
         //Initialize buttons
         btnCreateGame = findViewById(R.id.btn_create);
         btnCreateGame.setOnClickListener(this);
-        btnBack = findViewById(R.id.btn_Back);
-        btnBack.setOnClickListener(this);
+
 
 
         textMinPlayer.setText("2"); //For Test reasons; TODO: remove
@@ -56,14 +53,11 @@ public class CreateGameActivity extends AppCompatActivity implements View.OnClic
             //On first action the GameConfig object is generated
             GameConfig gameConfig = GameConfig.getInstance(
                     Integer.parseInt(textMinPlayer.getText().toString()),
-                    Integer.parseInt(textMaxPlayer.getText().toString()), swPw.isChecked(), swCheat.isChecked());
+                    Integer.parseInt(textMaxPlayer.getText().toString()), swCheat.isChecked());
 
             nextActivity();
         }
-        if(v.getId() == R.id.btn_Back){
-            //Move back to main menu
-            finish();
-        }
+
     }
 
     /*

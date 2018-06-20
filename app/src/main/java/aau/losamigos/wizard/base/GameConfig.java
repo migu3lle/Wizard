@@ -29,7 +29,6 @@ public class GameConfig {
     private static GameConfig singleton = null;
     private boolean host = false;
     private int minPlayer, maxPlayer;
-    private boolean keyEnabled;
     private boolean cheatEnabled;
     private Player[] players;
     HashMap<Player, SalutDevice> playerDeviceMap = new HashMap<>();
@@ -41,9 +40,9 @@ public class GameConfig {
         //Singleton pattern, to defeat instantiation
     }
     //Usage for Host
-    public static GameConfig getInstance(int minPlayer, int maxPlayer, boolean keyEnabled, boolean cheatEnabled){
+    public static GameConfig getInstance(int minPlayer, int maxPlayer, boolean cheatEnabled){
         if(singleton == null){
-            singleton = new GameConfig(minPlayer, maxPlayer, keyEnabled, cheatEnabled);
+            singleton = new GameConfig(minPlayer, maxPlayer, cheatEnabled);
         }
         return singleton;
     }
@@ -56,10 +55,10 @@ public class GameConfig {
         else
             return singleton;
     }
-    private GameConfig(int minPlayer, int maxPlayer, boolean keyEnabled, boolean cheatEnabled){
+    private GameConfig(int minPlayer, int maxPlayer, boolean cheatEnabled){
         this.minPlayer = minPlayer;
         this.maxPlayer = maxPlayer;
-        this.keyEnabled = keyEnabled;
+
         this.cheatEnabled = cheatEnabled;
 
         List<AbstractRule> rules = new ArrayList<AbstractRule>();
@@ -100,10 +99,6 @@ public class GameConfig {
 
     public Player[] getPlayers(){
         return players;
-    }
-
-    public boolean isKeyEnabled() {
-        return keyEnabled;
     }
 
     public boolean isCheatEnabled() {
