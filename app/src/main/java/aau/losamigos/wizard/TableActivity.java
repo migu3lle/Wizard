@@ -57,10 +57,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     GamePlay game;
     TextView player2, player3, player4, player5, player6;
     CardStack clientCardStack;
-    boolean allowedToClick;
     ImageView playerC2,playerC3,playerC4,playerC5,playerC6;
-
-
+    boolean allowedToClick;
+    List<Integer> cardsAllowedToPlay;
     Button btnPredictTrick;
     Button cheatDetect;
     PredictTrickDialogFragment predictDialog;
@@ -368,6 +367,12 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                        Toast.makeText(getApplicationContext(),"Gewonnen hat: " + message.sender,Toast.LENGTH_LONG).show();
                    }
                    else if(message.action == Actions.PICK_CARD) {
+                       cardsAllowedToPlay = new ArrayList<>();
+
+                       for(int i=0;i<message.cardsAllowedToPlay.length;i++){
+                           cardsAllowedToPlay.add(Integer.valueOf(message.cardsAllowedToPlay[i]));
+                       }
+                       setNotAllowedCards(cardsAllowedToPlay);
                        allowedToClick = true;
                    }
                    else if(message.action == Actions.NUMBER_OF_TRICKS){
@@ -454,7 +459,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                         game.getRecentRound().askFirstPredictions();
                     }
 
-                } 
+                }
                 else if (message.client2HostAction == Client2HostAction.PLAYERSTATES_REQUESTED) {
 
                     Player p = round.getPlayerByName(message.sender);
@@ -619,6 +624,12 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         btnPredictTrick.setAlpha(1);
         allowedToClick = true;
     }
+    public void hostPickCard(List<Integer> cards){
+        cardsAllowedToPlay = cards;
+        setNotAllowedCards(cardsAllowedToPlay);
+        allowedToClick = true;
+
+    }
 
 
 
@@ -633,13 +644,20 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             if (imgView.getDrawable() == null) {
                 return;
             }
-            if(allowedToClick==false) {
+            if(allowedToClick==false)
                 return;
-            }
 
             imgView.setImageDrawable(null);
 
             AbstractCard clickedCard = view2CardMap.get(view.getContentDescription().toString());
+
+            if(cardsAllowedToPlay.contains(clickedCard.getId())==false){
+                Toast.makeText(getApplicationContext(),"Card not allowed to play",Toast.LENGTH_LONG).show();
+                return;
+            }
+
+
+
             Log.d("CLICKEDCARD", "id: " + clickedCard.getId());
             Message message = new Message();
             message.client2HostAction = Client2HostAction.CARD_PLAYED;
@@ -661,6 +679,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 List<AbstractCard> playedCards = round.getPlayedCards();
                 setMiddleCards(playedCards);
             }
+            allowedToClick=false;
         }
     }
 
@@ -740,6 +759,20 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             img.setImageResource(card.getResourceId());
         }
 
+    }
+    private void setNotAllowedCards(List<Integer> CardsId) {
+        if(CardsId == null || CardsId.size() == 0)
+            return;
+
+
+        for(int i = 0; i < cardViews.size(); i++) {
+            ImageView img =  cardViews.get(i);
+            AbstractCard clickedCard = view2CardMap.get(img.getId());
+            if(CardsId.contains(Integer.valueOf(clickedCard.getId()))==false){
+                img.setImageAlpha(50);
+            }
+
+        }
     }
 
     private void setTrump(AbstractCard card) {
