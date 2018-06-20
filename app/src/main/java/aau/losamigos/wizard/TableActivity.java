@@ -18,11 +18,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.common.collect.Table;
 import com.peak.salut.Callbacks.SalutCallback;
 import com.peak.salut.Salut;
 import com.peak.salut.SalutDevice;
@@ -44,8 +42,8 @@ import aau.losamigos.wizard.network.ICallbackAction;
 import aau.losamigos.wizard.rules.Actions;
 import aau.losamigos.wizard.rules.Client2HostAction;
 
-public class TableActivity extends AppCompatActivity implements View.OnClickListener, NumberPicker.OnValueChangeListener,
-        IGameActivity {
+
+public class TableActivity extends AppCompatActivity implements View.OnClickListener, NumberPicker.OnValueChangeListener, IGameActivity {
     Salut network;
     List<ImageView> cardViews;
     List<ImageView> middleCards;
@@ -59,7 +57,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     GamePlay game;
     TextView player2, player3, player4, player5, player6;
     CardStack clientCardStack;
-    ImageView playerC2, playerC3, playerC4, playerC5, playerC6;
+    ImageView playerC2,playerC3,playerC4,playerC5,playerC6;
+    boolean allowedToClick;
 
     Button btnPredictTrick;
     Button cheatDetect;
@@ -82,18 +81,18 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_table);
         getSupportActionBar().hide();
 
-        player2 = findViewById(R.id.Player2);
-        player3 = findViewById(R.id.Player3);
-        player4 = findViewById(R.id.Player4);
-        player5 = findViewById(R.id.Player5);
-        player6 = findViewById(R.id.Player6);
+        player2 =findViewById(R.id.Player2);
+        player3 =findViewById(R.id.Player3);
+        player4 =findViewById(R.id.Player4);
+        player5 =findViewById(R.id.Player5);
+        player6 =findViewById(R.id.Player6);
 
         network = GameConfig.getInstance().getSalut();
         cardViews = new ArrayList<>();
         middleCards = new ArrayList<>();
         view2CardMap = new HashMap<>();
         trump = findViewById(R.id.Trump);
-        if (network.isRunningAsHost) {
+        if(network.isRunningAsHost) {
             defineHostCallBack();
             startGame();
             initGui(game.getPlayers().size(), game.getCountRound());
@@ -120,60 +119,57 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         this.playerCount = playerCount;
         Log.e("INIT", "init gui: " + playerCount + ", " + roundCount);
 
-        switch (playerCount) {
+        switch (playerCount){
 
-            case 2:
-                playerC4 = findViewById(R.id.playerC4);
+            case 2: playerC4 = findViewById(R.id.playerC4);
                 playerC4.setVisibility(View.VISIBLE);
                 player4.setVisibility(View.VISIBLE);
                 break;
-            case 3:
-                playerC3 = findViewById(R.id.playerC3);
+            case 3:playerC3= findViewById(R.id.playerC3);
                 playerC3.setVisibility(View.VISIBLE);
                 player3.setVisibility(View.VISIBLE);
-                playerC5 = findViewById(R.id.playerC5);
+                playerC5= findViewById(R.id.playerC5);
                 playerC5.setVisibility(View.VISIBLE);
                 player5.setVisibility(View.VISIBLE);
                 break;
-            case 4:
-                playerC2 = findViewById(R.id.playerC2);
+            case 4: playerC2=findViewById(R.id.playerC2);
                 playerC2.setVisibility(View.VISIBLE);
                 player2.setVisibility(View.VISIBLE);
-                playerC4 = findViewById(R.id.playerC4);
+                playerC4= findViewById(R.id.playerC4);
                 playerC4.setVisibility(View.VISIBLE);
                 player4.setVisibility(View.VISIBLE);
-                playerC6 = findViewById(R.id.playerC6);
+                playerC6= findViewById(R.id.playerC6);
                 playerC6.setVisibility(View.VISIBLE);
                 player6.setVisibility(View.VISIBLE);
                 break;
             case 5:
-                playerC2 = findViewById(R.id.playerC2);
+                playerC2= findViewById(R.id.playerC2);
                 playerC2.setVisibility(View.VISIBLE);
                 player2.setVisibility(View.VISIBLE);
-                playerC3 = findViewById(R.id.playerC3);
+                playerC3= findViewById(R.id.playerC3);
                 playerC3.setVisibility(View.VISIBLE);
                 player3.setVisibility(View.VISIBLE);
-                playerC5 = findViewById(R.id.playerC5);
+                playerC5= findViewById(R.id.playerC5);
                 playerC5.setVisibility(View.VISIBLE);
                 player5.setVisibility(View.VISIBLE);
-                playerC6 = findViewById(R.id.playerC6);
+                playerC6= findViewById(R.id.playerC6);
                 playerC6.setVisibility(View.VISIBLE);
                 player6.setVisibility(View.VISIBLE);
                 break;
             case 6:
-                playerC4 = findViewById(R.id.playerC4);
+                playerC4= findViewById(R.id.playerC4);
                 playerC4.setVisibility(View.VISIBLE);
                 player4.setVisibility(View.VISIBLE);
-                playerC2 = findViewById(R.id.playerC2);
+                playerC2= findViewById(R.id.playerC2);
                 playerC2.setVisibility(View.VISIBLE);
                 player2.setVisibility(View.VISIBLE);
-                playerC3 = findViewById(R.id.playerC3);
+                playerC3= findViewById(R.id.playerC3);
                 playerC3.setVisibility(View.VISIBLE);
                 player3.setVisibility(View.VISIBLE);
-                playerC5 = findViewById(R.id.playerC5);
+                playerC5= findViewById(R.id.playerC5);
                 playerC5.setVisibility(View.VISIBLE);
                 player5.setVisibility(View.VISIBLE);
-                playerC6 = findViewById(R.id.playerC6);
+                playerC6= findViewById(R.id.playerC6);
                 playerC6.setVisibility(View.VISIBLE);
                 player6.setVisibility(View.VISIBLE);
                 break;
@@ -234,7 +230,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         btnPredictTrick = findViewById(R.id.btn_predictTrick);
         btnPredictTrick.setClickable(false);
         btnPredictTrick.setAlpha(.5f);
-        btnPredictTrick.setOnClickListener(new View.OnClickListener() {
+        btnPredictTrick.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 createPredictionPicker(forbiddenTricks);
@@ -245,7 +241,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     private void addImageToScrollView() {
         LinearLayout cardHand = findViewById(R.id.cardHand);
         LayoutInflater inflater = LayoutInflater.from(this);
-        View view = inflater.inflate(R.layout.card, cardHand, false);
+        View view = inflater.inflate(R.layout.card,cardHand,false);
         ImageView imageView = view.findViewById(R.id.imageView);
         imageView.setClickable(true);
         imageView.setOnClickListener(this);
@@ -258,11 +254,10 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         GameConfig gcfg = GameConfig.getInstance();
         game = new GamePlay(gcfg.getPlayers());
         game.startGame(game.getCountRound());
-        Round round = game.getRecentRound();
+        Round round =  game.getRecentRound();
         round.setContext(getApplicationContext());
         gcfg.setCurrentGamePlay(game);
         round.setGameActivity(this);
-
     }
 
     private void cheating() {
@@ -344,67 +339,75 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void execute(Message message) {
                 Log.d("CLIENT CALLBACK", "Received: " + message);
-                if (message == null) {
-                    Log.e("CLIENT", "No Message received");
-                } else if (message.action == 0) {
-                    Log.e("CLIENT", "No Action defined; Client is blind");
-                } else if (message.action == Actions.INITIAL_CARD_GIVING) {
-                    if (message.cards != null && message.cards.length > 0 && message.playerCount > 0 && message.roundCount > 0) {
-                        if (message.roundCount == 1) {
-                            initGui(message.playerCount, message.roundCount);
-                        } else {
-                            addImageToScrollView();
-                        }
-                        List<AbstractCard> cards = getCardsById(message.cards);
-                        setCardsToImages(cards);
-                    }
-                    if (message.trumpCard != 0) {
-                        setTrump(clientCardStack.getCardById(message.trumpCard));
-                    }
-                } else if (message.action == Actions.TABLECARDS_ARE_COMING && message.cards != null) {
-                    List<AbstractCard> cards = getCardsById(message.cards);
-                    setMiddleCards(cards);
-                } else if (message.action == Actions.AND_THE_WINNER_IS) {
-                    Toast.makeText(getApplicationContext(), "Gewonnen hat: " + message.sender, Toast.LENGTH_LONG).show();
-                } else if (message.action == Actions.PICK_CARD) {
-                    //TODO
-                } else if (message.action == Actions.NUMBER_OF_TRICKS) {
-                    forbiddenTricks = message.forbiddenTricks;
-                    btnPredictTrick.setClickable(true);
-                    btnPredictTrick.setAlpha(1);
-                } else if (message.action == Actions.QUIT_GAME) {
-                    buildQuitMessage(message.sender);
-                } else if (message.action == Actions.YOUR_POINTS) {
-                    Toast.makeText(getApplicationContext(), "Your Points: " + message.playerPoints, Toast.LENGTH_LONG).show();
-                } else if (message.action == Actions.GET_HAND_CARDS) {
+                   if(message == null) {
+                        Log.e("CLIENT", "No Message received");
+                   } else if(message.action == 0) {
+                       Log.e("CLIENT", "No Action defined; Client is blind");
+                   }
+                   else if(message.action == Actions.INITIAL_CARD_GIVING) {
+                       if(message.cards != null && message.cards.length > 0 && message.playerCount > 0 && message.roundCount > 0) {
+                           if(message.roundCount ==1) {
+                               initGui(message.playerCount, message.roundCount);
+                           } else {
+                               addImageToScrollView();
+                           }
 
-                    cheater = message.cheatPlayer;
-                    final List<AbstractCard> oldCards = getCardsById(message.getCheaterHand);
-                    List<AbstractCard> card = getCardsById(message.getPlayerHand);
-                    setCardsToImages(card);
+                           List<AbstractCard> cards =getCardsById(message.cards);
+                           setCardsToImages(cards);
+                       }
+                       if(message.trumpCard != 0) {
+                           setTrump(clientCardStack.getCardById(message.trumpCard));
+                       }
+                   }
+                   else if(message.action == Actions.TABLECARDS_ARE_COMING && message.cards != null) {
+                       List<AbstractCard> cards =getCardsById(message.cards);
+                       setMiddleCards(cards);
+                   }
+                   else if(message.action == Actions.AND_THE_WINNER_IS) {
+                       Toast.makeText(getApplicationContext(),"Gewonnen hat: " + message.sender,Toast.LENGTH_LONG).show();
+                   }
+                   else if(message.action == Actions.PICK_CARD) {
+                       //TODO
+                   }
+                   else if(message.action == Actions.NUMBER_OF_TRICKS){
+                       forbiddenTricks = message.forbiddenTricks;
+                       btnPredictTrick.setClickable(true);
+                       btnPredictTrick.setAlpha(1);
+                   }
+                   else if(message.action == Actions.QUIT_GAME){
+                       buildQuitMessage(message.sender);
+                   }
+                   else if (message.action == Actions.YOUR_POINTS) {
+                       Toast.makeText(getApplicationContext(), "Your Points: " + message.playerPoints, Toast.LENGTH_LONG).show();
+                   }else if (message.action == Actions.GET_HAND_CARDS) {
 
-                    Handler handler = new Handler();
-                    Runnable r = new Runnable() {
-                        @Override
-                        public void run() {
-                            setCardsToImages(oldCards);
-                        }
-                    };
-                    handler.postDelayed(r, 3000);
-                } else if (message.action == Actions.CHEAT_TRIGGER) {
+                       cheater = message.cheatPlayer;
+                       final List<AbstractCard> oldCards = getCardsById(message.getCheaterHand);
+                       List<AbstractCard> card = getCardsById(message.getPlayerHand);
+                       setCardsToImages(card);
 
-                    cheat = true;
+                       Handler handler = new Handler();
+                       Runnable r = new Runnable() {
+                           @Override
+                           public void run() {
+                               setCardsToImages(oldCards);
+                           }
+                       };
+                       handler.postDelayed(r, 3000);
+                   } else if (message.action == Actions.CHEAT_TRIGGER) {
 
-                    Handler handler = new Handler();
-                    Runnable r = new Runnable() {
-                        @Override
-                        public void run() {
-                            cheat = false;
-                        }
-                    };
-                    handler.postDelayed(r, 3000);
+                       cheat = true;
 
-                }
+                       Handler handler = new Handler();
+                       Runnable r = new Runnable() {
+                           @Override
+                           public void run() {
+                               cheat = false;
+                           }
+                       };
+                       handler.postDelayed(r, 3000);
+
+                   }
             }
         });
     }
@@ -416,20 +419,22 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             public void execute(Message message) {
                 Log.d("HOST CALLBACK", "Received: " + message);
                 Round round = game.getRecentRound();
-                if (message == null && message.client2HostAction == 0) {
+                if(message == null && message.client2HostAction == 0) {
                     Log.e("CLIENT", "No Message received");
-                } else if (message.client2HostAction == Client2HostAction.TABLE_ACTIVITY_STARTED) {
+                }
+
+                else if(message.client2HostAction == Client2HostAction.TABLE_ACTIVITY_STARTED) {
                     Player p = round.getPlayerByName(message.sender);
-                    if (p != null) {
+                    if(p != null) {
                         sendCardsToDevice(p);
                     }
                 } else if (message.client2HostAction == Client2HostAction.CARD_PLAYED) {
                     int playedCard = message.playedCard;
                     String sender = message.sender;
-                    Log.e("CARD RECEIVED", "Card of Client received: " + sender + ", " + playedCard);
+                    Log.e("CARD RECEIVED", "Card of Client received: " +sender + ", " + playedCard);
                     //TODO: DO SOMETHING WITH THE CARD
                     Round round1 = game.getRecentRound();
-                    round1.playCard(sender, playedCard);
+                    round1.playCard(sender,playedCard);
                     setMiddleCards(round1.getPlayedCards());
                 } else if (message.client2HostAction == Client2HostAction.PREDICTION_SET) {
                     int tricksPrediction = message.predictedTricks;
@@ -437,6 +442,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(getApplicationContext(), "Prediction from " + sender + ": " + tricksPrediction, Toast.LENGTH_SHORT).show();
 
                     writePredictionToPlayer(tricksPrediction, sender);
+                    if(initialPrediction){
+                        game.getRecentRound().askFirstPredictions();
+                    }
                 } else if (message.client2HostAction == Client2HostAction.PLAYERSTATES_REQUESTED) {
                     Player p = round.getPlayerByName(message.sender);
                     if (p != null) {
@@ -620,6 +628,12 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
+    public void setInitialPrediction(boolean predict) {
+
+    }
+
+
+    @Override
     public void onClick(View view) {
 
         if (view instanceof ImageView) {
@@ -650,7 +664,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 Log.e("CARD PLAYED", "Host played card: " + clickedCard.getId());
                 //TODO: do something if the host played the card as well
                 Round round = game.getRecentRound();
-                round.playCard(network.thisDevice.deviceName, clickedCard.getId());
+                round.playCard(network.thisDevice.deviceName,clickedCard.getId());
                 List<AbstractCard> playedCards = round.getPlayedCards();
                 setMiddleCards(playedCards);
             }
@@ -673,7 +687,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
         Log.d("SEND CARDS", "send cards to: " + player.getName());
 
-        if (player.getSalutDevice() == network.thisDevice) {
+        if(player.getSalutDevice() == network.thisDevice) {
             addImageToScrollView();
             setCardsToImages(cards);
             setTrump(round.getTrump());
@@ -684,7 +698,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             message.trumpCard = round.getTrump().getId();
             message.playerCount = playerCount;
             message.roundCount = roundCount;
-            for (int i = 0; i < cards.size(); i++) {
+            for(int i = 0; i < cards.size(); i++) {
                 message.cards[i] = cards.get(i).getId();
             }
             network.sendToDevice(playerDevice, message, new SalutCallback() {
@@ -701,11 +715,11 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         Round round = game.getRecentRound();
         setTrump(round.getTrump());
         Player[] players = GameConfig.getInstance().getPlayers();
-        for (int i = 0; i < players.length; i++) {
+        for(int i = 0; i < players.length; i++) {
             final Player player = players[i];
             SalutDevice playerDevice = player.getSalutDevice();
             //then we are host because only host calls this method
-            if (playerDevice == network.thisDevice) {
+            if(playerDevice == network.thisDevice) {
                 Log.d("SETCARDSFORHOST", "host device found, now setCardsToImages()");
                 List<AbstractCard> cards = round.getPlayerHand(player);
                 for (AbstractCard card : cards) {
@@ -719,15 +733,15 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void setCardsToImages(List<AbstractCard> cards) {
-        if (cards == null || cards.size() == 0)
+        if(cards == null || cards.size() == 0)
             return;
         int maxIteration = cardViews.size();
-        if (cards.size() < maxIteration) {
+        if(cards.size() < maxIteration) {
             maxIteration = cards.size();
         }
 
-        for (int i = 0; i < maxIteration; i++) {
-            ImageView img = cardViews.get(i);
+        for(int i = 0; i < maxIteration; i++) {
+            ImageView img =  cardViews.get(i);
             AbstractCard card = cards.get(i);
             view2CardMap.put(img.getContentDescription().toString(), card);
             img.setImageResource(card.getResourceId());
@@ -743,10 +757,10 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         resetMiddleCards();
 
         int maxIterations = middleCards.size();
-        if (cards.size() < maxIterations)
+        if(cards.size() < maxIterations)
             maxIterations = cards.size();
 
-        for (int i = 0; i < maxIterations; i++) {
+        for(int i =0; i < maxIterations; i++) {
             ImageView img = middleCards.get(i);
             AbstractCard card = cards.get(i);
 
@@ -756,7 +770,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void resetMiddleCards() {
-        for (ImageView img : middleCards) {
+        for(ImageView img: middleCards) {
             img.setImageDrawable(null);
         }
     }
@@ -766,8 +780,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         super.onDestroy();
 
         Salut network = GameConfig.getInstance().getSalut();
-        if (network != null) {
-            if (network.isRunningAsHost) {
+        if(network != null) {
+            if( network.isRunningAsHost) {
                 try {
                     network.stopNetworkService(true);
 
@@ -789,7 +803,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
      * Creates NumberPicker Dialog
      * The selected number is returned in onValueChange() method below
      */
-    private void createPredictionPicker(int forbiddenTricks) {
+    private void createPredictionPicker(int forbiddenTricks){
 
         Bundle bundle = new Bundle();
         bundle.putInt("forbiddenTricks", forbiddenTricks);
@@ -803,10 +817,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         predictDialog.show(manager, "fragment_prediction");
     }
 
-    /**
-     * Fired if predicted number of tricks has been selected in NumberPicker Dialog
-     * Value can be retrieved by NumberPicker.getValue()
-     *
+    /** Fired if predicted number of tricks has been selected in NumberPicker Dialog
+     *  Value can be retrieved by NumberPicker.getValue()
      * @param picker
      * @param oldVal
      * @param newVal
@@ -814,7 +826,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         int prediction = Integer.parseInt(picker.getDisplayedValues()[picker.getValue()]);
-        if (GameConfig.getInstance().isHost() && initialPrediction) {
+        if(GameConfig.getInstance().isHost() && initialPrediction){
             btnPredictTrick.setClickable(false);
             btnPredictTrick.setAlpha(.5f);
             Log.d("WizardApp", "onValueChange() received initial prediction from host.");
@@ -836,7 +848,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     /**
      * Sends back the number of predicted tricks to host
      */
-    private void sendNumberOfTricksToHost(int prediction) {
+    private void sendNumberOfTricksToHost(int prediction){
         Message message = new Message();
         message.client2HostAction = Client2HostAction.PREDICTION_SET;
         message.sender = network.thisDevice.deviceName;
@@ -856,7 +868,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(R.string.AlertBack)
                 .setMessage(R.string.AlertBackDescription)
-                .setPositiveButton(R.string.AlertBackYes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.AlertBackYes, new DialogInterface.OnClickListener()
+                {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sendQuitGameToAll();
@@ -868,19 +881,20 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 .show();
     }
 
-    private void sendQuitGameToAll() {
+    private void sendQuitGameToAll(){
         Message message = new Message();
         message.sender = network.thisDevice.deviceName;
         message.action = Actions.QUIT_GAME;
         Log.d("SEND QUIT GAME TO ALL", message.toString());
-        if (network.isRunningAsHost == true) {
+        if(network.isRunningAsHost == true){
             network.sendToAllDevices(message, new SalutCallback() {
                 @Override
                 public void call() {
                     Log.e("CLIENT", "Notification of other devices failed");
                 }
             });
-        } else {
+        }
+        else{
             network.sendToHost(message, new SalutCallback() {
                 @Override
                 public void call() {
@@ -890,12 +904,13 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void buildQuitMessage(String sender) {
+    private void buildQuitMessage(String sender){
         new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(R.string.AlertQuitTitle)
                 .setMessage(sender + "" + R.string.AlertQuitText)
-                .setPositiveButton(R.string.AlertQuitOkButton, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.AlertQuitOkButton, new DialogInterface.OnClickListener()
+                {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         GameConfig.getInstance().reset();
