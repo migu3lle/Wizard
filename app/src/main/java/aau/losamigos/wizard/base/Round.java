@@ -46,6 +46,7 @@ public class Round {
     private static IGameActivity gameActivity;
     private int initialPredictionCount = 0;
 
+
     public Round(GamePlay game, int numberOfCards) {
         this.game = game;
         this.players = game.getPlayers();
@@ -89,13 +90,6 @@ public class Round {
 
     public void startRound() {
         for(Player player : players) {
-            if(player.getSalutDevice() == network.thisDevice) {
-                Log.d("WizardApp", "startRound(): Now setCardsForHost");
-                gameActivity.setCardsForHost();
-            } else {
-                Log.d("WizardApp", "startRound(): sendCardsToDevice(player = " + player.getSalutDeviceName() + ")");
-                gameActivity.sendCardsToDevice(player);
-            }
             gameActivity.sendCardsToDevice(player);
         }
         status = RoundStatus.waitingForStiches;
@@ -135,7 +129,6 @@ public class Round {
                     Log.d("WizardApp", "Now aks for Stiches to player: " + order.get(currentPlayer).getSalutDeviceName() + "(currentPlayer = " + currentPlayer + ")");
                     askForStiches(order.get(currentPlayer));
                     currentPlayer++;
-                    askForStiches(order.get(currentPlayer));
                 }
                 else{
                     status = RoundStatus.waitingForCard;
@@ -329,7 +322,6 @@ public class Round {
     public void returnNumberOfStiches(){
         checkNextStep();
     }
-
     private void askForCard(Player player) {
 
         Message mPickCard = new Message();
