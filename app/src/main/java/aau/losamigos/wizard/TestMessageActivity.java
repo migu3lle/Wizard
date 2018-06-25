@@ -25,7 +25,7 @@ public class TestMessageActivity extends AppCompatActivity implements View.OnCli
     Button btnSend;
     EditText etMessage;
 
-    public Salut network;
+    private Salut network;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

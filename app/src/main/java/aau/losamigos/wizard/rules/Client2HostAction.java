@@ -5,8 +5,8 @@ package aau.losamigos.wizard.rules;
  */
 
 public class Client2HostAction {
-    public static int TABLE_ACTIVITY_STARTED = 1;
-    public static int CARD_PLAYED = 2;
-    public static int PREDICTION_SET = 3;
-    public static int PLAYERSTATES_REQUESTED = 4;
+    public static final int TABLE_ACTIVITY_STARTED = 1;
+    public static final int CARD_PLAYED = 2;
+    public static final int PREDICTION_SET = 3;
+    public static final int PLAYERSTATES_REQUESTED = 4;
 }

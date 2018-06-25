@@ -39,9 +39,9 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
     Button btnDiscover;
     EditText etClientName;
 
-    public SalutDataReceiver dataReceiver;
-    public SalutServiceData serviceData;
-    public Salut network;
+    private SalutDataReceiver dataReceiver;
+    private SalutServiceData serviceData;
+    private Salut network;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

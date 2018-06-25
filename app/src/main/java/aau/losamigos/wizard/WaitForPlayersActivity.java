@@ -37,9 +37,9 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
 
     Bundle bundle;
 
-    public SalutDataReceiver dataReceiver;
-    public SalutServiceData serviceData;
-    Salut network;
+    private SalutDataReceiver dataReceiver;
+    private SalutServiceData serviceData;
+    private Salut network;
 
     private boolean gameStarted;
 
@@ -168,21 +168,21 @@ public class WaitForPlayersActivity extends AppCompatActivity implements View.On
                     Log.d("WizardApp", "WaitForPlayersActivity: Trying cancelConnecting()");
                     network.cancelConnecting();
                 } catch (Exception e){
-                    e.printStackTrace();
+                    Log.e("Exception:", e.getMessage());
                 }
                 try {
                     Log.d("WizardApp", "WaitForPlayersActivity: Trying stopNetworkService()");
                     network.stopNetworkService(true);
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e("Exception:", e.getMessage());
                 }
             } else {
                 try {
                     Log.d("WizardApp", "WaitForPlayersActivity: Trying unregisterClient()");
                     network.unregisterClient(true);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e("Exception:", e.getMessage());
                 }
             }
         }

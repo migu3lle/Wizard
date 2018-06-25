@@ -91,9 +91,9 @@ public class ScoreTableActivity extends AppCompatActivity {
             List<String> roundStates = entry.getValue();
             for(int i = 0; i < roundStates.size(); i++) {
                 PlayerRoundState state = PlayerRoundStateParser.parse(roundStates.get(i));
-                setActualStich(i, i, state.actualStiches);
-                setEstimatedStich(i, i, state.calledStiches);
-                setActualPoints(i, i, state.points);
+                setActualStich(i, i, state.getActualStiches());
+                setEstimatedStich(i, i, state.getCalledStiches());
+                setActualPoints(i, i, state.getPoints());
             }
         }
     }
