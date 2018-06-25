@@ -59,7 +59,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     CardStack clientCardStack;
     boolean allowedToClick;
     ImageView playerC2,playerC3,playerC4,playerC5,playerC6;
-    boolean allowedToClick;
+
 
     Button btnPredictTrick;
     Button cheatDetect;
@@ -642,10 +642,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         allowedToClick = true;
     }
 
-    @Override
-    public void setInitialPrediction(boolean predict) {
 
-    }
 
 
     @Override

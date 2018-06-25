@@ -46,7 +46,7 @@ public class Round {
     private static IGameActivity gameActivity;
     private int initialPredictionCount = 0;
 
-    private int initialPredictionCount = 0;
+
 
     public Round(GamePlay game, int numberOfCards) {
         this.game = game;
@@ -319,9 +319,7 @@ public class Round {
             }
         }
     }
-    public void returnNumberOfStiches() {
-        checkNextStep();
-    }
+
 
     public void returnNumberOfStiches(){
         checkNextStep();
