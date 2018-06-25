@@ -44,6 +44,7 @@ public class Round {
     private static Context context;
     //instance of gameActivity to be able to clear table of host
     private static IGameActivity gameActivity;
+    private int initialPredictionCount = 0;
 
 
     public Round(GamePlay game, int numberOfCards) {
@@ -92,8 +93,32 @@ public class Round {
             gameActivity.sendCardsToDevice(player);
         }
         status = RoundStatus.waitingForStiches;
-        //askForStiches(order.get(currentPlayer));
-        //currentPlayer++;
+        Log.d("WizardApp", "Changed state to waitingForStiches");
+        checkNextStep();
+    }
+
+    //Asks for first prediction (when TableActivity onCreate()), beginning with host
+    public void askFirstPredictions(){
+        //Ask host
+        if(initialPredictionCount == 0){
+            Log.d("WizardApp", "Ask host: " + GameConfig.getInstance().getPlayers()[0] + " for stiches.");
+            gameActivity.hostStiches();
+            initialPredictionCount++;
+        }
+        //Ask clients
+        else if(initialPredictionCount > 0 && initialPredictionCount < players.size()){
+            Log.d("WizardApp", "Ask player: " + initialPredictionCount + " for stiches.");
+            askForStiches(GameConfig.getInstance().getPlayers()[initialPredictionCount]);
+            initialPredictionCount++;
+        }
+        //All players asked, go to next state
+        else{
+            Log.d("WizardApp", "Initial predictions are done now.");
+            gameActivity.setInitialPrediction(false);
+            status = RoundStatus.waitingForCard;
+            currentPlayer=0;
+            checkNextStep();
+        }
     }
 
     private void checkNextStep() {
@@ -101,8 +126,9 @@ public class Round {
             case waitingForStiches:
                 if(currentPlayer < order.size()){
                     status = RoundStatus.waitingForStiches;
-                    currentPlayer++;
+                    Log.d("WizardApp", "Now aks for Stiches to player: " + order.get(currentPlayer).getSalutDeviceName() + "(currentPlayer = " + currentPlayer + ")");
                     askForStiches(order.get(currentPlayer));
+                    currentPlayer++;
                 }
                 else{
                     status = RoundStatus.waitingForCard;
@@ -230,6 +256,44 @@ public class Round {
         });
     }
 
+    private void askForStiches(Player player) {
+        Log.d("WizardApp", "askForStiches(): player = " + player.getSalutDeviceName());
+
+        //Compare to Player Array, if host build local prediction picker. If client send message
+        if(player.equals(GameConfig.getInstance().getPlayers()[0])){
+            Log.d("WizardApp", "Ask for hostStiches()");
+            gameActivity.hostStiches();
+
+        }
+        else {
+            Log.d("WizardApp", "Ask for clientStiches per message to player: " + player.getSalutDeviceName());
+            Message mNumberOfTricks = new Message();
+            mNumberOfTricks.action = Actions.NUMBER_OF_TRICKS;
+
+            //TODO: Put information about prohibited prediction
+            //In case of asking the last player for prediction, check which number to exclude
+            if((currentPlayer == players.size()-1) || (initialPredictionCount == players.size()-1)){
+                int predictionCount = 0;
+                for (Player p : players) {
+                    predictionCount += p.getCalledStiches();
+                }
+                //Calc the difference to real number of tricks and set this number as not allowed for last prediction
+                mNumberOfTricks.forbiddenTricks = numberOfCards-predictionCount;
+            }
+            else{
+                //All numbers allowed
+                mNumberOfTricks.forbiddenTricks = -1;
+            }
+
+            network.sendToDevice(player.getSalutDevice(), mNumberOfTricks, new SalutCallback() {
+                @Override
+                public void call() {
+                    Log.e("WizardApp", "Oh no! The data failed to send.");
+                }
+            });
+        }
+    }
+
     private void sendPointsOnAll() {
         Log.d("PLAYERPOINTS", "atemting to send points");
         Message message = new Message();
@@ -255,27 +319,15 @@ public class Round {
         }
     }
 
+    public void returnNumberOfStiches(){
+        checkNextStep();
+    }
     private void askForCard(Player player) {
 
         Message mPickCard = new Message();
         mPickCard.action = Actions.PICK_CARD;
 
         network.sendToDevice(player.getSalutDevice(), mPickCard, new SalutCallback() {
-            @Override
-            public void call() {
-                Log.e("WizardApp", "Oh no! The data failed to send.");
-            }
-        });
-    }
-    private void askForStiches(Player player) {
-
-        Message mNumberOfTricks = new Message();
-        mNumberOfTricks.action = Actions.NUMBER_OF_TRICKS;
-
-        //TODO: Put information about prohibited prediction
-        mNumberOfTricks.forbiddenTricks = -1;   //!!! Set to -1 if all numbers are allowed !!!
-
-        network.sendToDevice(player.getSalutDevice(), mNumberOfTricks, new SalutCallback() {
             @Override
             public void call() {
                 Log.e("WizardApp", "Oh no! The data failed to send.");
@@ -300,6 +352,7 @@ public class Round {
                 List<AbstractCard> tableCards = new ArrayList<AbstractCard>();
 
                 for (MoveTuple tuple : table) {
+                    Log.d("WizardApp", "Adding card " + tuple.getCard().getId() + " to hand of player: " + hand.getHandOwner().getSalutDeviceName());
                     tableCards.add(tuple.getCard());
                 }
                 return hand.getAllowedCards(tableCards); //TODO oder nur die IDs geben
