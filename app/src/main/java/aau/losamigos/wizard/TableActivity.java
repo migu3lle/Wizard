@@ -4,7 +4,12 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,11 +18,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.common.collect.Table;
 import com.peak.salut.Callbacks.SalutCallback;
 import com.peak.salut.Salut;
 import com.peak.salut.SalutDevice;
@@ -39,13 +42,17 @@ import aau.losamigos.wizard.network.ICallbackAction;
 import aau.losamigos.wizard.rules.Actions;
 import aau.losamigos.wizard.rules.Client2HostAction;
 
-public class TableActivity extends AppCompatActivity implements View.OnClickListener, NumberPicker.OnValueChangeListener,
-        IGameActivity {
+
+public class TableActivity extends AppCompatActivity implements View.OnClickListener, NumberPicker.OnValueChangeListener, IGameActivity {
     Salut network;
     List<ImageView> cardViews;
     List<ImageView> middleCards;
     ImageView trump;
     int playerCount;
+    private boolean cheat;
+    private String cheater;
+
+
     //instance only available for host
     GamePlay game;
     TextView player2, player3, player4, player5, player6;
@@ -53,17 +60,24 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     boolean allowedToClick;
     ImageView playerC2,playerC3,playerC4,playerC5,playerC6;
 
+
     Button btnPredictTrick;
+    Button cheatDetect;
     PredictTrickDialogFragment predictDialog;
     boolean initialPrediction;
     int playerJoinCount;
     int forbiddenTricks;
 
     HashMap<String, AbstractCard> view2CardMap;
+    SensorManager sensorManager;
+    Sensor accelerometerSensor;
+    SensorEventListener accelerometerEventListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        boolean b = getIntent().getBooleanExtra("CheatEnabled", false);
 
         setContentView(R.layout.activity_table);
         getSupportActionBar().hide();
@@ -89,6 +103,16 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             defineClientCallBack();
             notifyHost();
         }
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+
+        if (b) {
+            cheat = false;
+            cheating();
+
+        }
+
     }
 
 
@@ -166,6 +190,39 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         middleCards.add(middleCard5);
         middleCards.add(middleCard6);
 
+        cheatDetect = findViewById(R.id.cheatdetect);
+        cheatDetect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (cheat) {
+
+                    Message message = new Message();
+                    message.cheatPlayer = cheater;
+                    message.client2HostAction = Client2HostAction.CHEAT_DETECT;
+
+                    network.sendToHost(message, new SalutCallback() {
+                        @Override
+                        public void call() {
+                            Log.e("CHEATING TO ME", "No cheat possible");
+                        }
+                    });
+
+                } else if (!cheat) {
+                    Message message = new Message();
+                    message.cheatPlayer = null;
+                    message.client2HostAction = Client2HostAction.CHEAT_DETECT;
+
+                    network.sendToHost(message, new SalutCallback() {
+                        @Override
+                        public void call() {
+                            Log.e("CHEATING NOT TO ME", "No cheat detection generated");
+                        }
+                    });
+
+                }
+            }
+        });
+
 
         for (int i = 0; i < roundCount; i++) {
             addImageToScrollView();
@@ -194,7 +251,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         cardViews.add(imageView);
     }
 
-    private void startGame(){
+    private void startGame() {
         GameConfig gcfg = GameConfig.getInstance();
         game = new GamePlay(gcfg.getPlayers());
         game.startGame(game.getCountRound());
@@ -203,6 +260,67 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         gcfg.setCurrentGamePlay(game);
         round.setGameActivity(this);
     }
+
+    private void cheating() {
+        //check if there is a Sensor
+        if (accelerometerSensor == null) {
+
+            Toast.makeText(this, "No Cheating possible", Toast.LENGTH_SHORT).show();
+            //detect the movement along the z-axis (horizontal skip left/right)
+        } else {
+            accelerometerEventListener = new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent sensorEvent) {
+                    if (sensorEvent.values[2] > 0.4f) {
+                        cardRightPlayer();
+
+                    } else if (sensorEvent.values[2] < -0.4f) {
+                        cardLeftPlayer();
+
+                    } else if (sensorEvent.values[2] >= -0.4f && sensorEvent.values[2] <= 0.4f) {
+
+                        //DO NOTHING
+                    }
+                }
+
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int i) {
+
+                }
+            };
+
+        }
+
+    }
+
+    private void cardLeftPlayer() {
+
+        Message message = new Message();
+        message.sender = network.thisDevice.deviceName;
+        message.client2HostAction = Client2HostAction.GET_LEFT_CARDS;
+        network.sendToHost(message, new SalutCallback() {
+            @Override
+            public void call() {
+                Log.e("LOOK LEFT", "Looking failed");
+            }
+        });
+
+    }
+
+
+    private void cardRightPlayer() {
+
+        Message message = new Message();
+        message.sender = network.thisDevice.deviceName;
+        message.client2HostAction = Client2HostAction.GET_RIGHT_CARDS;
+        network.sendToHost(message, new SalutCallback() {
+            @Override
+            public void call() {
+                Log.e("LOOK RIGHT", "Looking failed");
+            }
+        });
+    }
+
 
     private void notifyHost() {
         Message message = new Message();
@@ -262,6 +380,34 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                    }
                    else if (message.action == Actions.YOUR_POINTS) {
                        Toast.makeText(getApplicationContext(), "Your Points: " + message.playerPoints, Toast.LENGTH_LONG).show();
+                   }else if (message.action == Actions.GET_HAND_CARDS) {
+
+                       cheater = message.cheatPlayer;
+                       final List<AbstractCard> oldCards = getCardsById(message.getCheaterHand);
+                       List<AbstractCard> card = getCardsById(message.getPlayerHand);
+                       setCardsToImages(card);
+
+                       Handler handler = new Handler();
+                       Runnable r = new Runnable() {
+                           @Override
+                           public void run() {
+                               setCardsToImages(oldCards);
+                           }
+                       };
+                       handler.postDelayed(r, 3000);
+                   } else if (message.action == Actions.CHEAT_TRIGGER) {
+
+                       cheat = true;
+
+                       Handler handler = new Handler();
+                       Runnable r = new Runnable() {
+                           @Override
+                           public void run() {
+                               cheat = false;
+                           }
+                       };
+                       handler.postDelayed(r, 3000);
+
                    }
             }
         });
@@ -290,9 +436,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                             round.askFirstPredictions();
                         }
                     }
-                }
-
-                else if(message.client2HostAction == Client2HostAction.CARD_PLAYED) {
+                } else if (message.client2HostAction == Client2HostAction.CARD_PLAYED) {
                     int playedCard = message.playedCard;
                     String sender = message.sender;
                     Log.e("CARD RECEIVED", "Card of Client received: " +sender + ", " + playedCard);
@@ -300,9 +444,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     Round round1 = game.getRecentRound();
                     round1.playCard(sender,playedCard);
                     setMiddleCards(round1.getPlayedCards());
-                }
-
-                else if (message.client2HostAction == Client2HostAction.PREDICTION_SET){
+                } else if (message.client2HostAction == Client2HostAction.PREDICTION_SET) {
                     int tricksPrediction = message.predictedTricks;
                     String sender = message.sender;
                     Toast.makeText(getApplicationContext(), "Prediction from " + sender + ": " + tricksPrediction, Toast.LENGTH_SHORT).show();
@@ -311,10 +453,12 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     if(initialPrediction){
                         game.getRecentRound().askFirstPredictions();
                     }
-                }
+
+                } 
                 else if (message.client2HostAction == Client2HostAction.PLAYERSTATES_REQUESTED) {
+
                     Player p = round.getPlayerByName(message.sender);
-                    if(p != null) {
+                    if (p != null) {
                         Message m1 = new Message();
                         m1.playerStates = game.getPlayerRoundStates();
                         m1.action = Actions.PLAYERSTATES_SENT;
@@ -326,21 +470,148 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                         });
                     }
 
-                }
-                else if(message.action == Actions.QUIT_GAME){
+                } else if (message.action == Actions.QUIT_GAME) {
                     sendQuitGameToAll();
                     buildQuitMessage(message.sender);
+                } else if (message.client2HostAction == Client2HostAction.GET_LEFT_CARDS) {
+                    Player p = round.getPlayerByName(message.sender);
+                    Player s = checkLeft(p);
+
+                    // actual cards of the left sided player
+                    Message ms1 = new Message();
+                    ms1.action = Actions.GET_HAND_CARDS;
+                    ms1.getCheaterHand = handCards(round.getPlayerHand(p));
+                    ms1.getPlayerHand = handCards(round.getPlayerHand(s));
+                    ms1.cheatPlayer = p.getName();
+                    ms1.roundCount = game.getCountRound();
+
+                    Message ms2 = new Message();
+                    ms2.action = Actions.CHEAT_TRIGGER;
+                    ms2.cheatPlayer = p.getName();
+
+                    //send hand of the left player to the cheater
+                    network.sendToDevice(p.getSalutDevice(), ms1, new SalutCallback() {
+                        @Override
+                        public void call() {
+                            Log.e("SEND LEFT CARDS", "cards sending failed");
+                        }
+                    });
+                    //activate cheat detection for the cheated player
+                    network.sendToDevice(s.getSalutDevice(), ms2, new SalutCallback() {
+                        @Override
+                        public void call() {
+                            Log.e("DETECT CHEATING", "cheat detection don´t trigger");
+                        }
+                    });
+
+
+                } else if (message.client2HostAction == Client2HostAction.GET_RIGHT_CARDS) {
+                    Player p = round.getPlayerByName(message.sender);
+                    Player s = checkRight(p);
+
+                    // actual cards of the left sided player
+                    Message ms1 = new Message();
+                    ms1.action = Actions.GET_HAND_CARDS;
+                    ms1.getCheaterHand = handCards(round.getPlayerHand(p));
+                    ms1.getPlayerHand = handCards(round.getPlayerHand(s));
+                    ms1.cheatPlayer = p.getName();
+                    ms1.roundCount = game.getCountRound();
+
+                    Message ms2 = new Message();
+                    ms2.action = Actions.CHEAT_TRIGGER;
+                    ms2.cheatPlayer = p.getName();
+
+                    //send hand of the right player to the cheater
+                    network.sendToDevice(p.getSalutDevice(), ms1, new SalutCallback() {
+                        @Override
+                        public void call() {
+                            Log.e("SEND LEFT CARDS", "cards sending failed");
+                        }
+                    });
+                    //activate cheat detection for the cheated player
+                    network.sendToDevice(s.getSalutDevice(), ms2, new SalutCallback() {
+                        @Override
+                        public void call() {
+                            Log.e("DETECT CHEATING", "cheat detection don´t trigger");
+                        }
+                    });
+                } else if (message.client2HostAction == Client2HostAction.CHEAT_DETECT) {
+
+                    if (message.cheatPlayer == null) {
+
+                        Player p = round.getPlayerByName(message.sender);
+                        p.decreasePoints(20);
+
+                    } else {
+                        for (int i = 0; i < game.getPlayers().size(); i++) {
+                            if (game.getPlayers().get(i).getName().equals(message.cheatPlayer)) {
+                                game.getPlayers().get(i).decreasePoints(20);
+                            }
+                        }
+
+                    }
                 }
             }
-
         });
+    }
+
+
+    private int[] handCards(List<AbstractCard> cards) {
+        int[] card = new int[(cards.size())];
+        for (int i = 0; i < card.length; i++) {
+            card[i] = cards.get(i).getId();
+        }
+        return card;
+    }
+
+    //look who sit on my right side
+    private Player checkRight(Player p) {
+        Player s = null;
+        Player[] players = GameConfig.getInstance().getPlayers();
+        //check the left neighbor of cheater
+        for (int i = 0; i < game.getPlayers().size(); i++) {
+            if (players[i] == p) {
+
+                //if neighbor is the last player
+                if ((i - 1) < 0) {
+                    s = players[game.getPlayers().size()];
+
+                    //each other
+                } else {
+                    s = players[i - 1];
+                }
+            }
+        }
+        return s;
+
+    }
+
+    //look who sit on my left side
+    private Player checkLeft(Player p) {
+        Player s = null;
+        Player[] players = GameConfig.getInstance().getPlayers();
+        //check the left neighbor of cheater
+        for (int i = 0; i < game.getPlayers().size(); i++) {
+            if (players[i] == p) {
+
+                //if neighbor is the first player
+                if ((i + 1) > game.getPlayers().size()) {
+                    s = players[1];
+
+                    //each other
+                } else {
+                    s = players[i + 1];
+                }
+            }
+        }
+        return s;
     }
 
     // Writes prediction to Player object
     private void writePredictionToPlayer(int tricksPrediction, String sender) {
         Player[] players = GameConfig.getInstance().getPlayers();
         for (Player player : players) {
-            if(player.getSalutDeviceName().equals(sender)){
+            if (player.getSalutDeviceName().equals(sender)) {
                 player.setCalledStiches(tricksPrediction);
                 game.getRecentRound().returnNumberOfStiches();
                 break;
@@ -354,7 +625,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
     private List<AbstractCard> getCardsById(int[] cardIds) {
         List<AbstractCard> cards = new ArrayList<>();
-        for(int i = 0; i < cardIds.length; i++) {
+        for (int i = 0; i < cardIds.length; i++) {
             cards.add(clientCardStack.getCardById(cardIds[i]));
         }
         return cards;
@@ -364,21 +635,24 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_table);
     }
 
-    public void hostStiches(){
+    public void hostStiches() {
         forbiddenTricks = -1;
         btnPredictTrick.setClickable(true);
         btnPredictTrick.setAlpha(1);
-        allowedToClick=true;
+        allowedToClick = true;
     }
+
+
+
 
     @Override
     public void onClick(View view) {
 
-        if(view instanceof ImageView) {
+        if (view instanceof ImageView) {
             ImageView imgView = (ImageView) view;
 
             //card is not visible so do nothing
-            if(imgView.getDrawable() == null) {
+            if (imgView.getDrawable() == null) {
                 return;
             }
             if(allowedToClick==false) {
@@ -394,7 +668,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             message.playedCard = clickedCard.getId();
             message.sender = network.thisDevice.deviceName;
 
-            if(!network.isRunningAsHost) {
+            if (!network.isRunningAsHost) {
                 network.sendToHost(message, new SalutCallback() {
                     @Override
                     public void call() {
@@ -573,14 +847,12 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             Log.d("WizardApp", "onValueChange() received initial prediction from host.");
             writePredictionToPlayer(prediction, network.thisDevice.deviceName);
             game.getRecentRound().askFirstPredictions();
-        }
-        else if(GameConfig.getInstance().isHost()){
+        } else if (GameConfig.getInstance().isHost()) {
             btnPredictTrick.setClickable(false);
             btnPredictTrick.setAlpha(.5f);
             Log.d("WizardApp", "onValueChange() received a later prediction from host.");
             writePredictionToPlayer(prediction, network.thisDevice.deviceName);
-        }
-        else{
+        } else {
             btnPredictTrick.setClickable(false);
             btnPredictTrick.setAlpha(.5f);
             Log.d("WizardApp", "onValueChange() received prediction from client.");

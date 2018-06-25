@@ -1,18 +1,12 @@
 package aau.losamigos.wizard.base;
 
-import android.webkit.JavascriptInterface;
-
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.peak.salut.SalutDevice;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import aau.losamigos.wizard.elements.PlayerRoundState;
-import aau.losamigos.wizard.rules.Actions;
-import aau.losamigos.wizard.rules.Client2HostAction;
 
 /**
  * Created by gunmic on 30.04.18.
@@ -62,6 +56,19 @@ public class Message{
 
     @JsonField
     public Map<String, List<String>> playerStates;
+
+    @JsonField
+    public int [] getPlayerHand;
+
+    @JsonField
+    public int [] getCheaterHand;
+
+    @JsonField
+    public String cheatPlayer;
+
+    @JsonField
+    public boolean cheatEnabled;
+
 
     @Override
     public String toString() {

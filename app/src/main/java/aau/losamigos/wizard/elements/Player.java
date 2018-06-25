@@ -15,6 +15,8 @@ public class Player {
 
     private static int latestID = 0;
 
+
+
     private int id;
 
     private String name;
@@ -122,4 +124,6 @@ public class Player {
         result = 31 * result + name.hashCode();
         return result;
     }
+
+
 }

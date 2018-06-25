@@ -12,6 +12,5 @@ public interface IGameActivity {
     void sendCardsToDevice(Player player);
     void setCardsForHost();
     void hostStiches();
-
     void setInitialPrediction(boolean predict);
 }

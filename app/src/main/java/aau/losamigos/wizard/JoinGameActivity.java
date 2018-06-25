@@ -69,7 +69,7 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
             public void execute(Message message) {
                 Toast.makeText(getApplicationContext(), "Message received", Toast.LENGTH_SHORT).show();
 
-                nextActivity();
+                nextActivity(message.cheatEnabled);
             }
         });
 
@@ -161,8 +161,10 @@ public class JoinGameActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    private void nextActivity() {
+    private void nextActivity(boolean b) {
         Intent intent = new Intent(this, TableActivity.class);
+        intent.putExtra("CheatEnabled", b);
         startActivity(intent);
+
     }
 }

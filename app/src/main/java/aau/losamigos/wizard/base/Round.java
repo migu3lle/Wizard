@@ -47,6 +47,7 @@ public class Round {
     private int initialPredictionCount = 0;
 
 
+
     public Round(GamePlay game, int numberOfCards) {
         this.game = game;
         this.players = game.getPlayers();
@@ -318,6 +319,7 @@ public class Round {
             }
         }
     }
+
 
     public void returnNumberOfStiches(){
         checkNextStep();

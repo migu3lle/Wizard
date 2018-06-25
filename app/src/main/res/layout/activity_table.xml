@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
 
     android:background="@color/colorGreen"
-    android:clickable="false"
     android:visibility="visible"
     tools:context="aau.losamigos.wizard.TableActivity">
 
@@ -16,7 +15,6 @@
         android:layout_width="50dp"
         android:layout_height="70dp"
         android:layout_marginBottom="8dp"
-
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/Middle5"
@@ -28,7 +26,6 @@
         android:layout_width="50dp"
         android:layout_height="70dp"
         android:layout_marginBottom="8dp"
-
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/Middle4"
@@ -55,7 +52,6 @@
         android:layout_width="50dp"
         android:layout_height="70dp"
         android:layout_marginBottom="8dp"
-
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/Middle4"
@@ -67,7 +63,6 @@
         android:layout_width="50dp"
         android:layout_height="70dp"
         android:layout_marginBottom="8dp"
-
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/Middle3"
@@ -94,7 +89,6 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:onClick="playCard2"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -108,7 +102,6 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="8dp"
-        android:onClick="playCard6"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -122,7 +115,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:onClick="playCard5"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/playerC4"
@@ -136,7 +128,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:onClick="playCard3"
         android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/playerC4"
         app:layout_constraintHorizontal_bias="0.481"
@@ -151,7 +142,6 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:onClick="playCard4"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -261,8 +251,8 @@
         android:layout_width="50dp"
         android:layout_height="70dp"
         android:layout_marginBottom="8dp"
-
         android:layout_marginTop="8dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/Middle2"
         app:layout_constraintTop_toTopOf="parent"
@@ -278,20 +268,36 @@
         android:text="Vorhersage"
         app:layout_constraintBottom_toTopOf="@+id/playerHand"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.539"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Middle3" />
+        app:layout_constraintTop_toBottomOf="@+id/Middle3"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="onClickBdw"
         android:text="@string/buttonBdw"
         app:layout_constraintBottom_toTopOf="@+id/playerC2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/playerC3" />
+        app:layout_constraintTop_toTopOf="@+id/playerC3"
+        app:layout_constraintVertical_bias="0.375" />
+
+    <Button
+        android:id="@+id/cheatdetect"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Cheat "
+        app:layout_constraintBottom_toBottomOf="@+id/btn_predictTrick"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.282"
+        app:layout_constraintStart_toEndOf="@+id/btn_predictTrick"
+        app:layout_constraintTop_toBottomOf="@+id/Middle6" />
 
 </android.support.constraint.ConstraintLayout>
