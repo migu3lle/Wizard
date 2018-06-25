@@ -540,12 +540,12 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     if (message.cheatPlayer == null) {
 
                         Player p = round.getPlayerByName(message.sender);
-                        p.decreasePoints(20);
+                        p.addPoints(-20);
 
                     } else {
                         for (int i = 0; i < game.getPlayers().size(); i++) {
                             if (game.getPlayers().get(i).getName().equals(message.cheatPlayer)) {
-                                game.getPlayers().get(i).decreasePoints(20);
+                                game.getPlayers().get(i).addPoints(-20);
                             }
                         }
 
