@@ -2,6 +2,7 @@ package aau.losamigos.wizard.base;
 
 import android.util.Log;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,27 @@ public class GamePlay {
     private Round recentRound; //Instanz der aktuellen Runde
     private CardStack cardStack; //Verwendeter Kartenstapel
 
+
+    public GamePlay(Player[] players) throws NullPointerException {
+
+        if(players == null){
+            throw new NullPointerException();
+        }
+        else {
+            countRound =1;
+            this.players = new ArrayList<>();
+
+            for (Player player:players) {
+                this.players.add(player);
+            }
+
+            this.playerNumber = this.players.size();
+            this.maxRounds = 60 / this.playerNumber;
+            this.cardStack = new CardStack();
+        }
+
+    }
+
     public int getCountRound() {
         return countRound;
     }
@@ -38,18 +60,6 @@ public class GamePlay {
 
     public int getPlayerNumber() {
         return playerNumber;
-    }
-
-    public GamePlay(Player[] players) {
-        countRound =1;
-        this.players = new ArrayList<Player>();
-
-        for (Player player:players) {
-            this.players.add(player);
-        }
-        this.playerNumber = this.players.size();
-        this.maxRounds = 60 / this.playerNumber;
-        this.cardStack = new CardStack();
     }
 
     /*
