@@ -46,14 +46,12 @@ public class ScoreTableActivity extends AppCompatActivity {
         setTitle(R.string.title_score_sheet);
         mapOfIds = new HashMap<>();
 
-        int playerCount = 0;
+        int playerCount = 3;
         try {
             playerCount = getIntent().getIntExtra("PLAYER_COUNT", 3);
         } catch (Exception e) {
             Log.e("SCORETABLE", "failed to get Playercount");
         }
-        if(playerCount < 3)
-            playerCount = 3;
 
         generateNewScoreSheet(playerCount);
 
@@ -101,6 +99,9 @@ public class ScoreTableActivity extends AppCompatActivity {
     }
 
     private void generateNewScoreSheet(int numberOfPlayers) {
+        if(numberOfPlayers < 3) {
+            numberOfPlayers = 3;
+        }
         int numberOfRounds = card_cnt / numberOfPlayers;
 
         TableLayout scoreSheetTable = findViewById(R.id.scoreSheetTable);
