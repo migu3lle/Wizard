@@ -11,13 +11,29 @@ import java.io.Serializable;
 public class PlayerRoundState implements Serializable {
 
 
-    public int actualStiches;
+    public int getActualStiches() {
+        return actualStiches;
+    }
 
 
-    public int calledStiches;
+    public int getCalledStiches() {
+        return calledStiches;
+    }
 
 
-    public int points;
+    public int getPoints() {
+        return points;
+    }
+
+
+
+    private int actualStiches;
+
+
+    private int calledStiches;
+
+
+    private int points;
 
     public PlayerRoundState(int actual, int estimated, int points) {
         this.actualStiches = actual;

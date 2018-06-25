@@ -20,6 +20,6 @@ public class PlayerRoundStateParser  {
     }
 
     public static String convert(PlayerRoundState obj) {
-        return obj.actualStiches + ";" + obj.calledStiches + ";" + obj.points;
+        return obj.getActualStiches() + ";" + obj.getCalledStiches() + ";" + obj.getPoints();
     }
 }

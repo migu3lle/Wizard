@@ -70,6 +70,14 @@ public class RuleEngineTest {
     }
 
     @Test
+    public void TesOneMove() {
+        List<MoveTuple> move = new ArrayList<>();
+        move.add(new MoveTuple(p1, new FractionCard(2, 11,  Fractions.red,0), 1));
+        Player winner = ruleEngine.processRound(move, null);
+        Assert.assertEquals(p1, winner);
+    }
+
+    @Test
     public void TestWizardRule() {
         List<MoveTuple> move = new ArrayList<>();
         move.add(new MoveTuple(p1, new FractionCard(2, 11,  Fractions.red,0), 1));
@@ -127,5 +135,27 @@ public class RuleEngineTest {
         Assert.assertEquals("player 2 should have 3 stiches", 3, p2.getActualStiches());
         Assert.assertEquals("player 3 should have 1 stich", 1, p3.getActualStiches());
         Assert.assertEquals("player 1 should have 0 stiches", 0, p1.getActualStiches());
+    }
+
+    @Test
+    public void TestRuleComparer() {
+        AbstractRule r1 = new WizardRule();
+        AbstractRule r2 = new PointsRule();
+        AbstractRule r3 = new JesterRule();
+        AbstractRule r4 = new JesterRule();
+
+        int compareResult = r3.compareToReverse(r1);
+        Assert.assertEquals(1, compareResult);
+
+        compareResult = r3.compareToReverse(r2);
+        Assert.assertEquals(-1, compareResult);
+
+        compareResult = r3.compareToReverse(r4);
+        Assert.assertEquals(0, compareResult);
+    }
+
+    @Test
+    public void TestInitializeRulesNull() {
+        ruleEngine.initializeRules(null);
     }
 }

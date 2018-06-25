@@ -5,6 +5,7 @@ package aau.losamigos.wizard.rules;
  */
 
 public class Client2HostAction {
+
     public static int TABLE_ACTIVITY_STARTED = 1;
     public static int CARD_PLAYED = 2;
     public static int PREDICTION_SET = 3;
@@ -12,4 +13,5 @@ public class Client2HostAction {
     public static int GET_LEFT_CARDS = 5;
     public static int GET_RIGHT_CARDS = 6;
     public static int CHEAT_DETECT = 7;
+
 }

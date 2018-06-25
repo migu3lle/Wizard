@@ -28,19 +28,6 @@ public abstract class AbstractRule {
      */
     public abstract int getWeight();
 
-    /**
-     * compares the weight (importance) of 2 rules asc
-     * @param other the other rule to compare with
-     * @return -1, 0, 1
-     */
-    public int compareTo(AbstractRule other) {
-        if(this.getWeight() > other.getWeight()) {
-            return 1;
-        } else if (this.getWeight() < other.getWeight()) {
-            return -1;
-        }
-        return 0;
-    }
 
     /**
      * compares the weight (importance) of 2 rules desc

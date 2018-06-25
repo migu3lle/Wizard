@@ -420,7 +420,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             public void execute(Message message) {
                 Log.d("HOST CALLBACK", "Received: " + message);
                 Round round = game.getRecentRound();
-                if(message == null && message.client2HostAction == 0) {
+                if(message == null || message.client2HostAction == 0) {
                     Log.e("CLIENT", "No Message received");
                 }
 

@@ -33,4 +33,10 @@ public class AbstractCardTest {
         FractionCard fractionCard = card.getExact(FractionCard.class);
         Assert.assertNull("card should not have been a fractionCard", fractionCard);
     }
+
+    @Test
+    public void TestGetResourceId() {
+        AbstractCard card = new FractionCard(1,1, Fractions.green, 11);
+        Assert.assertEquals(11, card.getResourceId());
+    }
 }

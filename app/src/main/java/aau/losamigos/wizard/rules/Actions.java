@@ -16,4 +16,5 @@ public class Actions {
     public static int GET_HAND_CARDS = 9;
     public static int CHEAT_TRIGGER = 10;
     public static int QUIT_GAME = 11;
+
 }
