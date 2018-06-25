@@ -62,12 +62,6 @@ public class Player {
         this.points += points;
     }
 
-    public void decreasePoints(int points) {
-        if(points > this.points)
-            points = this.points;
-        this.points -= points;
-    }
-
     public void increaseStiches() {
         this.actualStiches++;
     }

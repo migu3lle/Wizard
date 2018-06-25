@@ -90,4 +90,16 @@ public class CardStackTest {
         _cardStack.getCards(61);
     }
 
+    @Test
+    public void TestGetCardById() {
+        AbstractCard card = _cardStack.getCardById(11);
+        Assert.assertNotNull(card);
+    }
+
+    @Test
+    public void TestGetCardByIdInvalid() {
+        AbstractCard card = _cardStack.getCardById(-1);
+        Assert.assertNull(card);
+    }
+
 }

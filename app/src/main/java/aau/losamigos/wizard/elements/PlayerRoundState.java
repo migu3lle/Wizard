@@ -15,25 +15,17 @@ public class PlayerRoundState implements Serializable {
         return actualStiches;
     }
 
-    public void setActualStiches(int actualStiches) {
-        this.actualStiches = actualStiches;
-    }
 
     public int getCalledStiches() {
         return calledStiches;
     }
 
-    public void setCalledStiches(int calledStiches) {
-        this.calledStiches = calledStiches;
-    }
 
     public int getPoints() {
         return points;
     }
 
-    public void setPoints(int points) {
-        this.points = points;
-    }
+
 
     private int actualStiches;
 
