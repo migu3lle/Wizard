@@ -252,7 +252,6 @@
         android:layout_height="70dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/Middle2"
         app:layout_constraintTop_toTopOf="parent"
