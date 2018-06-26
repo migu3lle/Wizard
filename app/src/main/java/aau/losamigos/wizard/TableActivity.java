@@ -473,9 +473,19 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 } else if (message.action == Actions.QUIT_GAME) {
                     sendQuitGameToAll();
                     buildQuitMessage(message.sender);
-                } else if (message.client2HostAction == Client2HostAction.GET_LEFT_CARDS) {
+
+                } else if (message.client2HostAction == Client2HostAction.GET_LEFT_CARDS
+                        || message.client2HostAction == Client2HostAction.GET_RIGHT_CARDS) {
+
                     Player p = round.getPlayerByName(message.sender);
-                    Player s = checkLeft(p);
+                    Player s = message.client2HostAction == Client2HostAction.GET_RIGHT_CARDS ?
+                            checkRight(p) : checkLeft(p);
+
+                    //Method "checkLeft" and "checkRight" could return null.
+                    //if so, no player found to operate with -> return doing nothing
+                    if(s == null) {
+                        return;
+                    }
 
                     // actual cards of the left sided player
                     Message ms1 = new Message();
@@ -490,38 +500,6 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     ms2.cheatPlayer = p.getName();
 
                     //send hand of the left player to the cheater
-                    network.sendToDevice(p.getSalutDevice(), ms1, new SalutCallback() {
-                        @Override
-                        public void call() {
-                            Log.e("SEND LEFT CARDS", "cards sending failed");
-                        }
-                    });
-                    //activate cheat detection for the cheated player
-                    network.sendToDevice(s.getSalutDevice(), ms2, new SalutCallback() {
-                        @Override
-                        public void call() {
-                            Log.e("DETECT CHEATING", "cheat detection don´t trigger");
-                        }
-                    });
-
-
-                } else if (message.client2HostAction == Client2HostAction.GET_RIGHT_CARDS) {
-                    Player p = round.getPlayerByName(message.sender);
-                    Player s = checkRight(p);
-
-                    // actual cards of the left sided player
-                    Message ms1 = new Message();
-                    ms1.action = Actions.GET_HAND_CARDS;
-                    ms1.getCheaterHand = handCards(round.getPlayerHand(p));
-                    ms1.getPlayerHand = handCards(round.getPlayerHand(s));
-                    ms1.cheatPlayer = p.getName();
-                    ms1.roundCount = game.getCountRound();
-
-                    Message ms2 = new Message();
-                    ms2.action = Actions.CHEAT_TRIGGER;
-                    ms2.cheatPlayer = p.getName();
-
-                    //send hand of the right player to the cheater
                     network.sendToDevice(p.getSalutDevice(), ms1, new SalutCallback() {
                         @Override
                         public void call() {
