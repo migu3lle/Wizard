@@ -51,7 +51,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     int playerCount;
     private boolean cheat;
     private String cheater;
-
+    boolean allowedToClick;
 
     //instance only available for host
     GamePlay game;
@@ -59,7 +59,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     CardStack clientCardStack;
     ImageView playerC2,playerC3,playerC4,playerC5,playerC6;
 
-    boolean allowedToClick;
+
     List<Integer> cardsAllowedToPlay;
     Button btnPredictTrick;
     Button cheatDetect;
@@ -103,6 +103,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             defineClientCallBack();
             notifyHost();
         }
+        allowedToClick=false;
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
@@ -623,7 +624,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         forbiddenTricks = -1;
         btnPredictTrick.setClickable(true);
         btnPredictTrick.setAlpha(1);
-        allowedToClick = true;
+        //allowedToClick = true;
     }
     public void hostPickCard(List<Integer> cards){
         cardsAllowedToPlay = cards;
