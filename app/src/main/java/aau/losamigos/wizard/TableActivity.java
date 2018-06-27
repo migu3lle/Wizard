@@ -775,7 +775,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
         for(int i = 0; i < cardViews.size(); i++) {
             ImageView img =  cardViews.get(i);
-            img.setImageAlpha(50);
+            img.setImageAlpha(100);
         }
     }
 

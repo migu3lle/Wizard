@@ -111,6 +111,22 @@ ception arts            */
                 //TODO Exception werfen da kein richtiger Typ
             }
         }
+
+
+        //Überprüfung ob gar keine Karte spielbar ist, dann sind alle restlichen spielbar
+        boolean haveCards = false;
+
+        for (AbstractCard cardHand:handCards) {
+            if(cardHand.isAllowedToPlay()==true){
+                haveCards = true;
+                break;
+            }
+        }
+        if(haveCards==false){
+            for (AbstractCard cardHand:handCards)
+               cardHand.setAllowedToPlay(true);
+        }
+
         return handCards;
     }
 

@@ -37,7 +37,7 @@ public class Round {
     private RoundStatus status;
     private Salut network;
     private RuleEngine ruleEngine;
-    private static List<Player> order;
+    private List<Player> order;
     private int currentPlayer;
     private int currentHandCards;
     private List<MoveTuple> table;
@@ -70,13 +70,9 @@ public class Round {
         this.currentPlayer = 0;
         this.currentHandCards = this.numberOfCards;
 
-        if(order == null) {
-            List<Player> order = new ArrayList<Player>();
-            for (Player player : players) {
-                order.add(player);
-            }
-        }
 
+        this.order = new ArrayList<>();
+        order.addAll(players);
 
         generateHands();
     }
@@ -134,10 +130,11 @@ public class Round {
                 else{
                     status = RoundStatus.waitingForCard;
                     currentPlayer=0;
-                    askForCard(order.get(currentPlayer));
+                    checkNextStep();
                 }
                 break;
             case waitingForCard:
+                askForCard(order.get(currentPlayer));
                 break;
             case cardIsPicked:
 
