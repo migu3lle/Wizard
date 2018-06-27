@@ -1,6 +1,6 @@
 package aau.losamigos.wizard.base;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 import aau.losamigos.wizard.elements.Player;
@@ -18,6 +18,7 @@ public class Hand {
     private List<AbstractCard> handCards;
     private Player handOwner;
 
+
     public Hand(List<AbstractCard> handCards) {
         this.handCards = handCards;
     }
@@ -25,6 +26,8 @@ public class Hand {
         this.handCards = handCards;
         this.handOwner = handOwner;
     }
+
+
 
     public Player getHandOwner() {
         return handOwner;
@@ -44,10 +47,14 @@ public class Hand {
         handCards.remove(card);
     }
 
-    public List<AbstractCard> getAllowedCards(List<AbstractCard> table) {
+    public List<AbstractCard> getAllowedCards(List<AbstractCard> table, AbstractCard trump) {
 
         AbstractCard cardTyp = null; //gespielter Kartentyp
         Fractions fraction = null; //gespielte Fraktion
+        Fractions trumpFraction = null;
+        if(trump instanceof FractionCard) {
+            trumpFraction = ((FractionCard) trump).getFraction();
+        }
 
         /*
         Wenn noch keine Karte gespielt, alle Karten erlaubt
@@ -100,10 +107,18 @@ ception arts            */
                     else if(cardHand instanceof JesterCard){
                         cardHand.setAllowedToPlay(true);
                     }else if(cardHand instanceof FractionCard){
-                        if(((FractionCard) cardHand).getFraction().equals(fraction))
+                        if(((FractionCard) cardHand).getFraction().equals(fraction)){
                             cardHand.setAllowedToPlay(true);
-                        else
-                            cardHand.setAllowedToPlay(false);
+                        }
+                        else{
+                            if(((FractionCard) cardHand).getFraction().equals(trumpFraction)){
+                                cardHand.setAllowedToPlay(true);
+                            }
+                            else{
+                                cardHand.setAllowedToPlay(false);
+                            }
+                        }
+
                     }
                 }
             }

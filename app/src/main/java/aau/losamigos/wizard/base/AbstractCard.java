@@ -14,6 +14,7 @@ public class AbstractCard {
     public AbstractCard(int id, int resourceId) {
         this.resourceId = resourceId;
         this.id = id;
+        this.allowedToPlay = false;
     }
 
     public boolean isAllowedToPlay() {

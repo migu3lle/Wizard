@@ -376,6 +376,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                        }
                        setNotAllowedCards();
                        allowedToClick = true;
+                       Toast.makeText(getApplicationContext(),"Pick Card",Toast.LENGTH_LONG).show();
                    }
                    else if(message.action == Actions.NUMBER_OF_TRICKS){
                        forbiddenTricks = message.forbiddenTricks;
@@ -450,7 +451,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     //TODO: DO SOMETHING WITH THE CARD
                     Round round1 = game.getRecentRound();
                     round1.playCard(sender,playedCard);
-                    setMiddleCards(round1.getPlayedCards());
+
                 } else if (message.client2HostAction == Client2HostAction.PREDICTION_SET) {
                     int tricksPrediction = message.predictedTricks;
                     String sender = message.sender;
@@ -620,8 +621,8 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_table);
     }
 
-    public void hostStiches() {
-        forbiddenTricks = -1;
+    public void hostStiches(int newForbiddenTricks) {
+        forbiddenTricks = newForbiddenTricks;
         btnPredictTrick.setClickable(true);
         btnPredictTrick.setAlpha(1);
         //allowedToClick = true;
@@ -629,6 +630,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     public void hostPickCard(List<Integer> cards){
         cardsAllowedToPlay = cards;
         setNotAllowedCards();
+        Toast.makeText(getApplicationContext(),"Pick Card",Toast.LENGTH_LONG).show();
         allowedToClick = true;
 
     }
@@ -675,8 +677,6 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                 //TODO: do something if the host played the card as well
                 Round round = game.getRecentRound();
                 round.playCard(network.thisDevice.deviceName,clickedCard.getId());
-                List<AbstractCard> playedCards = round.getPlayedCards();
-                setMiddleCards(playedCards);
             }
             clearNotAllowedCards();
             allowedToClick=false;
@@ -764,7 +764,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
     private void setNotAllowedCards() {
         for(int i = 0; i < cardViews.size(); i++) {
             ImageView img =  cardViews.get(i);
-            AbstractCard card = view2CardMap.get(img.getId());
+            AbstractCard card = view2CardMap.get(img.getContentDescription().toString());
             if(cardsAllowedToPlay.contains(Integer.valueOf(card.getId()))==false){
                 img.setImageAlpha(50);
             }
@@ -775,7 +775,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
         for(int i = 0; i < cardViews.size(); i++) {
             ImageView img =  cardViews.get(i);
-            img.setImageAlpha(100);
+            img.setImageAlpha(255);
         }
     }
 
@@ -783,7 +783,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         trump.setImageResource(card.getResourceId());
     }
 
-    private void setMiddleCards(List<AbstractCard> cards) {
+    public void setMiddleCards(List<AbstractCard> cards) {
         resetMiddleCards();
 
         int maxIterations = middleCards.size();
