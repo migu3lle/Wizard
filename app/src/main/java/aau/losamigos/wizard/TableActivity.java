@@ -93,6 +93,9 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         middleCards = new ArrayList<>();
         view2CardMap = new HashMap<>();
         trump = findViewById(R.id.Trump);
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
         if(network.isRunningAsHost) {
             defineHostCallBack();
             startGame();
@@ -104,14 +107,11 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             notifyHost();
         }
         allowedToClick=false;
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
 
         if (b) {
             cheat = false;
             cheating();
-
         }
 
     }
@@ -195,7 +195,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         cheatDetect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (cheat) {
+                if (cheat && !network.isRunningAsHost) {
 
                     Message message = new Message();
                     message.cheatPlayer = cheater;
@@ -208,7 +208,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                         }
                     });
 
-                } else if (!cheat) {
+                } else if (!cheat && !network.isRunningAsHost) {
                     Message message = new Message();
                     message.cheatPlayer = null;
                     message.client2HostAction = Client2HostAction.CHEAT_DETECT;
@@ -220,6 +220,16 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                         }
                     });
 
+                }else if(cheat && network.isRunningAsHost){
+                    for (int i = 0; i < game.getPlayers().size(); i++) {
+                        if (game.getPlayers().get(i).getName().equals(cheater)) {
+                            game.getPlayers().get(i).addPoints(-20);
+                        }
+                    }
+
+                }else if (!cheat && network.isRunningAsHost){
+                   //Do nothing
+                    // No penalty for Host :-)
                 }
             }
         });
@@ -272,13 +282,13 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
             accelerometerEventListener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent sensorEvent) {
-                    if (sensorEvent.values[2] > 0.4f) {
+                    if (sensorEvent.values[1] > 5f) {
                         cardRightPlayer();
 
-                    } else if (sensorEvent.values[2] < -0.4f) {
+                    } else if (sensorEvent.values[1] < -5f) {
                         cardLeftPlayer();
 
-                    } else if (sensorEvent.values[2] >= -0.4f && sensorEvent.values[2] <= 0.4f) {
+                    } else if (sensorEvent.values[1] >= -5f && sensorEvent.values[1] <= 5f) {
 
                         //DO NOTHING
                     }
@@ -507,7 +517,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
                     ms2.action = Actions.CHEAT_TRIGGER;
                     ms2.cheatPlayer = p.getName();
 
-                    //send hand of the left player to the cheater
+                    //send hand of the player to the cheater
                     network.sendToDevice(p.getSalutDevice(), ms1, new SalutCallback() {
                         @Override
                         public void call() {
@@ -582,7 +592,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
 
                 //if neighbor is the first player
                 if ((i + 1) > game.getPlayers().size()) {
-                    s = players[1];
+                    s = players[0];
 
                     //each other
                 } else {
@@ -916,7 +926,7 @@ public class TableActivity extends AppCompatActivity implements View.OnClickList
         message.sender = network.thisDevice.deviceName;
         message.action = Actions.QUIT_GAME;
         Log.d("SEND QUIT GAME TO ALL", message.toString());
-        if(network.isRunningAsHost == true){
+        if(network.isRunningAsHost){
             network.sendToAllDevices(message, new SalutCallback() {
                 @Override
                 public void call() {
