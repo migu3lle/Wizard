@@ -24,7 +24,7 @@ public class HandTest {
     private ArrayList<AbstractCard> table;
     private ArrayList<AbstractCard> handcards = new ArrayList<AbstractCard>();
     private Hand h[] = new Hand[3];
-
+    private AbstractCard trump;
     @Before
     public void setUp() {
         p[0] = new Player("Player1");
@@ -37,8 +37,8 @@ public class HandTest {
         handcards.add(new FractionCard(7,8,Fractions.red,0));
         handcards.add(new FractionCard(8,13,Fractions.blue,0));
         h[0] = new Hand(handcards,p[0]);
-
-       table = new ArrayList<AbstractCard>();
+        this.trump = new FractionCard(9,9,Fractions.red,0);
+        table = new ArrayList<AbstractCard>();
     }
     @After
     public void reset() {
@@ -51,7 +51,8 @@ public class HandTest {
         table.add(new FractionCard(1,10, Fractions.green,0));
 
         int count = 0;
-        for (AbstractCard card: h[0].getAllowedCards(table)) {
+
+        for (AbstractCard card: h[0].getAllowedCards(table, trump)) {
             if(card.isAllowedToPlay()==true)
                 count++;
         }
@@ -63,7 +64,7 @@ public class HandTest {
 
 
         int count = 0;
-        for (AbstractCard card: h[0].getAllowedCards(table)) {
+        for (AbstractCard card: h[0].getAllowedCards(table,trump)) {
             if(card.isAllowedToPlay()==true)
                 count++;
         }
@@ -74,7 +75,7 @@ public class HandTest {
         table.add(new JesterCard(20,0));
 
         int count = 0;
-        for (AbstractCard card: h[0].getAllowedCards(table)) {
+        for (AbstractCard card: h[0].getAllowedCards(table,trump)) {
             if(card.isAllowedToPlay()==true)
                 count++;
         }
@@ -86,7 +87,7 @@ public class HandTest {
         table.add(new FractionCard(1,10, Fractions.red,0));
 
         int count = 0;
-        for (AbstractCard card: h[0].getAllowedCards(table)) {
+        for (AbstractCard card: h[0].getAllowedCards(table,trump)) {
             if(card.isAllowedToPlay()==true)
                 count++;
         }
@@ -98,7 +99,7 @@ public class HandTest {
 
 
         int count = 0;
-        for (AbstractCard card: h[0].getAllowedCards(table)) {
+        for (AbstractCard card: h[0].getAllowedCards(table,trump)) {
             if(card.isAllowedToPlay()==true)
                 count++;
         }
